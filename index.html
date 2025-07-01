@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bittersweet Memories - CRT Edition</title>
+    <!-- Incluir Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=VT323&display=swap" rel="stylesheet">
+    <!-- Tone.js for sound effects -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
+
+    <script>
+        // Configuração do Tailwind
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'album-dark': '#1c1c24',
+                        'album-gold': '#cfa358',
+                        'album-tan': '#9e7b4c',
+                        'album-red': '#d36f58',
+                        'album-grey': '#4c5058',
+                        'album-text': '#f0eadd',
+                        'tv-case': '#1a1a1a',
+                        'tv-case-light': '#2a2a2a',
+                        'vhs-blue': '#00bfff',
+                    },
+                    fontFamily: {
+                        'mono': ['Roboto Mono', 'monospace'],
+                        'pixel': ['VT323', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        @keyframes power-pulse {
+            0%, 100% { background-color: var(--tw-colors-album-red); box-shadow: 0 0 3px var(--tw-colors-album-red); }
+            50% { background-color: #800000; box-shadow: none; }
+        }
+        @keyframes text-glow-hover {
+            0%, 100% {
+                color: var(--tw-colors-vhs-blue);
+                text-shadow: 0 0 7px var(--tw-colors-vhs-blue);
+            }
+            50% {
+                color: var(--tw-colors-album-text);
+                text-shadow: none;
+            }
+        }
+        @keyframes fade-out {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        @keyframes full-static-glitch {
+            0% { opacity: 0; }
+            50% { opacity: 0.2; }
+            100% { opacity: 0; transform: scale(1.1); }
+        }
+
+        body {
+            background-image: url('https://i.pinimg.com/736x/4f/a9/a4/4fa9a4eb643da7cb9a4944045e9c2572.jpg');
+            background-size: cover; background-position: center;
+            color: var(--tw-colors-album-text); font-family: 'mono';
+            overflow: hidden; display: flex; align-items: center; justify-content: center; min-height: 100vh;
+        }
+        
+        body::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.5); z-index: 0;
+        }
+
+        #tv-wrapper {
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.8s ease-in-out;
+            position: relative; width: 100%; max-width: 1500px;
+            box-shadow: 0 0 30px 5px rgba(28, 28, 36, 0.4);
+        }
+
+        #tv-wrapper.zoomed-in { 
+            transform: scale(calc(min(1.2, 100vw / 1000px))); 
+            box-shadow: 0 0 150px 40px rgba(207, 163, 88, 0.25);
+        }
+
+        .tv-frame {
+            background: #111; border: 20px solid var(--tw-colors-tv-case);
+            border-radius: 40px; padding: 20px;
+            box-shadow: inset 2px 2px 15px rgba(0,0,0,0.9), 0 0 50px rgba(0,0,0,0.5), 0 0 10px #000;
+            position: relative;
+        }
+        
+        .crt-screen {
+            position: relative; background: #000;
+            overflow: hidden; border-radius: 20px; aspect-ratio: 16 / 9;
+            box-shadow: inset 0 0 40px rgba(0,0,0,0.7);
+        }
+        
+        #screen-background-video {
+            position: absolute; top: 50%; left: 50%;
+            width: 177.77vh; min-width: 100%; min-height: 100%;
+            transform: translate(-50%, -50%); z-index: 0; opacity: 0.3;
+            pointer-events: none;
+        }
+        
+        .crt-screen-fx-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: 
+                repeating-linear-gradient(0deg, rgba(207, 163, 88, 0.08) 0px, rgba(207, 163, 88, 0.08) 1px, transparent 1px, transparent 2px),
+                linear-gradient(35deg, rgba(255,255,255,0) 50%, rgba(255,255,255,0.04) 70%, rgba(255,255,255,0) 80%);
+            pointer-events: none; z-index: 5;
+        }
+
+        .screen-content {
+            position: absolute; z-index: 2; top:0; left:0; width:100%; height:100%; padding: 2.5rem;
+            transition: opacity 0.4s ease;
+            background-color: rgba(28, 28, 36, 0.85);
+        }
+
+        .track-item {
+            cursor: pointer; transition: all 0.1s ease-in-out;
+            padding: 2px 8px; position: relative;
+        }
+        .track-item:hover { animation: text-glow-hover 0.7s infinite; }
+        .track-item.active { 
+            background-color: var(--tw-colors-vhs-blue); 
+            color: var(--tw-colors-album-text); /* CORREÇÃO: Cor do texto alterada para branco */
+            animation: none !important; 
+        }
+
+        #video-player-container {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
+            z-index: 4;
+            filter: saturate(1.3) contrast(1.1);
+        }
+        
+        #tv-wrapper.zoomed-in #video-player-container { opacity: 1; pointer-events: all; }
+        #tv-wrapper.zoomed-in .screen-content { opacity: 0; pointer-events: none; }
+        
+        .power-light {
+            width: 10px; height: 10px; border-radius: 50%;
+            margin: 10px auto -15px auto; animation: power-pulse 2s infinite;
+        }
+        
+        #tv-sticker {
+            position: absolute; top: 25px; right: 25px; width: 90px;
+            transform: rotate(8deg); opacity: 0.5; mix-blend-mode: screen;
+            filter: grayscale(50%) contrast(1.2); transition: all 0.3s ease; z-index: 10;
+            cursor: pointer;
+        }
+        
+        #plaque {
+            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+            color: var(--tw-colors-album-text); /* CORREÇÃO: Cor do texto alterada para branco */
+            opacity: 0.6; /* Opacidade para um visual mais sutil */
+            font-size: 10px; letter-spacing: 1px;
+            text-shadow: 1px 1px 0px #000; cursor: pointer;
+            z-index: 10;
+        }
+        
+        #tooltip {
+            position: absolute; bottom: 60px; left: 50%; transform: translateX(-50%);
+            background: #000; padding: 5px 10px; border-radius: 4px;
+            font-size: 12px; opacity: 0; transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        #plaque:hover + #tooltip { opacity: 1; }
+
+        #vhs-osd-bar {
+            position: absolute; top: 1rem; left: 1rem; right: 1rem;
+            background: rgba(0, 0, 20, 0.7);
+            padding: 0.5rem 1rem;
+            font-family: 'pixel'; color: var(--tw-colors-vhs-blue); font-size: 2rem;
+            text-shadow: 1px 1px 1px #000; z-index: 6;
+            opacity: 0; transition: opacity 0.3s; pointer-events: none;
+            border: 2px solid var(--tw-colors-vhs-blue);
+            box-shadow: 0 0 10px var(--tw-colors-vhs-blue);
+        }
+        #vhs-osd-bar.visible { opacity: 0.9; }
+        #vhs-osd-bar.fade-out { animation: fade-out 0.5s 3s forwards; }
+        
+        #channel-glitch-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: url(https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3Z2eHl3ZjV3cWU5aWFleWJsd25kbXRzY2d3eGYxZHIzY2djcGJzZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o85xsjC2i0Y2v2c2A/giphy.gif);
+            opacity: 0; mix-blend-mode: screen; z-index: 20; pointer-events: none;
+        }
+        #channel-glitch-overlay.active { animation: full-static-glitch 0.3s forwards; }
+        
+        #custom-player-controls {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            background: rgba(0,0,0,0.7);
+            padding: 0.5rem 1rem;
+            display: flex; align-items: center; gap: 1rem;
+            opacity: 0; transition: opacity 0.3s;
+        }
+        #video-player-container:hover #custom-player-controls { opacity: 1; }
+        
+        .player-button {
+            background: none; border: none; color: var(--tw-colors-album-gold);
+            font-size: 24px; cursor: pointer; transition: all 0.2s;
+        }
+        .player-button:hover { color: white; transform: scale(1.1); }
+
+    </style>
+</head>
+<body class="animate-fadeIn">
+
+    <div id="tv-wrapper">
+        <div class="tv-frame">
+            <img id="tv-sticker" src="https://i.pinimg.com/736x/c3/b1/4d/c3b14d76140f5534350d0b004a8ed610.jpg" alt="Logo Album Sticker">
+            <div id="plaque">EM MEMORIAS AO MEU AMIGÃO</div>
+            <div id="tooltip">"A memória é o diário que todos nós carregamos."</div>
+
+            <div class="crt-screen">
+                <iframe id="screen-background-video" src="https://www.youtube.com/embed/DVNopA_TuTU?autoplay=1&loop=1&mute=1&controls=0&playlist=DVNopA_TuTU" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+                
+                <div class="screen-content">
+                    <div class="grid grid-cols-2 gap-8 h-full">
+                        <div>
+                           <h2 class="text-3xl text-album-gold mb-4">[SCENE SELECTION]</h2>
+                           <ul id="song-list" class="space-y-1 text-lg">
+                                <!-- JS irá popular aqui -->
+                           </ul>
+                           <button id="doc-button" class="text-2xl hover:text-vhs-blue transition-colors mt-auto pt-4">▶ DOCUMENTARY</button>
+                        </div>
+                        <div class="text-right flex flex-col justify-between">
+                            <div>
+                                <h1 class="text-5xl font-bold text-album-text">YUN LI</h1>
+                                <p class="text-3xl text-album-gold">BITTERSWEET MEMORIES</p>
+                            </div>
+                            <div class="text-lg space-y-1 text-album-grey mt-4">
+                                <p>DECEMBER 15, 2023</p>
+                                <p id="record-label" class="cursor-pointer">YUNGTRASHRECORDS</p>
+                                <p>SIXTH STUDIO ALBUM</p>
+                                <p>SOUNDTRACK BY HAKURO</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="video-player-container"> 
+                    <div id="video-player"></div>
+                    <div id="custom-player-controls">
+                        <button id="play-pause-btn" class="player-button">❚❚</button>
+                        <button id="rewind-btn" class="player-button">«</button>
+                        <button id="forward-btn" class="player-button">»</button>
+                        <div id="volume-control" class="flex items-center gap-2 text-album-gold text-xl">
+                            <span>VOL</span>
+                            <input type="range" id="volume-slider" min="0" max="100" value="100" class="w-24">
+                        </div>
+                        <button id="eject-btn-player" class="player-button text-xl ml-auto">⏏</button>
+                    </div>
+                </div>
+                <div id="vhs-osd-bar"></div>
+                <div id="channel-glitch-overlay"></div>
+                <div class="crt-screen-fx-overlay"></div>
+            </div>
+        </div>
+        <div class="power-light"></div>
+    </div>
+    
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script>
+        const songs = [
+            { id: 1, title: "SAÚDE", videoId: "xXeDMfisrU8" },
+            { id: 2, title: "O FILHO PRÓDIGO", videoId: "rsxeE1WkHqw" },
+            { id: 3, "title": "LET IT POUR", videoId: "KzUUemEW_iI" },
+            { id: 4, title: "THE STORY", videoId: "qkaxqSGI_OE" },
+            { id: 5, title: "BACK HOME", videoId: "fnRyVCxqLqk" },
+            { id: 6, title: "MELHOR NÃO", videoId: "RMeJND0yzeM" },
+            { id: 7, title: "OLDSCHOOL", videoId: "yApMEdYtkGM" },
+            { id: 8, title: "DIRTY DANCING", videoId: "ZBe3GmoFJys" },
+            { id: 9, title: "PREFIRO MORRER", videoId: "g0_DLkqjylU" },
+            { id: 10, title: "QUASE PERFEITO", videoId: "vLQR5UCq5J0" },
+            { id: 11, title: "MÁQUINA DO TEMPO", videoId: "Z7LsJA7NJF0" },
+            { id: 12, title: "FLORES DE OUTRO CARNAVAL", videoId: "tR-m63k2nNM" }
+        ];
+        const bonusTrack = { id: 13, title: "quase perfeito Collections Edition", videoId: "L0XPj-zXFxg" };
+
+        let player;
+        let currentSongIndex = -1;
+        let osdTimer;
+
+        let clickSound, powerOffSound, menuBlipSound, meowSound, sadSound, konamiSound;
+        let toneStarted = false;
+        let canPlayBlip = true;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const songListContainer = document.getElementById('song-list');
+            
+            songs.forEach((song, index) => {
+                const li = document.createElement('li');
+                li.className = 'track-item';
+                li.innerHTML = `<span class="text-album-tan mr-3">${String(song.id).padStart(2, '0')}</span>${song.title}`;
+                li.addEventListener('click', () => {
+                    currentSongIndex = index;
+                    playVideoById(songs[currentSongIndex].videoId);
+                });
+                li.addEventListener('mouseenter', async () => {
+                    if (canPlayBlip) {
+                        canPlayBlip = false;
+                        await startAudio();
+                        if(toneStarted && menuBlipSound) menuBlipSound.triggerAttackRelease("G5", "32n");
+                        setTimeout(() => { canPlayBlip = true; }, 100);
+                    }
+                });
+                songListContainer.appendChild(li);
+            });
+
+            setupEventListeners();
+            initializeSounds();
+        });
+
+        function initializeSounds() {
+            try {
+                if (typeof Tone !== 'undefined') {
+                    clickSound = new Tone.Synth({ oscillator: { type: 'triangle' }, envelope: { attack: 0.005, decay: 0.1, sustain: 0, release: 0.1 } }).toDestination();
+                    powerOffSound = new Tone.NoiseSynth({ noise: { type: 'brown' }, envelope: { attack: 0.001, decay: 0.2, sustain: 0 } }).toDestination();
+                    menuBlipSound = new Tone.Synth({ oscillator: { type: 'square' }, envelope: { attack: 0.001, decay: 0.05, sustain: 0, release: 0.1 } }).toDestination();
+                    meowSound = new Tone.Synth({ oscillator: { type: 'sine' }, envelope: { attack: 0.01, decay: 0.1, sustain: 0.2, release: 0.2 } }).toDestination();
+                    sadSound = new Tone.Synth({ oscillator: { type: 'sine' }, envelope: { attack: 0.2, decay: 0.5, sustain: 0.1, release: 1 } }).toDestination();
+                    konamiSound = new Tone.Synth({ oscillator: { type: 'sawtooth' }, envelope: { attack: 0.01, decay: 0.2, sustain: 0.2, release: 0.2 } }).toDestination();
+                    [clickSound, powerOffSound, menuBlipSound, meowSound, sadSound, konamiSound].forEach(s => s.volume.value = -15);
+                }
+            } catch(e) { console.warn("Tone.js não pôde ser inicializado.", e); }
+        }
+
+        async function startAudio() {
+            if (!toneStarted && typeof Tone !== 'undefined' && Tone.context.state !== 'running') {
+                try { await Tone.start(); toneStarted = true; } catch (e) { console.error(e); }
+            }
+        }
+
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('video-player', {
+                height: '100%',
+                width: '100%',
+                playerVars: { 'autoplay': 0, 'controls': 0, 'modestbranding': 1, 'rel': 0, 'iv_load_policy': 3, 'playsinline': 1 },
+                events: { 'onStateChange': onPlayerStateChange }
+            });
+        }
+
+        function onPlayerStateChange(event) {
+            const isDoc = player.getVideoUrl().includes('j2hjqXYbD6A');
+            const playPauseBtn = document.getElementById('play-pause-btn');
+            if (event.data == YT.PlayerState.PLAYING) {
+                updateOsd('play', isDoc);
+                if(playPauseBtn) playPauseBtn.textContent = '❚❚';
+            } else {
+                updateOsd('pause', isDoc);
+                if(playPauseBtn) playPauseBtn.textContent = '▶';
+            }
+
+            if (event.data == YT.PlayerState.ENDED) {
+                playNextSong();
+            }
+        }
+        
+        function updateOsd(state, isDoc = false) {
+             const osdBar = document.getElementById('vhs-osd-bar');
+             clearTimeout(osdTimer);
+             let trackInfo = isDoc ? 'DOC' : `TAPE ${(currentSongIndex + 1).toString().padStart(2,'0')}/${songs.length}`;
+             if (currentSongIndex === -2) trackInfo = "CD CUTS";
+             let playState = state === 'pause' ? '❚❚ PAUSE' : '▶ PLAY';
+             osdBar.innerHTML = `<div class="flex justify-between items-center"><span>${playState} &nbsp;&nbsp; ${trackInfo}</span></div>`;
+             osdBar.classList.remove('fade-out');
+             osdBar.classList.add('visible');
+             osdTimer = setTimeout(() => { osdBar.classList.add('fade-out'); }, 4000);
+        }
+
+        async function playVideoById(videoId, isDoc = false) {
+            await startAudio();
+            if (toneStarted && clickSound) clickSound.triggerAttackRelease("C4", "8n");
+            
+            document.getElementById('tv-wrapper').classList.add('zoomed-in');
+            
+            document.querySelectorAll('.track-item').forEach((item, index) => {
+                item.classList.toggle('active', index === currentSongIndex);
+            });
+            
+            if (player && typeof player.loadVideoById === 'function') {
+                let videoIdOnly = videoId.includes('?') ? videoId.split('?')[0] : videoId;
+                let startTime = videoId.includes('start=') ? videoId.split('start=')[1] : 0;
+                player.loadVideoById({videoId: videoIdOnly, startSeconds: startTime});
+            }
+        }
+
+        function playNextSong() {
+            if (currentSongIndex > -1 && currentSongIndex < songs.length -1) {
+                currentSongIndex++;
+                playVideoById(songs[currentSongIndex].videoId);
+            } else {
+                stopVideo();
+            }
+        }
+
+        function stopVideo() {
+            if (toneStarted && powerOffSound) powerOffSound.triggerAttackRelease("16n");
+            if (player && typeof player.stopVideo === 'function') player.stopVideo();
+            document.getElementById('tv-wrapper').classList.remove('zoomed-in');
+            document.querySelectorAll('.track-item').forEach(item => item.classList.remove('active'));
+            currentSongIndex = -1;
+        }
+        
+        function setupEventListeners() {
+            const docButton = document.getElementById('doc-button');
+            const sticker = document.getElementById('tv-sticker');
+            const plaque = document.getElementById('plaque');
+            const recordLabel = document.getElementById('record-label');
+            const songListContainer = document.getElementById('song-list');
+            const ejectBtnPlayer = document.getElementById('eject-btn-player');
+            const playPauseBtn = document.getElementById('play-pause-btn');
+            const rewindBtn = document.getElementById('rewind-btn');
+            const forwardBtn = document.getElementById('forward-btn');
+            const volumeSlider = document.getElementById('volume-slider');
+            
+            if (docButton) {
+                docButton.addEventListener('click', () => {
+                    const docVideoId = 'j2hjqXYbD6A';
+                    const startTime = '10572';
+                    currentSongIndex = -1; 
+                    playVideoById(`${docVideoId}?start=${startTime}`, true);
+                });
+            }
+            
+            if (sticker) {
+                 sticker.addEventListener('click', async () => {
+                    await startAudio();
+                     if (toneStarted && meowSound) {
+                        meowSound.triggerAttackRelease("A4", "8n", Tone.now());
+                        setTimeout(() => meowSound.triggerAttackRelease("E5", "8n", Tone.now() + 0.2), 100);
+                     }
+                });
+            }
+
+            if (plaque) {
+                plaque.addEventListener('click', async () => {
+                    await startAudio();
+                    if (toneStarted && sadSound) {
+                        sadSound.triggerAttackRelease("C4", "4n");
+                    }
+                });
+            }
+            
+            if(recordLabel) {
+                recordLabel.addEventListener('click', () => {
+                    const li = document.createElement('li');
+                    li.className = 'track-item';
+                    li.innerHTML = `<span class="text-album-tan mr-3">??</span>${bonusTrack.title}`;
+                    li.addEventListener('click', () => {
+                        currentSongIndex = -2;
+                        playVideoById(bonusTrack.videoId);
+                    });
+                    songListContainer.appendChild(li);
+                    recordLabel.style.pointerEvents = 'none';
+                    recordLabel.style.textDecoration = 'line-through';
+                });
+            }
+
+            if (ejectBtnPlayer) ejectBtnPlayer.addEventListener('click', stopVideo);
+
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape' && document.getElementById('tv-wrapper').classList.contains('zoomed-in')) {
+                    stopVideo();
+                }
+            });
+            
+            if (playPauseBtn) {
+                playPauseBtn.addEventListener('click', () => {
+                    if(player && typeof player.getPlayerState === 'function') {
+                        player.getPlayerState() === YT.PlayerState.PLAYING ? player.pauseVideo() : player.playVideo();
+                    }
+                });
+            }
+            if (rewindBtn) rewindBtn.addEventListener('click', () => player.seekTo(player.getCurrentTime() - 10, true));
+            if (forwardBtn) forwardBtn.addEventListener('click', () => player.seekTo(player.getCurrentTime() + 10, true));
+            if (volumeSlider) volumeSlider.addEventListener('input', (e) => player.setVolume(e.target.value));
+
+            // Konami Code Listener
+            const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+            let konamiIndex = 0;
+            document.addEventListener('keydown', async (e) => {
+                if (e.key.toLowerCase() === konamiCode[konamiIndex]) {
+                    konamiIndex++;
+                    if (konamiIndex === konamiCode.length) {
+                        await startAudio();
+                        if(toneStarted && konamiSound) konamiSound.triggerAttackRelease("C6", "8n");
+                        const glitchOverlay = document.getElementById('channel-glitch-overlay');
+                        if(glitchOverlay) {
+                            glitchOverlay.classList.add('active');
+                            setTimeout(() => glitchOverlay.classList.remove('active'), 300);
+                        }
+                        konamiIndex = 0;
+                    }
+                } else {
+                    konamiIndex = 0;
+                }
+            });
+        }
+    </script>
+</body>
+</html>
