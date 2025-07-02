@@ -14,34 +14,16 @@
             --ps2-yellow: #ffff00;
             --ps2-blue: #0096ff;
             --ps2-white: #e0e0e0;
+            --ps2-dark-grey: #4a4a58;
         }
 
-        @keyframes spin-2d {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeOut {
-            from { opacity: 1; transform: translateY(0); }
-            to { opacity: 0; transform: translateY(20px); }
-        }
-        @keyframes scanlines {
-            0% { background-position: 0 0; }
-            100% { background-position: 0 50px; }
-        }
-        @keyframes cd-glare {
-            0% { transform: translateX(-150%) skewX(-30deg); }
-            100% { transform: translateX(150%) skewX(-30deg); }
-        }
-        @keyframes jitter {
-            0%, 100% { transform: translate(0, 0); }
-            25% { transform: translate(0.5px, -0.5px); }
-            50% { transform: translate(-0.5px, 0.5px); }
-            75% { transform: translate(0.5px, 0.5px); }
-        }
+        @keyframes spin-2d { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(20px); } }
+        @keyframes scanlines { 0% { background-position: 0 0; } 100% { background-position: 0 50px; } }
+        @keyframes cd-glare { 0% { transform: translateX(-150%) skewX(-30deg); } 100% { transform: translateX(150%) skewX(-30deg); } }
+        @keyframes jitter { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(0.5px, -0.5px); } 50% { transform: translate(-0.5px, 0.5px); } 75% { transform: translate(0.5px, 0.5px); } }
+        @keyframes background-pan { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
         body {
             background-color: #111;
@@ -58,145 +40,80 @@
             animation: jitter 0.1s infinite;
         }
         .crt-filter::before { /* Scanlines overlay */
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            background-size: 100% 3px, 3px 100%;
-            z-index: 2;
-            pointer-events: none;
-            animation: scanlines 0.2s infinite linear;
+            background-size: 100% 3px, 3px 100%; z-index: 2; pointer-events: none; animation: scanlines 0.2s infinite linear;
         }
         .crt-filter::after { /* Vignette overlay */
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            box-shadow: inset 0 0 100px rgba(0,0,0,0.5);
-            z-index: 2;
-            pointer-events: none;
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            box-shadow: inset 0 0 100px rgba(0,0,0,0.5); z-index: 2; pointer-events: none;
         }
 
         .screen {
             background-color: var(--ps2-bg);
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.5s, visibility 0.5s, background-color 0.5s;
-            opacity: 0;
-            visibility: hidden;
+            position: absolute; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+            transition: opacity 0.5s, visibility 0.5s, background-color 0.5s; opacity: 0; visibility: hidden;
             text-shadow: 1px 1px 1px rgba(255,0,0,0.3), -1px -1px 1px rgba(0,0,255,0.3);
         }
-        .screen.active {
-            opacity: 1;
-            visibility: visible;
-            animation: fadeIn 0.5s ease-out;
-        }
-        .screen.hiding {
-            animation: fadeOut 0.5s ease-in;
-        }
+        .screen.active { opacity: 1; visibility: visible; animation: fadeIn 0.5s ease-out; }
+        .screen.hiding { animation: fadeOut 0.5s ease-in; }
 
-        /* --- Selection Screen --- */
-        #selection-screen .cd-selection-item {
-            perspective: 800px;
-            cursor: pointer;
+        #selection-screen {
+            background-image: radial-gradient(circle, rgba(0, 50, 100, 0.3) 0%, transparent 70%), radial-gradient(circle, rgba(100, 0, 50, 0.2) 100%, transparent 70%);
+            animation: background-pan 40s infinite linear;
         }
         #selection-screen .cd-art {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            background-size: cover;
-            background-position: center;
-            border: 5px solid #333;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
-            transition: transform 0.4s ease;
+            width: 150px; height: 150px; border-radius: 50%; background-size: cover; background-position: center;
+            border: 5px solid #333; box-shadow: 0 10px 20px rgba(0,0,0,0.4); transition: transform 0.4s ease;
         }
-        #selection-screen .cd-selection-item:hover .cd-art {
-            transform: rotateY(20deg) scale(1.1);
-        }
+        #selection-screen .cd-selection-item:hover .cd-art { transform: scale(1.1); }
 
-        /* --- Player Screen --- */
-        .player-container {
-            width: 100%;
-            max-width: 800px;
-            margin: auto;
-        }
-
-        /* 2D CD Style */
-        .cd-2d-container {
-            width: 200px;
-            height: 200px;
-        }
+        .player-container { width: 100%; max-width: 900px; margin: auto; }
+        .cd-2d-container { width: 250px; height: 250px; } /* Increased size */
         .cd-2d {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            position: relative;
-            background-size: cover;
-            background-position: center;
-            box-shadow: 0 0 25px rgba(0,0,0,0.5);
-            animation: spin-2d 15s linear infinite;
-            overflow: hidden; /* For glare effect */
+            width: 100%; height: 100%; border-radius: 50%; position: relative; background-size: cover; background-position: center;
+            box-shadow: 0 0 35px rgba(0,0,0,0.6); animation: spin-2d 15s linear infinite; overflow: hidden;
         }
-        .cd-2d.playing {
-            animation-duration: 5s;
-        }
-        .cd-2d::after { /* Glare effect */
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 50%;
-            height: 100%;
+        .cd-2d.playing { animation-duration: 5s; }
+        .cd-2d::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 50%; height: 100%;
             background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%);
             animation: cd-glare 5s linear infinite;
         }
         .cd-hole {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background-color: var(--ps2-bg);
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 60px; height: 60px; border-radius: 50%; background-color: var(--ps2-bg);
             box-shadow: inset 0 0 10px rgba(0,0,0,0.7);
         }
         
-        /* Track Info & Controls */
         .track-info { font-size: 1.5rem; line-height: 1.75rem; }
         .track-number { color: var(--ps2-yellow); font-weight: bold; font-size: 2.25rem; }
         .track-name { font-size: 1.875rem; min-height: 56px; }
         .time-display { font-size: 1.5rem; }
 
-        /* Progress Bar */
-        .progress-bar-container {
-            width: 100%;
-            height: 20px;
-            background-color: rgba(0,0,0,0.2);
-            border-radius: 10px;
-            padding: 4px;
-            overflow: hidden;
-        }
-        .progress-bar-fill {
-            width: 0%;
-            height: 100%;
-            background-color: var(--ps2-blue);
-            border-radius: 6px;
-            transition: width 0.5s linear;
-        }
+        .progress-bar-container { display: flex; gap: 2px; width: 100%; height: 20px; }
+        .progress-block { flex-grow: 1; background-color: var(--ps2-dark-grey); transition: background-color 0.3s; }
+        .progress-block.active { background-color: var(--ps2-blue); }
 
         .controls svg { width: 32px; height: 32px; fill: var(--ps2-white); }
         .controls .play-icon { fill: var(--ps2-blue); }
         .controls button { background: none; border: none; padding: 8px; opacity: 0.8; transition: opacity 0.2s; cursor: pointer; }
         .controls button:hover { opacity: 1; }
 
-        /* Footer Prompts */
         .footer-prompts { font-size: 1.5rem; }
         .prompt-icon { display: inline-block; width: 24px; height: 24px; border: 2px solid var(--ps2-white); border-radius: 50%; text-align: center; line-height: 1.1; font-weight: bold; margin-right: 8px; }
         .prompt-o { color: #ff4444; border-color: #ff4444; }
+
+        .ps2-logo { font-weight: bold; border: 2px solid var(--ps2-white); padding: 0 8px; }
+        .tracklist-popup {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background-color: rgba(40,40,60,0.95); border: 2px solid var(--ps2-blue);
+            max-height: 80%; width: 80%; max-width: 500px; z-index: 20;
+            backdrop-filter: blur(5px);
+        }
+        .tracklist-item:hover { background-color: var(--ps2-blue); }
+        .volume-slider { -webkit-appearance: none; background: var(--ps2-dark-grey); border-radius: 5px; }
+        .volume-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; background: var(--ps2-white); border-radius: 50%; cursor: pointer; }
 
     </style>
 </head>
@@ -207,9 +124,7 @@
         <div id="selection-screen" class="screen active">
             <div class="text-center">
                 <h1 class="text-5xl text-white mb-12" style="text-shadow: 2px 2px 0 var(--ps2-blue);">Select Disc</h1>
-                <div id="cd-selection-container" class="flex flex-wrap justify-center gap-8">
-                    <!-- CD items will be injected here -->
-                </div>
+                <div id="cd-selection-container" class="flex flex-wrap justify-center gap-8"></div>
             </div>
         </div>
 
@@ -217,34 +132,46 @@
         <div id="player-screen" class="screen">
             <div class="player-container p-4">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                    <!-- Left Side: 2D CD -->
-                    <div class="cd-2d-container mx-auto">
-                        <div id="cd-2d" class="cd-2d">
-                            <div class="cd-hole"></div>
+                    <!-- Left Side: CD and Logos -->
+                    <div class="flex flex-col items-center gap-4">
+                        <div class="cd-2d-container">
+                            <div id="cd-2d" class="cd-2d"><div class="cd-hole"></div></div>
+                        </div>
+                        <div class="flex gap-4 text-sm">
+                            <div class="ps2-logo">PS2 Sound System</div>
+                            <div class="ps2-logo" style="color: var(--ps2-yellow); border-color: var(--ps2-yellow);">Digital Audio</div>
                         </div>
                     </div>
 
                     <!-- Right Side: Info & Controls -->
-                    <div class="track-info text-center md:text-left space-y-2">
-                        <h2 id="track-number" class="track-number">Track 01</h2>
-                        <p id="track-name" class="track-name">Loading...</p>
-                        <div id="progress-bar-container" class="progress-bar-container">
-                            <div id="progress-bar-fill" class="progress-bar-fill"></div>
+                    <div class="flex flex-col justify-between h-full">
+                        <div class="track-info text-center md:text-left space-y-2">
+                            <div id="album-info" class="flex items-center gap-2 mb-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="var(--ps2-white)"><path d="M18 2h-8L4 8v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-6 6h-2V4h2v4zm3 0h-2V4h2v4zm3 0h-2V4h2v4z"/></svg>
+                                <span id="album-title" class="text-lg"></span>
+                            </div>
+                            <h2 id="track-number" class="track-number">Track 01</h2>
+                            <p id="track-name" class="track-name">Loading...</p>
+                            <div id="progress-bar-container" class="progress-bar-container"></div>
+                            <p id="time-display" class="time-display">00:00 / 00:00</p>
+                            
+                            <div class="controls flex items-center justify-center md:justify-start space-x-2">
+                                <button id="prev-btn"><svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg></button>
+                                <button id="play-btn"><svg class="play-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
+                                <button id="pause-btn" class="hidden"><svg class="play-icon" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg></button>
+                                <button id="next-btn"><svg viewBox="0 0 24 24"><path d="M16 6h2v12h-2zm-3.5 6l-8.5 6V6z"/></svg></button>
+                                <button id="stop-btn"><svg viewBox="0 0 24 24"><path d="M6 6h12v12H6z"/></svg></button>
+                            </div>
                         </div>
-                        <p id="time-display" class="time-display">00:00 / 00:00</p>
-                        
-                        <div class="controls flex items-center justify-center md:justify-start space-x-2">
-                            <button id="prev-btn"><svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg></button>
-                            <button id="play-btn"><svg class="play-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
-                            <button id="pause-btn" class="hidden"><svg class="play-icon" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg></button>
-                            <button id="next-btn"><svg viewBox="0 0 24 24"><path d="M16 6h2v12h-2zm-3.5 6l-8.5 6V6z"/></svg></button>
-                            <button id="stop-btn"><svg viewBox="0 0 24 24"><path d="M6 6h12v12H6z"/></svg></button>
+                        <div class="flex items-center justify-center md:justify-start gap-4 mt-4">
+                             <button id="tracklist-btn" class="text-lg border-2 border-transparent hover:border-white px-2">Track List</button>
+                             <input id="volume-slider" type="range" min="0" max="100" value="100" class="volume-slider w-24">
                         </div>
                     </div>
                 </div>
 
                 <!-- Footer -->
-                <div id="back-btn" class="footer-prompts flex justify-center md:justify-end space-x-8 mt-12 cursor-pointer">
+                <div id="back-btn" class="footer-prompts flex justify-center md:justify-end space-x-8 mt-4 cursor-pointer">
                     <div><span class="prompt-o">O</span> Back</div>
                 </div>
             </div>
@@ -252,8 +179,15 @@
     </div>
 
     <!-- Hidden YouTube Player -->
-    <div id="youtube-player" class="absolute -left-full"></div>
+    <div id="youtube-player" class="absolute -left-full top-0"></div>
     
+    <!-- Tracklist Popup -->
+    <div id="tracklist-popup" class="tracklist-popup p-4 hidden">
+        <h3 id="tracklist-title" class="text-2xl text-center mb-4 text-yellow-300"></h3>
+        <ul id="tracklist-ul" class="overflow-y-auto max-h-64 text-lg"></ul>
+        <button id="close-tracklist-btn" class="absolute top-2 right-2 text-2xl">X</button>
+    </div>
+
     <script>
         // --- DATA ---
         const albums = [
@@ -279,7 +213,7 @@
             {
                 name: "Rock Classics",
                 coverUrl: "https://i.scdn.co/image/ab67616d0000b273b5c0635115c58a5257685565",
-                bgColor: "rgba(150, 20, 20, 0.1)", // Example color for the other album
+                bgColor: "rgba(150, 20, 20, 0.1)",
                 tracks: [
                     { videoId: '1w7OgIMMRc4', title: "Bohemian Rhapsody" },
                     { videoId: 'v2AC41dglnM', title: "Hotel California" },
@@ -299,18 +233,23 @@
         const playerScreen = document.getElementById('player-screen');
         const cdSelectionContainer = document.getElementById('cd-selection-container');
         const cd2d = document.getElementById('cd-2d');
-        // Player Controls
         const playBtn = document.getElementById('play-btn');
         const pauseBtn = document.getElementById('pause-btn');
         const stopBtn = document.getElementById('stop-btn');
         const nextBtn = document.getElementById('next-btn');
         const prevBtn = document.getElementById('prev-btn');
         const backBtn = document.getElementById('back-btn');
-        // Display
+        const albumTitleEl = document.getElementById('album-title');
         const trackNumberEl = document.getElementById('track-number');
         const trackNameEl = document.getElementById('track-name');
         const timeDisplayEl = document.getElementById('time-display');
-        const progressBarFill = document.getElementById('progress-bar-fill');
+        const progressBarContainer = document.getElementById('progress-bar-container');
+        const volumeSlider = document.getElementById('volume-slider');
+        const tracklistBtn = document.getElementById('tracklist-btn');
+        const tracklistPopup = document.getElementById('tracklist-popup');
+        const tracklistTitle = document.getElementById('tracklist-title');
+        const tracklistUl = document.getElementById('tracklist-ul');
+        const closeTracklistBtn = document.getElementById('close-tracklist-btn');
 
         // --- YOUTUBE API ---
         function loadYouTubeAPI() {
@@ -323,31 +262,18 @@
         }
 
         function onYouTubeIframeAPIReady() {
-            // This function is now called when the dynamically loaded script is ready.
-            // We create the player here, triggered by the first click.
             ytPlayer = new YT.Player('youtube-player', {
                 height: '1', width: '1',
                 playerVars: { 'controls': 0, 'fs': 0, 'iv_load_policy': 3, 'modestbranding': 1 },
-                events: {
-                    'onReady': onPlayerReady,
-                    'onStateChange': onPlayerStateChange
-                }
+                events: { 'onReady': onPlayerReady, 'onStateChange': onPlayerStateChange }
             });
         }
         
         function onPlayerStateChange(event) {
             const isPlaying = event.data === YT.PlayerState.PLAYING;
             updateUIIsPlaying(isPlaying);
-            
-            if (isPlaying) {
-                startProgressUpdater();
-            } else {
-                stopProgressUpdater();
-            }
-            
-            if (event.data === YT.PlayerState.ENDED) {
-                playNextTrack();
-            }
+            if (isPlaying) startProgressUpdater(); else stopProgressUpdater();
+            if (event.data === YT.PlayerState.ENDED) playNextTrack();
         }
 
         // --- NAVIGATION & SETUP ---
@@ -365,28 +291,23 @@
         function selectAlbum(index) {
             currentAlbumIndex = index;
             currentTrackIndex = 0;
-            
             const selectedAlbum = albums[index];
             playerScreen.style.backgroundColor = selectedAlbum.bgColor || 'var(--ps2-bg)';
 
-            // The "Magic Click" - load the API and let the callbacks handle the rest.
-            if (!isApiLoaded) {
-                loadYouTubeAPI();
-            } else if (!ytPlayer) {
-                // If API is loaded but player not created yet (rare case)
-                onYouTubeIframeAPIReady();
+            if (!isApiLoaded) loadYouTubeAPI();
+            
+            if (!ytPlayer) {
+                // The API will call onYouTubeIframeAPIReady which will create the player
+                // and onPlayerReady will handle the first play.
             } else {
-                // If everything is ready, just load and play.
                 loadTrack(currentTrackIndex, true);
             }
-            
             transitionToScreen(playerScreen);
         }
 
         function onPlayerReady(event) {
             isPlayerReady = true;
-            // This is the key. The player is ready because of the user's click.
-            // Now we can load and play the track the user selected.
+            ytPlayer.setVolume(volumeSlider.value);
             loadTrack(currentTrackIndex, true);
         }
         
@@ -408,38 +329,32 @@
             }, 500);
         }
 
-        // --- PLAYER LOGIC (DEFINITIVE FIX) ---
+        // --- PLAYER LOGIC ---
         function loadTrack(index, autoplay = false) {
             if (!isPlayerReady) return;
             const album = albums[currentAlbumIndex];
             if (index < 0 || index >= album.tracks.length) return;
             const track = album.tracks[index];
             currentTrackIndex = index;
-            updateTrackInfo(album.coverUrl, track.title, index + 1);
-            
-            if (autoplay) {
-                ytPlayer.loadVideoById(track.videoId);
-            } else {
-                ytPlayer.cueVideoById(track.videoId);
-            }
+            updateTrackInfo(album, track, index + 1);
+            if (autoplay) ytPlayer.loadVideoById(track.videoId); else ytPlayer.cueVideoById(track.videoId);
         }
 
         function playMusic() { if (ytPlayer) ytPlayer.playVideo(); }
         function pauseMusic() { if (ytPlayer) ytPlayer.pauseVideo(); }
         function stopMusic() {
-            if (ytPlayer && typeof ytPlayer.stopVideo === 'function') {
-                ytPlayer.stopVideo();
-            }
+            if (ytPlayer && typeof ytPlayer.stopVideo === 'function') ytPlayer.stopVideo();
             updateUIIsPlaying(false);
         }
         function playNextTrack() { loadTrack((currentTrackIndex + 1) % albums[currentAlbumIndex].tracks.length, true); }
         function playPrevTrack() { loadTrack((currentTrackIndex - 1 + albums[currentAlbumIndex].tracks.length) % albums[currentAlbumIndex].tracks.length, true); }
 
         // --- UI UPDATES ---
-        function updateTrackInfo(coverUrl, trackName, trackNumber) {
+        function updateTrackInfo(album, track, trackNumber) {
+            albumTitleEl.textContent = album.name;
             trackNumberEl.textContent = `Track ${String(trackNumber).padStart(2, '0')}`;
-            trackNameEl.textContent = trackName;
-            cd2d.style.backgroundImage = `url('${coverUrl}')`;
+            trackNameEl.textContent = track.title;
+            cd2d.style.backgroundImage = `url('${album.coverUrl}')`;
         }
         function updateUIIsPlaying(playing) {
             cd2d.classList.toggle('playing', playing);
@@ -452,13 +367,24 @@
             const secs = seconds % 60;
             return `${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
         }
+        function updateProgressBar(currentTime, duration) {
+            const percentage = duration > 0 ? (currentTime / duration) * 100 : 0;
+            const blockCount = 40; // Number of blocks in the progress bar
+            const activeBlocks = Math.floor(blockCount * (percentage / 100));
+            
+            progressBarContainer.innerHTML = '';
+            for (let i = 0; i < blockCount; i++) {
+                const block = document.createElement('div');
+                block.className = 'progress-block';
+                if (i < activeBlocks) {
+                    block.classList.add('active');
+                }
+                progressBarContainer.appendChild(block);
+            }
+        }
         function updateTimeDisplay(currentTime, duration) {
             timeDisplayEl.textContent = `${formatTime(currentTime)} / ${formatTime(duration)}`;
-            if (duration > 0) {
-                progressBarFill.style.width = `${(currentTime / duration) * 100}%`;
-            } else {
-                progressBarFill.style.width = '0%';
-            }
+            updateProgressBar(currentTime, duration);
         }
 
         // --- PROGRESS UPDATER ---
@@ -474,6 +400,28 @@
         }
         function stopProgressUpdater() { clearInterval(progressInterval); }
 
+        // --- TRACKLIST ---
+        function showTracklist() {
+            const album = albums[currentAlbumIndex];
+            tracklistTitle.textContent = album.name;
+            tracklistUl.innerHTML = '';
+            album.tracks.forEach((track, index) => {
+                const li = document.createElement('li');
+                li.className = 'p-2 cursor-pointer tracklist-item';
+                li.textContent = `${String(index + 1).padStart(2, '0')}. ${track.title}`;
+                if (index === currentTrackIndex) {
+                    li.style.color = 'var(--ps2-yellow)';
+                }
+                li.onclick = () => {
+                    loadTrack(index, true);
+                    hideTracklist();
+                };
+                tracklistUl.appendChild(li);
+            });
+            tracklistPopup.classList.remove('hidden');
+        }
+        function hideTracklist() { tracklistPopup.classList.add('hidden'); }
+
         // --- INITIALIZATION ---
         window.onload = () => {
             renderSelectionScreen();
@@ -483,6 +431,11 @@
             nextBtn.addEventListener('click', playNextTrack);
             prevBtn.addEventListener('click', playPrevTrack);
             backBtn.addEventListener('click', returnToSelection);
+            volumeSlider.addEventListener('input', (e) => {
+                if (ytPlayer) ytPlayer.setVolume(e.target.value);
+            });
+            tracklistBtn.addEventListener('click', showTracklist);
+            closeTracklistBtn.addEventListener('click', hideTracklist);
         };
     </script>
 </body>
