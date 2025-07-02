@@ -64,9 +64,15 @@
         .cd-2d-container { width: 280px; height: 280px; } /* Increased size */
         .cd-2d {
             width: 100%; height: 100%; border-radius: 50%; position: relative; background-size: cover; background-position: center;
-            box-shadow: 0 0 35px rgba(0,0,0,0.6); animation: spin-2d 15s linear infinite; overflow: hidden;
+            box-shadow: 0 0 35px rgba(0,0,0,0.6); 
+            animation: spin-2d 15s linear infinite;
+            animation-play-state: paused; /* Start paused */
+            transition: transform 0.5s ease-out; /* Smooth transitions */
+            overflow: hidden;
         }
-        .cd-2d.playing { animation-duration: 5s; }
+        .cd-2d.playing {
+            animation-play-state: running; /* Run animation when playing */
+        }
         .cd-2d::after {
             content: ''; position: absolute; top: 0; left: 0; width: 50%; height: 100%;
             background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%);
@@ -84,7 +90,7 @@
         .time-display { font-size: 1.5rem; }
 
         .progress-bar-container { display: flex; gap: 2px; width: 100%; height: 20px; cursor: pointer; }
-        .progress-block { flex-grow: 1; background-color: var(--ps2-dark-grey); transition: background-color 0.3s; }
+        .progress-block { flex-grow: 1; background-color: var(--ps2-dark-grey); transition: background-color 0.3s ease-in-out; }
         .progress-block.active { background-color: var(--ps2-blue); }
 
         .controls svg { width: 32px; height: 32px; fill: var(--ps2-white); }
@@ -150,12 +156,14 @@
                             <div id="progress-bar-container" class="progress-bar-container"></div>
                             <p id="time-display" class="time-display">00:00 / 00:00</p>
                             
-                            <div class="controls flex items-center justify-center md:justify-start space-x-2">
-                                <button id="prev-btn"><svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg></button>
-                                <button id="play-btn"><svg class="play-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
-                                <button id="pause-btn" class="hidden"><svg class="play-icon" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg></button>
-                                <button id="next-btn"><svg viewBox="0 0 24 24"><path d="M16 6h2v12h-2zm-3.5 6l-8.5 6V6z"/></svg></button>
-                                <button id="stop-btn"><svg viewBox="0 0 24 24"><path d="M6 6h12v12H6z"/></svg></button>
+                            <div class="controls flex items-center justify-center md:justify-start space-x-1">
+                                <button id="rewind-btn" title="Rewind 10s"><svg viewBox="0 0 24 24"><path d="M11 18V6l-8.5 6 8.5 6zm-2-6l6-4.5v9l-6-4.5z"/></svg></button>
+                                <button id="prev-btn" title="Previous Track"><svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg></button>
+                                <button id="play-btn" title="Play"><svg class="play-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
+                                <button id="pause-btn" title="Pause" class="hidden"><svg class="play-icon" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg></button>
+                                <button id="stop-btn" title="Stop"><svg viewBox="0 0 24 24"><path d="M6 6h12v12H6z"/></svg></button>
+                                <button id="next-btn" title="Next Track"><svg viewBox="0 0 24 24"><path d="M16 6h2v12h-2zm-3.5 6l-8.5 6V6z"/></svg></button>
+                                <button id="forward-btn" title="Forward 10s"><svg viewBox="0 0 24 24"><path d="M13 6v12l8.5-6-8.5-6zm-2 6l-6 4.5v-9l6 4.5z"/></svg></button>
                             </div>
                         </div>
                         <div class="flex items-center justify-center md:justify-start gap-4 mt-4">
@@ -218,6 +226,8 @@
             nextBtn: document.getElementById('next-btn'),
             prevBtn: document.getElementById('prev-btn'),
             backBtn: document.getElementById('back-btn'),
+            rewindBtn: document.getElementById('rewind-btn'),
+            forwardBtn: document.getElementById('forward-btn'),
             albumTitle: document.getElementById('album-title'),
             trackNumber: document.getElementById('track-number'),
             trackName: document.getElementById('track-name'),
@@ -329,6 +339,12 @@
         }
         function playNextTrack() { loadTrack((currentTrackIndex + 1) % albums[currentAlbumIndex].tracks.length, true); }
         function playPrevTrack() { loadTrack((currentTrackIndex - 1 + albums[currentAlbumIndex].tracks.length) % albums[currentAlbumIndex].tracks.length, true); }
+        
+        function seek(seconds) {
+            if (!ytPlayer || typeof ytPlayer.getCurrentTime !== 'function') return;
+            const newTime = ytPlayer.getCurrentTime() + seconds;
+            ytPlayer.seekTo(newTime, true);
+        }
 
         function updateTrackInfo(album, track, trackNumber) {
             dom.albumTitle.textContent = album.name;
@@ -436,6 +452,8 @@
             dom.stopBtn.addEventListener('click', stopMusic);
             dom.nextBtn.addEventListener('click', playNextTrack);
             dom.prevBtn.addEventListener('click', playPrevTrack);
+            dom.rewindBtn.addEventListener('click', () => seek(-10));
+            dom.forwardBtn.addEventListener('click', () => seek(10));
             dom.backBtn.addEventListener('click', returnToSelection);
             dom.volumeSlider.addEventListener('input', (e) => {
                 if (ytPlayer) ytPlayer.setVolume(e.target.value);
