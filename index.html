@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PS2 Music Player Experience</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
@@ -25,35 +26,26 @@
         @keyframes jitter { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(0.5px, -0.5px); } 50% { transform: translate(-0.5px, 0.5px); } 75% { transform: translate(0.5px, 0.5px); } }
         @keyframes background-pan { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-        body {
-            background-color: #111;
-            font-family: 'VT323', monospace;
-            color: var(--ps2-white);
-            overflow: hidden;
-        }
+        body { background-color: #111; font-family: 'VT323', monospace; color: var(--ps2-white); overflow: hidden; }
 
         .crt-filter {
-            position: relative;
-            width: 100vw;
-            height: 100vh;
-            filter: blur(0.5px) contrast(1.1);
-            animation: jitter 0.1s infinite;
+            position: relative; width: 100vw; height: 100vh;
+            filter: blur(0.5px) contrast(1.1); animation: jitter 0.1s infinite;
         }
-        .crt-filter::before { /* Scanlines overlay */
+        .crt-filter::before {
             content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
             background-size: 100% 3px, 3px 100%; z-index: 2; pointer-events: none; animation: scanlines 0.2s infinite linear;
         }
-        .crt-filter::after { /* Vignette overlay */
+        .crt-filter::after {
             content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
             box-shadow: inset 0 0 100px rgba(0,0,0,0.5); z-index: 2; pointer-events: none;
         }
 
         .screen {
-            background-color: var(--ps2-bg);
-            position: absolute; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
-            transition: opacity 0.5s, visibility 0.5s, background-color 0.5s; opacity: 0; visibility: hidden;
-            text-shadow: 1px 1px 1px rgba(255,0,0,0.3), -1px -1px 1px rgba(0,0,255,0.3);
+            background-color: var(--ps2-bg); position: absolute; width: 100%; height: 100%; display: flex;
+            align-items: center; justify-content: center; transition: opacity 0.5s, visibility 0.5s, background-color 0.5s;
+            opacity: 0; visibility: hidden; text-shadow: 1px 1px 1px rgba(255,0,0,0.3), -1px -1px 1px rgba(0,0,255,0.3);
         }
         .screen.active { opacity: 1; visibility: visible; animation: fadeIn 0.5s ease-out; }
         .screen.hiding { animation: fadeOut 0.5s ease-in; }
@@ -69,7 +61,7 @@
         #selection-screen .cd-selection-item:hover .cd-art { transform: scale(1.1); }
 
         .player-container { width: 100%; max-width: 900px; margin: auto; }
-        .cd-2d-container { width: 250px; height: 250px; } /* Increased size */
+        .cd-2d-container { width: 280px; height: 280px; } /* Increased size */
         .cd-2d {
             width: 100%; height: 100%; border-radius: 50%; position: relative; background-size: cover; background-position: center;
             box-shadow: 0 0 35px rgba(0,0,0,0.6); animation: spin-2d 15s linear infinite; overflow: hidden;
@@ -82,7 +74,7 @@
         }
         .cd-hole {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 60px; height: 60px; border-radius: 50%; background-color: var(--ps2-bg);
+            width: 70px; height: 70px; border-radius: 50%; background-color: var(--ps2-bg);
             box-shadow: inset 0 0 10px rgba(0,0,0,0.7);
         }
         
@@ -91,7 +83,7 @@
         .track-name { font-size: 1.875rem; min-height: 56px; }
         .time-display { font-size: 1.5rem; }
 
-        .progress-bar-container { display: flex; gap: 2px; width: 100%; height: 20px; }
+        .progress-bar-container { display: flex; gap: 2px; width: 100%; height: 20px; cursor: pointer; }
         .progress-block { flex-grow: 1; background-color: var(--ps2-dark-grey); transition: background-color 0.3s; }
         .progress-block.active { background-color: var(--ps2-blue); }
 
@@ -101,10 +93,8 @@
         .controls button:hover { opacity: 1; }
 
         .footer-prompts { font-size: 1.5rem; }
-        .prompt-icon { display: inline-block; width: 24px; height: 24px; border: 2px solid var(--ps2-white); border-radius: 50%; text-align: center; line-height: 1.1; font-weight: bold; margin-right: 8px; }
-        .prompt-o { color: #ff4444; border-color: #ff4444; }
-
         .ps2-logo { font-weight: bold; border: 2px solid var(--ps2-white); padding: 0 8px; }
+        
         .tracklist-popup {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             background-color: rgba(40,40,60,0.95); border: 2px solid var(--ps2-blue);
@@ -115,6 +105,7 @@
         .volume-slider { -webkit-appearance: none; background: var(--ps2-dark-grey); border-radius: 5px; }
         .volume-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; background: var(--ps2-white); border-radius: 50%; cursor: pointer; }
 
+        #visualizer { width: 100%; height: 60px; }
     </style>
 </head>
 <body>
@@ -127,23 +118,27 @@
                 <div id="cd-selection-container" class="flex flex-wrap justify-center gap-8"></div>
             </div>
         </div>
+        
+        <!-- Screen 2: Loading Screen -->
+        <div id="loading-screen" class="screen">
+            <h1 class="text-3xl">Reading Disc...</h1>
+        </div>
 
-        <!-- Screen 2: Music Player -->
+        <!-- Screen 3: Music Player -->
         <div id="player-screen" class="screen">
             <div class="player-container p-4">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                    <!-- Left Side: CD and Logos -->
                     <div class="flex flex-col items-center gap-4">
                         <div class="cd-2d-container">
                             <div id="cd-2d" class="cd-2d"><div class="cd-hole"></div></div>
                         </div>
+                        <canvas id="visualizer"></canvas>
                         <div class="flex gap-4 text-sm">
                             <div class="ps2-logo">PS2 Sound System</div>
                             <div class="ps2-logo" style="color: var(--ps2-yellow); border-color: var(--ps2-yellow);">Digital Audio</div>
                         </div>
                     </div>
 
-                    <!-- Right Side: Info & Controls -->
                     <div class="flex flex-col justify-between h-full">
                         <div class="track-info text-center md:text-left space-y-2">
                             <div id="album-info" class="flex items-center gap-2 mb-2">
@@ -169,19 +164,14 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Footer -->
                 <div id="back-btn" class="footer-prompts flex justify-center md:justify-end space-x-8 mt-4 cursor-pointer">
-                    <div><span class="prompt-o">O</span> Back</div>
+                    <div><span class="prompt-icon" style="color: #ff4444; border-color: #ff4444;">O</span> Back</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Hidden YouTube Player -->
     <div id="youtube-player" class="absolute -left-full top-0"></div>
-    
-    <!-- Tracklist Popup -->
     <div id="tracklist-popup" class="tracklist-popup p-4 hidden">
         <h3 id="tracklist-title" class="text-2xl text-center mb-4 text-yellow-300"></h3>
         <ul id="tracklist-ul" class="overflow-y-auto max-h-64 text-lg"></ul>
@@ -189,25 +179,18 @@
     </div>
 
     <script>
-        // --- DATA ---
         const albums = [
             {
                 name: "Sucesso FM",
                 coverUrl: "https://i1.sndcdn.com/artworks-zMJy5oUhjfM05LnK-AzuGwA-t500x500.jpg",
                 bgColor: "rgba(0, 80, 150, 0.2)",
                 tracks: [
-                    { videoId: 'tkl_smLRtcE', title: "Sucesso FM" },
-                    { videoId: 'gTsZ-vQLq74', title: "Rumo a Vitória" },
-                    { videoId: 'fGhkeEmMDSU', title: "Goddamn" },
-                    { videoId: 'pKyoxG2ZDh8', title: "I Walk" },
-                    { videoId: '-1WfKz06Hgc', title: "Waiting to Fly" },
-                    { videoId: 'llJZ4H4zQ2k', title: "Sonhar" },
-                    { videoId: 'TQ2OtyCtOMc', title: "I'm in Love" },
-                    { videoId: 'u3M_KURTWKY', title: "For My Family" },
-                    { videoId: 'm8SzrWpCjKU', title: "Going Home" },
-                    { videoId: 'rfIV2uGZ2kM', title: "The Lord and Me" },
-                    { videoId: 'ozu12D-DdJk', title: "Anjos da Guarda" },
-                    { videoId: 'HjA6fwTInT0', title: "We Gold" },
+                    { videoId: 'tkl_smLRtcE', title: "Sucesso FM" }, { videoId: 'gTsZ-vQLq74', title: "Rumo a Vitória" },
+                    { videoId: 'fGhkeEmMDSU', title: "Goddamn" }, { videoId: 'pKyoxG2ZDh8', title: "I Walk" },
+                    { videoId: '-1WfKz06Hgc', title: "Waiting to Fly" }, { videoId: 'llJZ4H4zQ2k', title: "Sonhar" },
+                    { videoId: 'TQ2OtyCtOMc', title: "I'm in Love" }, { videoId: 'u3M_KURTWKY', title: "For my Family" },
+                    { videoId: 'm8SzrWpCjKU', title: "Going Home" }, { videoId: 'rfIV2uGZ2kM', title: "The Lord and Me" },
+                    { videoId: 'ozu12D-DdJk', title: "Anjos da Guarda" }, { videoId: 'HjA6fwTInT0', title: "We Gold" },
                 ]
             },
             {
@@ -215,50 +198,46 @@
                 coverUrl: "https://i.scdn.co/image/ab67616d0000b273b5c0635115c58a5257685565",
                 bgColor: "rgba(150, 20, 20, 0.1)",
                 tracks: [
-                    { videoId: '1w7OgIMMRc4', title: "Bohemian Rhapsody" },
-                    { videoId: 'v2AC41dglnM', title: "Hotel California" },
+                    { videoId: '1w7OgIMMRc4', title: "Bohemian Rhapsody" }, { videoId: 'v2AC41dglnM', title: "Hotel California" },
                     { videoId: 'fJ9rUzIMcZQ', title: "Stairway to Heaven" },
                 ]
             }
         ];
-        let currentAlbumIndex = 0;
-        let currentTrackIndex = 0;
-        let ytPlayer;
-        let progressInterval;
-        let isApiLoaded = false;
-        let isPlayerReady = false;
+        let currentAlbumIndex = 0, currentTrackIndex = 0, ytPlayer, progressInterval;
+        let isApiLoaded = false, isPlayerReady = false, hasPlayedStartup = false;
 
-        // --- DOM ELEMENTS ---
-        const selectionScreen = document.getElementById('selection-screen');
-        const playerScreen = document.getElementById('player-screen');
-        const cdSelectionContainer = document.getElementById('cd-selection-container');
-        const cd2d = document.getElementById('cd-2d');
-        const playBtn = document.getElementById('play-btn');
-        const pauseBtn = document.getElementById('pause-btn');
-        const stopBtn = document.getElementById('stop-btn');
-        const nextBtn = document.getElementById('next-btn');
-        const prevBtn = document.getElementById('prev-btn');
-        const backBtn = document.getElementById('back-btn');
-        const albumTitleEl = document.getElementById('album-title');
-        const trackNumberEl = document.getElementById('track-number');
-        const trackNameEl = document.getElementById('track-name');
-        const timeDisplayEl = document.getElementById('time-display');
-        const progressBarContainer = document.getElementById('progress-bar-container');
-        const volumeSlider = document.getElementById('volume-slider');
-        const tracklistBtn = document.getElementById('tracklist-btn');
-        const tracklistPopup = document.getElementById('tracklist-popup');
-        const tracklistTitle = document.getElementById('tracklist-title');
-        const tracklistUl = document.getElementById('tracklist-ul');
-        const closeTracklistBtn = document.getElementById('close-tracklist-btn');
+        const dom = {
+            selectionScreen: document.getElementById('selection-screen'),
+            loadingScreen: document.getElementById('loading-screen'),
+            playerScreen: document.getElementById('player-screen'),
+            cdSelectionContainer: document.getElementById('cd-selection-container'),
+            cd2d: document.getElementById('cd-2d'),
+            playBtn: document.getElementById('play-btn'),
+            pauseBtn: document.getElementById('pause-btn'),
+            stopBtn: document.getElementById('stop-btn'),
+            nextBtn: document.getElementById('next-btn'),
+            prevBtn: document.getElementById('prev-btn'),
+            backBtn: document.getElementById('back-btn'),
+            albumTitle: document.getElementById('album-title'),
+            trackNumber: document.getElementById('track-number'),
+            trackName: document.getElementById('track-name'),
+            timeDisplay: document.getElementById('time-display'),
+            progressBarContainer: document.getElementById('progress-bar-container'),
+            volumeSlider: document.getElementById('volume-slider'),
+            tracklistBtn: document.getElementById('tracklist-btn'),
+            tracklistPopup: document.getElementById('tracklist-popup'),
+            tracklistTitle: document.getElementById('tracklist-title'),
+            tracklistUl: document.getElementById('tracklist-ul'),
+            closeTracklistBtn: document.getElementById('close-tracklist-btn'),
+            visualizer: document.getElementById('visualizer'),
+        };
 
-        // --- YOUTUBE API ---
         function loadYouTubeAPI() {
             if (isApiLoaded) return;
             isApiLoaded = true;
             const tag = document.createElement('script');
             tag.src = "https://www.youtube.com/iframe_api";
-            const firstScriptTag = document.getElementsByTagName('script')[0];
-            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+            document.head.appendChild(tag);
         }
 
         function onYouTubeIframeAPIReady() {
@@ -276,15 +255,14 @@
             if (event.data === YT.PlayerState.ENDED) playNextTrack();
         }
 
-        // --- NAVIGATION & SETUP ---
         function renderSelectionScreen() {
-            cdSelectionContainer.innerHTML = '';
+            dom.cdSelectionContainer.innerHTML = '';
             albums.forEach((album, index) => {
                 const item = document.createElement('div');
                 item.className = 'cd-selection-item';
                 item.innerHTML = `<div class="cd-art" style="background-image: url('${album.coverUrl}')"></div>`;
                 item.onclick = () => selectAlbum(index);
-                cdSelectionContainer.appendChild(item);
+                dom.cdSelectionContainer.appendChild(item);
             });
         }
 
@@ -292,29 +270,33 @@
             currentAlbumIndex = index;
             currentTrackIndex = 0;
             const selectedAlbum = albums[index];
-            playerScreen.style.backgroundColor = selectedAlbum.bgColor || 'var(--ps2-bg)';
+            dom.playerScreen.style.backgroundColor = selectedAlbum.bgColor || 'var(--ps2-bg)';
 
-            if (!isApiLoaded) loadYouTubeAPI();
+            transitionToScreen(dom.loadingScreen);
             
-            if (!ytPlayer) {
-                // The API will call onYouTubeIframeAPIReady which will create the player
-                // and onPlayerReady will handle the first play.
-            } else {
-                loadTrack(currentTrackIndex, true);
+            if (!hasPlayedStartup) {
+                playStartupSound();
+                hasPlayedStartup = true;
             }
-            transitionToScreen(playerScreen);
+
+            setTimeout(() => {
+                if (!isApiLoaded) loadYouTubeAPI();
+                else if (!ytPlayer) onYouTubeIframeAPIReady();
+                else loadTrack(currentTrackIndex, true);
+                transitionToScreen(dom.playerScreen);
+            }, 2500); // Simulate loading time
         }
 
         function onPlayerReady(event) {
             isPlayerReady = true;
-            ytPlayer.setVolume(volumeSlider.value);
+            ytPlayer.setVolume(dom.volumeSlider.value);
             loadTrack(currentTrackIndex, true);
         }
         
         function returnToSelection() {
             stopMusic();
-            playerScreen.style.backgroundColor = 'var(--ps2-bg)';
-            transitionToScreen(selectionScreen);
+            dom.playerScreen.style.backgroundColor = 'var(--ps2-bg)';
+            transitionToScreen(dom.selectionScreen);
         }
 
         function transitionToScreen(targetScreen) {
@@ -329,7 +311,6 @@
             }, 500);
         }
 
-        // --- PLAYER LOGIC ---
         function loadTrack(index, autoplay = false) {
             if (!isPlayerReady) return;
             const album = albums[currentAlbumIndex];
@@ -349,17 +330,16 @@
         function playNextTrack() { loadTrack((currentTrackIndex + 1) % albums[currentAlbumIndex].tracks.length, true); }
         function playPrevTrack() { loadTrack((currentTrackIndex - 1 + albums[currentAlbumIndex].tracks.length) % albums[currentAlbumIndex].tracks.length, true); }
 
-        // --- UI UPDATES ---
         function updateTrackInfo(album, track, trackNumber) {
-            albumTitleEl.textContent = album.name;
-            trackNumberEl.textContent = `Track ${String(trackNumber).padStart(2, '0')}`;
-            trackNameEl.textContent = track.title;
-            cd2d.style.backgroundImage = `url('${album.coverUrl}')`;
+            dom.albumTitle.textContent = album.name;
+            dom.trackNumber.textContent = `Track ${String(trackNumber).padStart(2, '0')}`;
+            dom.trackName.textContent = track.title;
+            dom.cd2d.style.backgroundImage = `url('${album.coverUrl}')`;
         }
         function updateUIIsPlaying(playing) {
-            cd2d.classList.toggle('playing', playing);
-            playBtn.classList.toggle('hidden', playing);
-            pauseBtn.classList.toggle('hidden', !playing);
+            dom.cd2d.classList.toggle('playing', playing);
+            dom.playBtn.classList.toggle('hidden', playing);
+            dom.pauseBtn.classList.toggle('hidden', !playing);
         }
         function formatTime(seconds) {
             seconds = Math.floor(seconds) || 0;
@@ -369,73 +349,99 @@
         }
         function updateProgressBar(currentTime, duration) {
             const percentage = duration > 0 ? (currentTime / duration) * 100 : 0;
-            const blockCount = 40; // Number of blocks in the progress bar
+            const blockCount = 40;
             const activeBlocks = Math.floor(blockCount * (percentage / 100));
             
-            progressBarContainer.innerHTML = '';
+            dom.progressBarContainer.innerHTML = '';
             for (let i = 0; i < blockCount; i++) {
                 const block = document.createElement('div');
                 block.className = 'progress-block';
-                if (i < activeBlocks) {
-                    block.classList.add('active');
-                }
-                progressBarContainer.appendChild(block);
+                if (i < activeBlocks) block.classList.add('active');
+                block.onclick = (e) => {
+                    e.stopPropagation();
+                    const newTime = (i / blockCount) * duration;
+                    ytPlayer.seekTo(newTime, true);
+                };
+                dom.progressBarContainer.appendChild(block);
             }
         }
         function updateTimeDisplay(currentTime, duration) {
-            timeDisplayEl.textContent = `${formatTime(currentTime)} / ${formatTime(duration)}`;
+            dom.timeDisplay.textContent = `${formatTime(currentTime)} / ${formatTime(duration)}`;
             updateProgressBar(currentTime, duration);
         }
 
-        // --- PROGRESS UPDATER ---
+        let visualizerId;
+        function drawVisualizer() {
+            const ctx = dom.visualizer.getContext('2d');
+            const width = dom.visualizer.width;
+            const height = dom.visualizer.height;
+            ctx.clearRect(0, 0, width, height);
+            const barCount = 32;
+            const barWidth = width / barCount;
+            const isPlaying = ytPlayer && ytPlayer.getPlayerState() === YT.PlayerState.PLAYING;
+
+            for (let i = 0; i < barCount; i++) {
+                const barHeight = isPlaying ? Math.random() * height : 2;
+                ctx.fillStyle = 'rgba(0, 150, 255, 0.7)';
+                ctx.fillRect(i * barWidth, height - barHeight, barWidth - 2, barHeight);
+            }
+            visualizerId = requestAnimationFrame(drawVisualizer);
+        }
+
         function startProgressUpdater() {
             stopProgressUpdater();
             progressInterval = setInterval(() => {
                 if (ytPlayer && typeof ytPlayer.getCurrentTime === 'function') {
-                    const currentTime = ytPlayer.getCurrentTime();
-                    const duration = ytPlayer.getDuration();
-                    updateTimeDisplay(currentTime, duration);
+                    updateTimeDisplay(ytPlayer.getCurrentTime(), ytPlayer.getDuration());
                 }
             }, 500);
+            drawVisualizer();
         }
-        function stopProgressUpdater() { clearInterval(progressInterval); }
+        function stopProgressUpdater() {
+            clearInterval(progressInterval);
+            cancelAnimationFrame(visualizerId);
+            const ctx = dom.visualizer.getContext('2d');
+            ctx.clearRect(0, 0, dom.visualizer.width, dom.visualizer.height);
+        }
 
-        // --- TRACKLIST ---
         function showTracklist() {
             const album = albums[currentAlbumIndex];
-            tracklistTitle.textContent = album.name;
-            tracklistUl.innerHTML = '';
+            dom.tracklistTitle.textContent = album.name;
+            dom.tracklistUl.innerHTML = '';
             album.tracks.forEach((track, index) => {
                 const li = document.createElement('li');
                 li.className = 'p-2 cursor-pointer tracklist-item';
                 li.textContent = `${String(index + 1).padStart(2, '0')}. ${track.title}`;
-                if (index === currentTrackIndex) {
-                    li.style.color = 'var(--ps2-yellow)';
-                }
-                li.onclick = () => {
-                    loadTrack(index, true);
-                    hideTracklist();
-                };
-                tracklistUl.appendChild(li);
+                if (index === currentTrackIndex) li.style.color = 'var(--ps2-yellow)';
+                li.onclick = () => { loadTrack(index, true); hideTracklist(); };
+                dom.tracklistUl.appendChild(li);
             });
-            tracklistPopup.classList.remove('hidden');
+            dom.tracklistPopup.classList.remove('hidden');
         }
-        function hideTracklist() { tracklistPopup.classList.add('hidden'); }
-
-        // --- INITIALIZATION ---
+        function hideTracklist() { dom.tracklistPopup.classList.add('hidden'); }
+        
+        function playStartupSound() {
+            const synth = new Tone.PolySynth(Tone.Synth, {
+                oscillator: { type: "sine" },
+                envelope: { attack: 0.01, decay: 0.5, sustain: 0.2, release: 2 },
+            }).toDestination();
+            synth.triggerAttackRelease(["C2", "G2", "C3"], "2s", Tone.now());
+            synth.triggerAttackRelease(["E3", "G3", "C4"], "2s", Tone.now() + 0.1);
+        }
+        
         window.onload = () => {
             renderSelectionScreen();
-            playBtn.addEventListener('click', playMusic);
-            pauseBtn.addEventListener('click', pauseMusic);
-            stopBtn.addEventListener('click', stopMusic);
-            nextBtn.addEventListener('click', playNextTrack);
-            prevBtn.addEventListener('click', playPrevTrack);
-            backBtn.addEventListener('click', returnToSelection);
-            volumeSlider.addEventListener('input', (e) => {
+            dom.playBtn.addEventListener('click', playMusic);
+            dom.pauseBtn.addEventListener('click', pauseMusic);
+            dom.stopBtn.addEventListener('click', stopMusic);
+            dom.nextBtn.addEventListener('click', playNextTrack);
+            dom.prevBtn.addEventListener('click', playPrevTrack);
+            dom.backBtn.addEventListener('click', returnToSelection);
+            dom.volumeSlider.addEventListener('input', (e) => {
                 if (ytPlayer) ytPlayer.setVolume(e.target.value);
             });
-            tracklistBtn.addEventListener('click', showTracklist);
-            closeTracklistBtn.addEventListener('click', hideTracklist);
+            dom.tracklistBtn.addEventListener('click', showTracklist);
+            dom.closeTracklistBtn.addEventListener('click', hideTracklist);
         };
     </script>
 </body>
