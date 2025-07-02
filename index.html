@@ -60,7 +60,7 @@
         }
         #selection-screen .cd-selection-item:hover .cd-art { transform: scale(1.1); }
 
-        .player-container { width: 100%; max-width: 900px; margin: auto; }
+        .player-container { width: 100%; max-width: 900px; margin: auto; position: relative; z-index: 5; }
         .cd-2d-container { width: 280px; height: 280px; } /* Increased size */
         .cd-2d {
             width: 100%; height: 100%; border-radius: 50%; position: relative; background-size: cover; background-position: center;
@@ -112,11 +112,31 @@
         .volume-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; background: var(--ps2-white); border-radius: 50%; cursor: pointer; }
 
         #visualizer { width: 100%; height: 60px; }
+        
+        #special-bg-container {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1; opacity: 0; transition: opacity 0.5s; pointer-events: none;
+        }
+        #special-bg-image {
+            width: 100%; height: 100%; background-size: cover; background-position: center;
+        }
+        #bg-youtube-player {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            min-width: 100%; min-height: 100%;
+            width: auto; height: auto;
+        }
+
     </style>
 </head>
 <body>
 
     <div class="crt-filter">
+        <div id="special-bg-container">
+            <div id="special-bg-image"></div>
+            <div id="bg-youtube-player"></div>
+        </div>
+
         <!-- Screen 1: CD Selection -->
         <div id="selection-screen" class="screen active">
             <div class="text-center">
@@ -191,7 +211,7 @@
             {
                 name: "Sucesso FM",
                 coverUrl: "https://i1.sndcdn.com/artworks-zMJy5oUhjfM05LnK-AzuGwA-t500x500.jpg",
-                bgColor: "rgba(0, 80, 150, 0.2)",
+                theme: { bg: "rgba(0, 80, 150, 0.2)", primary: 'var(--ps2-blue)', secondary: 'var(--ps2-yellow)' },
                 tracks: [
                     { videoId: 'tkl_smLRtcE', title: "Sucesso FM" }, { videoId: 'gTsZ-vQLq74', title: "Rumo a Vitória" },
                     { videoId: 'fGhkeEmMDSU', title: "Goddamn" }, { videoId: 'pKyoxG2ZDh8', title: "I Walk" },
@@ -202,16 +222,33 @@
                 ]
             },
             {
-                name: "Rock Classics",
-                coverUrl: "https://i.scdn.co/image/ab67616d0000b273b5c0635115c58a5257685565",
-                bgColor: "rgba(150, 20, 20, 0.1)",
+                name: "Saúde",
+                coverUrl: "https://i.scdn.co/image/ab67616d0000b2732e8e4cfa666ea534d070c041",
+                theme: { bg: "rgba(255, 140, 0, 0.2)", primary: 'darkorange', secondary: 'gold' },
                 tracks: [
-                    { videoId: '1w7OgIMMRc4', title: "Bohemian Rhapsody" }, { videoId: 'v2AC41dglnM', title: "Hotel California" },
-                    { videoId: 'fJ9rUzIMcZQ', title: "Stairway to Heaven" },
+                    { videoId: 'xXeDMfisrU8', title: "Saúde" }, { videoId: 'rsxeE1WkHqw', title: "Filho Pródigo" },
+                    { videoId: 'KzUUemEW_iI', title: "Let It Pour" }, { videoId: 'qkaxqSGI_OE', title: "The Story" },
+                    { videoId: 'fnRyVCxqLqk', title: "Back Home" }, { videoId: 'RMeJND0yzeM', title: "Melhor Não" },
+                    { videoId: 'yApMEdYtkGM', title: "Old School" }, { videoId: 'ZBe3GmoFJys', title: "Dirty Dancing" },
+                    { videoId: 'g0_DLkqjylU', title: "Prefiro Morrer", specialBg: 'url(https://media.giphy.com/media/3o7aD4grHwn8rP9u9i/giphy.gif)' },
+                    { videoId: 'vLQR5UCq5J0', title: "Quase Perfeito" }, { videoId: 'Z7LsJA7NJF0', title: "Máquina do Tempo", videoBg: 'Z7LsJA7NJF0' },
+                    { videoId: 'tR-m63k2nNM', title: "Flores de Outro Carnaval" },
+                ]
+            },
+            {
+                name: "Quando a Noite Vem",
+                coverUrl: "https://akamai.sscdn.co/uploadfile/letras/albuns/3/0/9/c/2338071724245865.jpg",
+                theme: { bg: "rgba(0, 0, 139, 0.2)", primary: '#aaccff', secondary: '#f0f0c0' },
+                tracks: [
+                    { videoId: 'XUYNTXXhmbc', title: "Quando a Noite Vem" }, { videoId: 'wwVejlwrKTA', title: "Oxford Shoes" },
+                    { videoId: 'R3BWRueflA4', title: "Twist" }, { videoId: '61o4MC3kEsM', title: "American Dream" },
+                    { videoId: 'MUqryi1MIrs', title: "A Cidade Sem Você" }, { videoId: 'amC0UxaMz9Y', title: "Um Certo Alguém" },
+                    { videoId: 'slgXDu2Ck2A', title: "Playback" }, { videoId: 'wVmcDQ_yX5g', title: "Amiga Fiel" },
+                    { videoId: 'yqRAcdaqLNI', title: "Televisão" }, { videoId: 'y1v-bI4_k2I', title: "Raise My Hands" },
                 ]
             }
         ];
-        let currentAlbumIndex = 0, currentTrackIndex = 0, ytPlayer, progressInterval;
+        let currentAlbumIndex = 0, currentTrackIndex = 0, ytPlayer, progressInterval, bgPlayer;
         let isApiLoaded = false, isPlayerReady = false, hasPlayedStartup = false;
 
         const dom = {
@@ -240,6 +277,8 @@
             tracklistUl: document.getElementById('tracklist-ul'),
             closeTracklistBtn: document.getElementById('close-tracklist-btn'),
             visualizer: document.getElementById('visualizer'),
+            specialBgContainer: document.getElementById('special-bg-container'),
+            specialBgImage: document.getElementById('special-bg-image'),
         };
 
         function loadYouTubeAPI() {
@@ -255,6 +294,11 @@
                 height: '1', width: '1',
                 playerVars: { 'controls': 0, 'fs': 0, 'iv_load_policy': 3, 'modestbranding': 1 },
                 events: { 'onReady': onPlayerReady, 'onStateChange': onPlayerStateChange }
+            });
+            bgPlayer = new YT.Player('bg-youtube-player', {
+                height: '100%', width: '100%',
+                playerVars: { 'controls': 0, 'fs': 0, 'iv_load_policy': 3, 'modestbranding': 1, 'autoplay': 1, 'loop': 1 },
+                events: { 'onReady': (e) => e.target.mute() }
             });
         }
         
@@ -279,9 +323,7 @@
         function selectAlbum(index) {
             currentAlbumIndex = index;
             currentTrackIndex = 0;
-            const selectedAlbum = albums[index];
-            dom.playerScreen.style.backgroundColor = selectedAlbum.bgColor || 'var(--ps2-bg)';
-
+            
             transitionToScreen(dom.loadingScreen);
             
             if (!hasPlayedStartup) {
@@ -294,7 +336,7 @@
                 else if (!ytPlayer) onYouTubeIframeAPIReady();
                 else loadTrack(currentTrackIndex, true);
                 transitionToScreen(dom.playerScreen);
-            }, 2500); // Simulate loading time
+            }, 2500);
         }
 
         function onPlayerReady(event) {
@@ -305,7 +347,7 @@
         
         function returnToSelection() {
             stopMusic();
-            dom.playerScreen.style.backgroundColor = 'var(--ps2-bg)';
+            resetTheme();
             transitionToScreen(dom.selectionScreen);
         }
 
@@ -327,7 +369,9 @@
             if (index < 0 || index >= album.tracks.length) return;
             const track = album.tracks[index];
             currentTrackIndex = index;
+            applyTheme(album.theme);
             updateTrackInfo(album, track, index + 1);
+            handleSpecialBackground(track);
             if (autoplay) ytPlayer.loadVideoById(track.videoId); else ytPlayer.cueVideoById(track.videoId);
         }
 
@@ -344,6 +388,35 @@
             if (!ytPlayer || typeof ytPlayer.getCurrentTime !== 'function') return;
             const newTime = ytPlayer.getCurrentTime() + seconds;
             ytPlayer.seekTo(newTime, true);
+        }
+
+        function applyTheme(theme) {
+            document.documentElement.style.setProperty('--ps2-blue', theme.primary || '#0096ff');
+            document.documentElement.style.setProperty('--ps2-yellow', theme.secondary || '#ffff00');
+            dom.playerScreen.style.backgroundColor = theme.bg || 'var(--ps2-bg)';
+        }
+
+        function resetTheme() {
+            document.documentElement.style.setProperty('--ps2-blue', '#0096ff');
+            document.documentElement.style.setProperty('--ps2-yellow', '#ffff00');
+            dom.playerScreen.style.backgroundColor = 'var(--ps2-bg)';
+        }
+
+        function handleSpecialBackground(track) {
+            dom.specialBgImage.style.backgroundImage = 'none';
+            if (bgPlayer && typeof bgPlayer.stopVideo === 'function') bgPlayer.stopVideo();
+            
+            if (track.specialBg) {
+                dom.specialBgImage.style.backgroundImage = track.specialBg;
+                dom.specialBgContainer.style.opacity = '0.3';
+            } else if (track.videoBg) {
+                if (bgPlayer && typeof bgPlayer.loadVideoById === 'function') {
+                    bgPlayer.loadVideoById({videoId: track.videoBg, startSeconds: 0});
+                }
+                dom.specialBgContainer.style.opacity = '0.3';
+            } else {
+                dom.specialBgContainer.style.opacity = '0';
+            }
         }
 
         function updateTrackInfo(album, track, trackNumber) {
