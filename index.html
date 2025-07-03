@@ -31,7 +31,6 @@
 
         body { background-color: #111; font-family: 'VT323', monospace; color: var(--ps2-white); overflow: hidden; }
         
-        /* Efeitos de Tela CRT */
         .crt-filter {
             position: relative; width: 100vw; height: 100vh;
             filter: blur(0.5px) contrast(1.1) saturate(1.2); animation: jitter-subtle 0.2s infinite;
@@ -48,7 +47,6 @@
             pointer-events: none; z-index: 3;
         }
 
-        /* Configurações de Telas */
         .screen {
             background-color: var(--ps2-bg); position: absolute; width: 100%; height: 100%; display: flex;
             align-items: center; justify-content: center; transition: opacity 0.5s, visibility 0.5s;
@@ -64,8 +62,8 @@
         #selection-bg-hover {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background-size: cover; background-position: center;
-            opacity: 0; transition: opacity 0.7s ease-in-out;
-            z-index: -1;
+            opacity: 0; transition: opacity 0.5s ease-in-out;
+            z-index: 0;
         }
         .cd-selection-item { position: relative; width: 200px; height: 200px; cursor: pointer; transition: transform 0.3s ease; }
         .cd-selection-item:hover { transform: scale(1.05); }
@@ -74,21 +72,21 @@
             border: 5px solid #333; box-shadow: 0 10px 20px rgba(0,0,0,0.4); transition: transform 0.4s ease;
         }
 
-        /* Player de Música */
         #player-screen { background-color: transparent; }
         #video-background-container {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             overflow: hidden; z-index: -1; opacity: 0; transition: opacity 0.8s ease-in-out;
+            background-color: #000;
         }
         #video-background-container.visible { opacity: 1; }
         #youtube-player-iframe {
             position: absolute; top: 50%; left: 50%;
-            width: 120%; height: 120%; /* Zoom para preencher */
-            transform: translate(-50%, -50%) scale(1.05); /* Leve zoom para cortar bordas */
+            width: 120%; height: 120%;
+            transform: translate(-50%, -50%) scale(1.05);
         }
 
-        .player-container { width: 100%; max-width: 1000px; margin: auto; position: relative; z-index: 5; transition: opacity 0.5s ease; }
-        .player-container.screensaver { opacity: 0; }
+        .player-container { width: 100%; max-width: 1152px; /* Aumentado de 1000px para 6xl/1152px */ margin: auto; position: relative; z-index: 5; transition: opacity 0.5s ease; }
+        #player-screen.video-mode .player-container, #player-screen.soundscape-mode .player-container { opacity: 0; pointer-events: none; }
         
         .cd-2d-container { width: 320px; height: 320px; }
         .cd-2d {
@@ -111,7 +109,6 @@
             box-shadow: inset 0 0 10px rgba(0,0,0,0.7);
         }
         
-        /* Animação gradual de UI */
         .player-container .animated-ui { opacity: 0; transform: translateY(15px); transition: opacity 0.5s ease, transform 0.5s ease; }
         .player-container.ui-ready .animated-ui { opacity: 1; transform: translateY(0); }
         .player-container.ui-ready .cd-2d-container { transition-delay: 0.1s; }
@@ -119,7 +116,6 @@
         .player-container.ui-ready .track-info { transition-delay: 0.3s; }
         .player-container.ui-ready .extra-controls { transition-delay: 0.4s; }
         .player-container.ui-ready #back-btn { transition-delay: 0.5s; }
-
 
         .track-info { font-size: 1.5rem; line-height: 1.75rem; }
         .track-number { color: var(--ps2-yellow); font-weight: bold; font-size: 2.25rem; }
@@ -142,6 +138,51 @@
         
         #soundscape-btn.active { animation: pulse-border 2s infinite; }
 
+        #soundscape-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            opacity: 0; transition: opacity 0.5s; pointer-events: none; z-index: 10;
+            cursor: pointer;
+        }
+        #soundscape-bg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-size: cover; background-position: center;
+            transition: background-image 0.5s ease;
+            filter: saturate(2.5) blur(8px) contrast(1.5); /* Efeito low-res aprimorado */
+            opacity: 0.35; /* Opacidade diminuída */
+            transform: scale(1.1);
+        }
+        #player-screen.soundscape-mode #soundscape-overlay { opacity: 1; pointer-events: all; }
+        #soundscape-overlay .cd-2d { width: 400px; height: 400px; box-shadow: 0 0 50px rgba(255, 255, 255, 0.3); }
+        #soundscape-overlay .time-display { 
+            background-color: rgba(0,0,0,0.6); 
+            padding: 8px 20px; 
+            border-radius: 8px; 
+            margin-top: 2.5rem; 
+            font-size: 2.25rem; 
+            border: 1px solid rgba(255,255,255,0.2);
+            text-shadow: 0 0 5px rgba(0, 150, 255, 0.7);
+        }
+        
+        #exit-soundscape-btn {
+            position: absolute; top: 2rem; right: 2rem;
+            font-size: 2rem; color: var(--ps2-white);
+            background-color: rgba(0,0,0,0.5);
+            border: 2px solid var(--ps2-white);
+            border-radius: 50%;
+            width: 50px; height: 50px;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s ease;
+            z-index: 15;
+            cursor: pointer;
+        }
+        #exit-soundscape-btn:hover {
+            transform: scale(1.1);
+            color: var(--ps2-yellow);
+            border-color: var(--ps2-yellow);
+            box-shadow: 0 0 15px var(--ps2-yellow);
+        }
+
         .popup {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             background-color: rgba(40,40,60,0.95); border: 2px solid var(--ps2-blue);
@@ -150,7 +191,6 @@
             transition: opacity 0.3s, transform 0.3s;
         }
         .popup.hidden { opacity: 0; transform: translate(-50%, -45%); pointer-events: none; }
-        .tracklist-item:hover { background-color: var(--ps2-blue); }
         
         #visualizer { width: 100%; height: 60px; }
         
@@ -168,21 +208,29 @@
     <div class="crt-filter">
         <div id="noise-overlay"></div>
         
-        <!-- Screen 1: CD Selection -->
         <div id="selection-screen" class="screen active">
             <div id="selection-bg-hover"></div>
-            <div class="text-center">
+            <div class="text-center relative z-10">
                 <h1 class="text-5xl text-white mb-12" style="text-shadow: 2px 2px 0 var(--ps2-blue);">Select Disc</h1>
-                <div id="cd-selection-container" class="flex flex-wrap justify-center gap-8"></div>
+                <div id="cd-selection-container" class="flex flex-wrap justify-center gap-8 px-4"></div>
             </div>
         </div>
         
-        <!-- Screen 2: Music Player -->
         <div id="player-screen" class="screen">
             <div id="video-background-container">
                  <div id="youtube-player-iframe"></div>
             </div>
-            <div id="clock" class="absolute top-4 right-4 text-2xl"></div>
+
+            <div id="soundscape-overlay">
+                <div id="soundscape-bg"></div>
+                <button id="exit-soundscape-btn">X</button>
+                <div id="soundscape-cd" class="cd-2d z-10">
+                    <div class="cd-hole"></div>
+                </div>
+                <p id="soundscape-time" class="time-display z-10">00:00 / 00:00</p>
+            </div>
+
+            <div id="clock" class="absolute top-4 right-4 text-2xl z-20"></div>
             <div id="player-container" class="player-container p-4">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                     <div class="flex flex-col items-center gap-4">
@@ -192,7 +240,7 @@
                         <canvas id="visualizer" class="animated-ui"></canvas>
                     </div>
 
-                    <div class="flex flex-col justify-between h-full">
+                    <div class="flex flex-col justify-between h-full space-y-4">
                         <div class="track-info text-center md:text-left space-y-2 animated-ui">
                             <h2 id="track-number" class="track-number">Track 01</h2>
                             <div class="track-name-wrapper"><p id="track-name" class="track-name">Loading...</p></div>
@@ -209,17 +257,21 @@
                                 <button id="forward-btn" title="Forward 10s"><svg viewBox="0 0 24 24"><path d="M13 6v12l8.5-6-8.5-6zm-2 6l-6 4.5v-9l6 4.5z"/></svg></button>
                             </div>
                         </div>
-                        <div class="extra-controls flex items-center justify-center md:justify-start gap-4 mt-4 animated-ui">
-                             <button id="tracklist-btn" class="text-lg">Track List</button>
-                             <button id="shuffle-btn" class="text-lg">Shuffle</button>
-                             <button id="repeat-btn" class="text-lg">Repeat All</button>
-                             <button id="viz-btn" class="text-lg">Viz: Bars</button>
-                             <button id="soundscape-btn" class="text-lg">Soundscape</button>
-                             <input id="volume-slider" type="range" min="0" max="100" value="80" class="volume-slider w-24">
+                        <div class="extra-controls flex items-center justify-between w-full animated-ui">
+                             <div class="flex gap-2">
+                                <button id="tracklist-btn" class="text-lg">Track List</button>
+                                <button id="shuffle-btn" class="text-lg">Shuffle</button>
+                                <button id="repeat-btn" class="text-lg">Repeat All</button>
+                             </div>
+                             <div class="flex items-center gap-4">
+                                <button id="viz-btn" class="text-lg">Viz: Bars</button>
+                                <button id="soundscape-btn" class="text-lg">Soundscape</button>
+                                <input id="volume-slider" type="range" min="0" max="100" value="80" class="volume-slider w-24">
+                             </div>
                         </div>
                     </div>
                 </div>
-                <div id="back-btn" class="footer-prompts flex justify-center md:justify-end space-x-8 mt-4 cursor-pointer animated-ui">
+                <div id="back-btn" class="footer-prompts flex justify-end space-x-8 mt-4 cursor-pointer animated-ui">
                     <div><span class="prompt-icon" style="color: #ff4444; border-color: #ff4444;">O</span> Back</div>
                 </div>
             </div>
@@ -258,7 +310,7 @@
                     { audioId: 'yApMEdYtkGM', title: "Old School" }, { audioId: 'ZBe3GmoFJys', title: "Dirty Dancing" },
                     { audioId: 'g0_DLkqjylU', title: "Prefiro Morrer" },
                     { audioId: 'vLQR5UCq5J0', title: "Quase Perfeito" }, 
-                    { audioId: 'Z7LsJA7NJF0', title: "Máquina do Tempo", musicVideoId: 'Z7LsJA7NJF0' }, // Exemplo com video
+                    { audioId: 'Z7LsJA7NJF0', title: "Máquina do Tempo", musicVideoId: 'Z7LsJA7NJF0' },
                     { audioId: 'tR-m63k2nNM', title: "Flores de Outro Carnaval" },
                 ]
             },
@@ -273,7 +325,7 @@
                     { audioId: 'GC-BHmtlhFQ', title: "Memórias" }, { audioId: '6ep0itQcsUM', title: "Lost in Translation" },
                     { audioId: 'nKJyKsFgDJY', title: "Primavera" }, { audioId: 'MVrIi0zI6gc', title: "Let me see the sun" },
                     { audioId: 'vWsdkDa3vOw', title: "Adeus" }, { audioId: 'cgW6sqr8X0k', title: "Deixa Doer" },
-                    { audioId: 'lUu0sFJfN80', title: "Não me faça falar", musicVideoId: 'Ryz5LuaFznM' }, // Exemplo com video
+                    { audioId: 'lUu0sFJfN80', title: "Não me faça falar", musicVideoId: 'Ryz5LuaFznM' },
                 ]
             },
             {
@@ -282,14 +334,13 @@
                 theme: { name: 'optica', bg: "rgba(173, 216, 230, 0.2)", primary: '#add8e6', secondary: '#000000', visualizer: '#add8e6' },
                 tracks: [
                     { audioId: 'DWV5g3m3118', title: "Absorver" }, { audioId: 'YbQj7ByNkNM', title: "Reflexo" },
-                    { audioId: 'ENmHHlGVAtE', title: "Sombra", musicVideoId: '1EYOFvZmnJE' }, // Exemplo com video
+                    { audioId: 'ENmHHlGVAtE', title: "Sombra", musicVideoId: '1EYOFvZmnJE' },
                     { audioId: 'd-mQtP2JHJY', title: "Transparência" }
                 ]
             }
         ];
         
         const dom = {
-            body: document.body,
             selectionScreen: document.getElementById('selection-screen'),
             selectionBgHover: document.getElementById('selection-bg-hover'),
             playerScreen: document.getElementById('player-screen'),
@@ -297,6 +348,11 @@
             playerContainer: document.getElementById('player-container'),
             cdSelectionContainer: document.getElementById('cd-selection-container'),
             cd2d: document.getElementById('cd-2d'),
+            soundscapeOverlay: document.getElementById('soundscape-overlay'),
+            soundscapeBg: document.getElementById('soundscape-bg'),
+            soundscapeCd: document.getElementById('soundscape-cd'),
+            soundscapeTime: document.getElementById('soundscape-time'),
+            exitSoundscapeBtn: document.getElementById('exit-soundscape-btn'),
             playBtn: document.getElementById('play-btn'),
             pauseBtn: document.getElementById('pause-btn'),
             stopBtn: document.getElementById('stop-btn'),
@@ -311,7 +367,6 @@
             soundscapeBtn: document.getElementById('soundscape-btn'),
             trackNumber: document.getElementById('track-number'),
             trackName: document.getElementById('track-name'),
-            trackNameWrapper: document.querySelector('.track-name-wrapper'),
             timeDisplay: document.getElementById('time-display'),
             progressBarContainer: document.getElementById('progress-bar-container'),
             volumeSlider: document.getElementById('volume-slider'),
@@ -331,13 +386,12 @@
             progressInterval: null,
             isApiLoaded: false,
             isPlayerReady: false,
-            currentVisualizerColor: 'rgba(0, 150, 255, 0.7)',
             isShuffle: false,
             repeatMode: 'all',
             visualizerMode: 'bars',
             clockInterval: null,
-            soundscape: null,
-            isSoundscapePlaying: false,
+            isSoundscapeMode: false,
+            bgHoverTimeout: null,
         };
 
         function loadYouTubeAPI() {
@@ -370,14 +424,17 @@
                 item.innerHTML = `<div class="cd-art" style="background-image: url('${album.coverUrl}')"></div>`;
                 item.onclick = (e) => selectAlbum(index, e.currentTarget);
                 item.onmouseenter = () => {
+                    if(state.bgHoverTimeout) clearTimeout(state.bgHoverTimeout);
                     dom.selectionBgHover.style.backgroundImage = `url('${album.coverUrl}')`;
                     dom.selectionBgHover.style.opacity = 0.2;
                 };
-                item.onmouseleave = () => {
-                    dom.selectionBgHover.style.opacity = 0;
-                };
                 dom.cdSelectionContainer.appendChild(item);
             });
+            dom.selectionScreen.onmouseleave = () => {
+                 state.bgHoverTimeout = setTimeout(() => {
+                    dom.selectionBgHover.style.opacity = 0;
+                 }, 200);
+            };
         }
 
         function selectAlbum(index, clickedElement) {
@@ -385,20 +442,20 @@
             state.currentTrackIndex = 0;
             
             const album = albums[index];
-            
             const startRect = clickedElement.getBoundingClientRect();
+            
             const transitionCD = document.createElement('div');
             transitionCD.id = 'cd-transition-element';
             transitionCD.style.backgroundImage = `url('${album.coverUrl}')`;
             transitionCD.style.left = `${startRect.left}px`;
-            transitionCD.style.top = `${startRect.top}px`;
             transitionCD.style.width = `${startRect.width}px`;
             transitionCD.style.height = `${startRect.height}px`;
+            transitionCD.style.top = `110vh`;
             document.body.appendChild(transitionCD);
 
             transitionToScreen(dom.playerScreen, true);
             
-            setTimeout(() => {
+            requestAnimationFrame(() => {
                 const targetRect = dom.cd2d.getBoundingClientRect();
                 transitionCD.style.left = `${targetRect.left}px`;
                 transitionCD.style.top = `${targetRect.top}px`;
@@ -413,7 +470,7 @@
                     else if (!state.ytPlayer || !state.isPlayerReady) onYouTubeIframeAPIReady();
                     else loadTrack(state.currentTrackIndex, true);
                 }, { once: true });
-            }, 50);
+            });
         }
 
         function onPlayerReady(event) {
@@ -423,6 +480,7 @@
         }
         
         function returnToSelection() {
+            exitSoundscapeMode();
             dom.playerContainer.classList.remove('ui-ready');
             fadeOutAudio(stopMusic);
             resetTheme();
@@ -445,6 +503,7 @@
 
         function loadTrack(index, autoplay = false) {
             if (!state.isPlayerReady) return;
+            exitSoundscapeMode();
             const album = albums[state.currentAlbumIndex];
             if (index < 0 || index >= album.tracks.length) return;
             const track = album.tracks[index];
@@ -455,24 +514,20 @@
 
             const videoId = track.musicVideoId || track.audioId;
             if (track.musicVideoId) {
+                dom.playerScreen.classList.add('video-mode');
                 dom.videoBgContainer.classList.add('visible');
             } else {
+                dom.playerScreen.classList.remove('video-mode');
                 dom.videoBgContainer.classList.remove('visible');
             }
             
-            if (autoplay) {
-                state.ytPlayer.loadVideoById(videoId);
-            } else {
-                state.ytPlayer.cueVideoById(videoId);
-            }
+            if (autoplay) state.ytPlayer.loadVideoById(videoId);
+            else state.ytPlayer.cueVideoById(videoId);
         }
         
         function fadeOutAudio(callback) {
             const currentVolume = dom.volumeSlider.value;
-            if (currentVolume == 0) {
-                if(callback) callback();
-                return;
-            }
+            if (currentVolume == 0) { if(callback) callback(); return; }
             let fadeVolume = currentVolume;
             const fadeOutInterval = setInterval(() => {
                 fadeVolume -= 5;
@@ -492,6 +547,7 @@
             if (state.ytPlayer && typeof state.ytPlayer.stopVideo === 'function') {
                 fadeOutAudio(() => {
                     state.ytPlayer.stopVideo();
+                    dom.playerScreen.classList.remove('video-mode');
                     dom.videoBgContainer.classList.remove('visible');
                 });
             }
@@ -523,24 +579,27 @@
         function applyTheme(theme) {
             document.documentElement.style.setProperty('--ps2-blue', theme.primary || '#0096ff');
             document.documentElement.style.setProperty('--ps2-yellow', theme.secondary || '#ffff00');
-            state.currentVisualizerColor = theme.visualizer || 'rgba(0, 150, 255, 0.7)';
         }
 
         function resetTheme() {
             document.documentElement.style.setProperty('--ps2-blue', '#0096ff');
             document.documentElement.style.setProperty('--ps2-yellow', '#ffff00');
-            state.currentVisualizerColor = 'rgba(0, 150, 255, 0.7)';
+            dom.playerScreen.classList.remove('video-mode');
             dom.videoBgContainer.classList.remove('visible');
         }
 
         function updateTrackInfo(album, track, trackNumber) {
             dom.trackNumber.textContent = `Track ${String(trackNumber).padStart(2, '0')}`;
             dom.trackName.textContent = track.title;
-            dom.cd2d.style.backgroundImage = `url('${album.coverUrl}')`;
+            const coverUrl = `url('${album.coverUrl}')`;
+            dom.cd2d.style.backgroundImage = coverUrl;
+            dom.soundscapeCd.style.backgroundImage = coverUrl;
+            dom.soundscapeBg.style.backgroundImage = coverUrl;
             dom.trackName.classList.toggle('scrolling', track.title.length > 20);
         }
         function updateUIIsPlaying(playing) {
             dom.cd2d.classList.toggle('playing', playing);
+            dom.soundscapeCd.classList.toggle('playing', playing);
             dom.playBtn.classList.toggle('hidden', playing);
             dom.pauseBtn.classList.toggle('hidden', !playing);
         }
@@ -550,6 +609,14 @@
             const secs = seconds % 60;
             return `${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
         }
+        
+        function updateTimeDisplay(currentTime, duration) {
+            const timeText = `${formatTime(currentTime)} / ${formatTime(duration)}`;
+            dom.timeDisplay.textContent = timeText;
+            dom.soundscapeTime.textContent = timeText;
+            updateProgressBar(currentTime, duration);
+        }
+
         function updateProgressBar(currentTime, duration) {
             const percentage = duration > 0 ? (currentTime / duration) * 100 : 0;
             const blockCount = 40;
@@ -570,19 +637,17 @@
             }
         }
 
-        function updateTimeDisplay(currentTime, duration) {
-            dom.timeDisplay.textContent = `${formatTime(currentTime)} / ${formatTime(duration)}`;
-            updateProgressBar(currentTime, duration);
-        }
-
         let visualizerId;
         function drawVisualizer() {
+            visualizerId = requestAnimationFrame(drawVisualizer);
             const ctx = dom.visualizer.getContext('2d');
             const width = dom.visualizer.width;
             const height = dom.visualizer.height;
             ctx.clearRect(0, 0, width, height);
+            if(dom.playerScreen.classList.contains('soundscape-mode') || dom.playerScreen.classList.contains('video-mode')) return;
+            
             const isPlaying = state.ytPlayer && state.ytPlayer.getPlayerState() === YT.PlayerState.PLAYING;
-            ctx.fillStyle = state.currentVisualizerColor;
+            ctx.fillStyle = document.documentElement.style.getPropertyValue('--ps2-blue');
 
             if (state.visualizerMode === 'bars') {
                 const barCount = 32;
@@ -592,7 +657,6 @@
                     ctx.fillRect(i * barWidth, height - barHeight, barWidth - 2, barHeight);
                 }
             } 
-            visualizerId = requestAnimationFrame(drawVisualizer);
         }
 
         function startProgressUpdater() {
@@ -607,8 +671,6 @@
         function stopProgressUpdater() {
             clearInterval(state.progressInterval);
             cancelAnimationFrame(visualizerId);
-            const ctx = dom.visualizer.getContext('2d');
-            if(ctx) ctx.clearRect(0, 0, dom.visualizer.width, dom.visualizer.height);
         }
 
         function showTracklist() {
@@ -627,19 +689,21 @@
         }
         function hideTracklist() { dom.tracklistPopup.classList.add('hidden'); }
         
-        function toggleSoundscape() {
-            if (!state.soundscape) {
-                state.soundscape = new Tone.Noise("brown").toDestination();
-                state.soundscape.volume.value = -30;
-            }
-            if (state.isSoundscapePlaying) {
-                state.soundscape.stop();
+        function toggleSoundscapeMode() {
+            const track = albums[state.currentAlbumIndex].tracks[state.currentTrackIndex];
+            if (track.musicVideoId) return;
+            
+            state.isSoundscapeMode = !state.isSoundscapeMode;
+            dom.playerScreen.classList.toggle('soundscape-mode', state.isSoundscapeMode);
+            dom.soundscapeBtn.classList.toggle('active', state.isSoundscapeMode);
+        }
+
+        function exitSoundscapeMode() {
+            if (state.isSoundscapeMode) {
+                state.isSoundscapeMode = false;
+                dom.playerScreen.classList.remove('soundscape-mode');
                 dom.soundscapeBtn.classList.remove('active');
-            } else {
-                state.soundscape.start();
-                dom.soundscapeBtn.classList.add('active');
             }
-            state.isSoundscapePlaying = !state.isSoundscapePlaying;
         }
 
         function startClock() {
@@ -653,7 +717,6 @@
 
         window.onload = () => {
             renderSelectionScreen();
-
             dom.playBtn.addEventListener('click', playMusic);
             dom.pauseBtn.addEventListener('click', pauseMusic);
             dom.stopBtn.addEventListener('click', stopMusic);
@@ -667,7 +730,13 @@
             });
             dom.tracklistBtn.addEventListener('click', showTracklist);
             dom.closeTracklistBtn.addEventListener('click', hideTracklist);
-            dom.soundscapeBtn.addEventListener('click', toggleSoundscape);
+            dom.soundscapeBtn.addEventListener('click', toggleSoundscapeMode);
+            dom.exitSoundscapeBtn.addEventListener('click', toggleSoundscapeMode);
+            dom.soundscapeOverlay.addEventListener('click', (e) => {
+                if (e.target === dom.soundscapeOverlay) {
+                    toggleSoundscapeMode();
+                }
+            });
             
             dom.shuffleBtn.addEventListener('click', () => {
                 state.isShuffle = !state.isShuffle;
@@ -682,8 +751,7 @@
             });
 
             dom.vizBtn.addEventListener('click', () => {
-                const modes = ['bars', 'wave', 'circle'];
-                state.visualizerMode = modes[(modes.indexOf(state.visualizerMode) + 1) % modes.length];
+                state.visualizerMode = state.visualizerMode === 'bars' ? 'off' : 'bars';
                 dom.vizBtn.textContent = `Viz: ${state.visualizerMode.charAt(0).toUpperCase() + state.visualizerMode.slice(1)}`;
             });
         };
