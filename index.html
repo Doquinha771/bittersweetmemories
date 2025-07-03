@@ -28,19 +28,39 @@
         @keyframes background-pan { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
         @keyframes pulse-border { 0% { box-shadow: 0 0 0 0 rgba(255, 255, 0, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(255, 255, 0, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 255, 0, 0); } }
+        @keyframes vhs-jitter { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(-1px, 1px); } 50% { transform: translate(1px, -1px); } 75% { transform: translate(-1px, -1px); } }
+        @keyframes vhs-scanlines { 0% { background-position: 0 100%; } 100% { background-position: 0 0; } }
+        @keyframes dvd-bounce {
+            0%, 100% { top: 0; left: 0; }
+            25% { top: calc(100% - 100px); left: calc(100% - 150px); }
+            50% { top: calc(100% - 100px); left: 0; }
+            75% { top: 0; left: calc(100% - 150px); }
+        }
 
         body { background-color: #111; font-family: 'VT323', monospace; color: var(--ps2-white); overflow: hidden; }
         
         .crt-filter {
             position: relative; width: 100vw; height: 100vh;
-            filter: blur(0.5px) contrast(1.1) saturate(1.2); animation: jitter-subtle 0.2s infinite;
+            filter: blur(0.7px) contrast(1.2) saturate(1.5); /* Efeito TV de Tubo */
+            animation: jitter-subtle 0.2s infinite;
         }
         .crt-filter::before, .crt-filter::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 2; pointer-events: none; }
         .crt-filter::before {
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            background-size: 100% 3px, 3px 100%; animation: scanlines 0.2s infinite linear;
+            background-size: 100% 4px, 4px 100%; /* Linhas mais grossas */
+            animation: scanlines 0.2s infinite linear;
         }
-        .crt-filter::after { box-shadow: inset 0 0 100px rgba(0,0,0,0.5); }
+        .crt-filter::after { box-shadow: inset 0 0 120px rgba(0,0,0,0.6); }
+        
+        body.vhs-active .crt-filter {
+            animation: vhs-jitter 0.15s infinite;
+            filter: blur(1.5px) contrast(1.5) saturate(2.0);
+        }
+        body.vhs-active .crt-filter::before {
+            background-size: 100% 8px, 8px 100%;
+            animation: vhs-scanlines 0.1s infinite linear;
+        }
+        
         #noise-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJub2lzZSI+PGZlVHVyYnVsZW5jZSB0eXBlPSJmcmFjdGFsTm9pc2UiIGJhc2VGcmVxdWVuY3k9IjAuOCIgbnVtT2N0YXZlcz0iNCIgc3RpdGNoVGlsZXM9InN0aXRjaCIvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIiBmaWx0ZXI9InVybCgjbm9pc2UpIiBvcGFjaXR5PSIwLjE1Ii8+PC9zdmc+');
@@ -65,11 +85,31 @@
             opacity: 0; transition: opacity 0.5s ease-in-out;
             z-index: 0;
         }
-        .cd-selection-item { position: relative; width: 200px; height: 200px; cursor: pointer; transition: transform 0.3s ease; }
-        .cd-selection-item:hover { transform: scale(1.05); }
+        .cd-selection-item {
+            position: relative; width: 220px; height: 220px;
+            cursor: pointer; transition: transform 0.3s ease;
+        }
+        .cd-selection-item:hover { transform: scale(1.05) rotate(5deg); }
+        .cd-case {
+            width: 100%; height: 100%;
+            background: url('https://i.imgur.com/Q0Gg3E1.png') no-repeat center center;
+            background-size: contain;
+            position: relative;
+        }
         #selection-screen .cd-art {
-            width: 100%; height: 100%; border-radius: 50%; background-size: cover; background-position: center;
-            border: 5px solid #333; box-shadow: 0 10px 20px rgba(0,0,0,0.4); transition: transform 0.4s ease;
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 86%; height: 86%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%; background-size: cover; background-position: center;
+        }
+        
+        .ps2-logo-overlay {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 60%; height: 60%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path fill="rgba(255,255,255,0.5)" d="M100 0C44.8 0 0 44.8 0 100s44.8 100 100 100 100-44.8 100-100S155.2 0 100 0zm0 180c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80z"/><path fill="rgba(255,255,255,0.5)" d="M120 60h-20v80h20V60zm-40 0H80v80h20V60z"/></svg>') no-repeat center center;
+            background-size: contain;
+            opacity: 0.7;
         }
 
         #player-screen { background-color: transparent; }
@@ -192,6 +232,24 @@
              pointer-events: all;
         }
 
+        #dvd-screensaver {
+            position: absolute; top: 0; left: 0;
+            width: 150px; height: 100px;
+            z-index: 9999;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.5s;
+        }
+        #dvd-screensaver.active {
+            opacity: 1;
+            animation: dvd-bounce 10s linear infinite;
+        }
+        #dvd-logo {
+            width: 100%; height: 100%;
+            background-color: white;
+            -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 208 128"><path d="M16,32h32v64h-32v-64Z M160,32h32v64h-32v-64Z M80,32h32v64h-32v-64Z"/></svg>') no-repeat center;
+            mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 208 128"><path d="M16,32h32v64h-32v-64Z M160,32h32v64h-32v-64Z M80,32h32v64h-32v-64Z"/></svg>') no-repeat center;
+        }
+
         .popup {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             background-color: rgba(40,40,60,0.95); border: 2px solid var(--ps2-blue);
@@ -235,6 +293,7 @@
                 <button id="exit-soundscape-btn" class="exit-mode-btn">X</button>
                 <div id="soundscape-cd" class="cd-2d z-10">
                     <div class="cd-hole"></div>
+                    <div class="ps2-logo-overlay"></div>
                 </div>
                 <p id="soundscape-time" class="time-display z-10">00:00 / 00:00</p>
             </div>
@@ -246,7 +305,10 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                     <div class="flex flex-col items-center gap-4">
                         <div class="cd-2d-container animated-ui">
-                            <div id="cd-2d" class="cd-2d"><div class="cd-hole"></div></div>
+                            <div id="cd-2d" class="cd-2d">
+                                <div class="cd-hole"></div>
+                                <div class="ps2-logo-overlay"></div>
+                            </div>
                         </div>
                         <canvas id="visualizer" class="animated-ui"></canvas>
                     </div>
@@ -275,7 +337,6 @@
                                 <button id="repeat-btn" class="text-lg">Repeat All</button>
                              </div>
                              <div class="flex items-center gap-4">
-                                <button id="cc-btn" class="text-lg hidden">CC</button>
                                 <button id="viz-btn" class="text-lg">Viz: Bars</button>
                                 <button id="soundscape-btn" class="text-lg">Soundscape</button>
                                 <input id="volume-slider" type="range" min="0" max="100" value="80" class="volume-slider w-24">
@@ -288,6 +349,7 @@
                 </div>
             </div>
         </div>
+        <div id="dvd-screensaver"><div id="dvd-logo"></div></div>
     </div>
 
     <div id="tracklist-popup" class="popup p-4 hidden">
@@ -353,6 +415,7 @@
         ];
         
         const dom = {
+            body: document.body,
             selectionScreen: document.getElementById('selection-screen'),
             selectionBgHover: document.getElementById('selection-bg-hover'),
             playerScreen: document.getElementById('player-screen'),
@@ -366,6 +429,7 @@
             soundscapeTime: document.getElementById('soundscape-time'),
             exitSoundscapeBtn: document.getElementById('exit-soundscape-btn'),
             exitFullscreenBtn: document.getElementById('exit-fullscreen-btn'),
+            dvdScreensaver: document.getElementById('dvd-screensaver'),
             playBtn: document.getElementById('play-btn'),
             pauseBtn: document.getElementById('pause-btn'),
             stopBtn: document.getElementById('stop-btn'),
@@ -378,7 +442,6 @@
             repeatBtn: document.getElementById('repeat-btn'),
             vizBtn: document.getElementById('viz-btn'),
             soundscapeBtn: document.getElementById('soundscape-btn'),
-            ccBtn: document.getElementById('cc-btn'),
             trackNumber: document.getElementById('track-number'),
             trackName: document.getElementById('track-name'),
             timeDisplay: document.getElementById('time-display'),
@@ -405,7 +468,7 @@
             visualizerMode: 'bars',
             clockInterval: null,
             isSoundscapeMode: false,
-            isCaptionsEnabled: false,
+            screensaverTimeout: null,
             bgHoverTimeout: null,
         };
 
@@ -436,7 +499,12 @@
             albums.forEach((album, index) => {
                 const item = document.createElement('div');
                 item.className = 'cd-selection-item';
-                item.innerHTML = `<div class="cd-art" style="background-image: url('${album.coverUrl}')"></div>`;
+                item.innerHTML = `
+                    <div class="cd-case">
+                        <div class="cd-art" style="background-image: url('${album.coverUrl}')">
+                             <div class="ps2-logo-overlay"></div>
+                        </div>
+                    </div>`;
                 item.onclick = (e) => selectAlbum(index, e.currentTarget);
                 item.onmouseenter = () => {
                     if(state.bgHoverTimeout) clearTimeout(state.bgHoverTimeout);
@@ -526,14 +594,14 @@
 
             applyTheme(album.theme);
             updateTrackInfo(album, track, index + 1);
+            
+            dom.body.classList.toggle('vhs-active', track.title === 'Máquina do Tempo');
 
             const videoId = track.musicVideoId || track.audioId;
             if (track.musicVideoId) {
                 dom.videoBgContainer.classList.add('visible');
-                dom.ccBtn.classList.remove('hidden');
             } else {
                 dom.videoBgContainer.classList.remove('visible');
-                dom.ccBtn.classList.add('hidden');
             }
             
             if (autoplay) state.ytPlayer.loadVideoById(videoId);
@@ -599,6 +667,7 @@
             document.documentElement.style.setProperty('--ps2-blue', '#0096ff');
             document.documentElement.style.setProperty('--ps2-yellow', '#ffff00');
             dom.videoBgContainer.classList.remove('visible');
+            dom.body.classList.remove('vhs-active');
         }
 
         function updateTrackInfo(album, track, trackNumber) {
@@ -724,27 +793,13 @@
             dom.soundscapeBtn.classList.remove('active');
         }
         
-        function toggleCaptions() {
-            if (!state.ytPlayer || typeof state.ytPlayer.getOptions !== 'function') return;
-
-            state.isCaptionsEnabled = !state.isCaptionsEnabled;
-            dom.ccBtn.classList.toggle('active', state.isCaptionsEnabled);
-
-            if (state.isCaptionsEnabled) {
-                state.ytPlayer.loadModule('captions');
-                // Give the module a moment to load before setting the track
-                setTimeout(() => {
-                    const tracks = state.ytPlayer.getOption('captions', 'tracklist');
-                    if (tracks && tracks.length > 0) {
-                        // Enable the first available caption track
-                        state.ytPlayer.setOption('captions', 'track', tracks[0]);
-                    }
-                }, 500);
-            } else {
-                state.ytPlayer.unloadModule('captions');
-            }
+        function resetScreensaverTimer() {
+            clearTimeout(state.screensaverTimeout);
+            dom.dvdScreensaver.classList.remove('active');
+            state.screensaverTimeout = setTimeout(() => {
+                dom.dvdScreensaver.classList.add('active');
+            }, 120000); // 2 minutes
         }
-
 
         function startClock() {
             if (state.clockInterval) clearInterval(state.clockInterval);
@@ -757,6 +812,10 @@
 
         window.onload = () => {
             renderSelectionScreen();
+            resetScreensaverTimer();
+            
+            ['mousemove', 'keydown', 'click'].forEach(evt => document.addEventListener(evt, resetScreensaverTimer, false));
+
             dom.playBtn.addEventListener('click', playMusic);
             dom.pauseBtn.addEventListener('click', pauseMusic);
             dom.stopBtn.addEventListener('click', stopMusic);
@@ -773,7 +832,6 @@
             dom.soundscapeBtn.addEventListener('click', toggleSoundscapeMode);
             dom.exitSoundscapeBtn.addEventListener('click', toggleSoundscapeMode);
             dom.exitFullscreenBtn.addEventListener('click', toggleSoundscapeMode);
-            dom.ccBtn.addEventListener('click', toggleCaptions);
             
             dom.shuffleBtn.addEventListener('click', () => {
                 state.isShuffle = !state.isShuffle;
