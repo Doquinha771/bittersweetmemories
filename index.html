@@ -300,8 +300,7 @@
             <div id="selection-bg-hover"></div>
             <div class="text-center relative z-10">
                 <h1 class="text-5xl text-white mb-12" style="text-shadow: 2px 2px 0 var(--ps2-blue);">Select Disc</h1>
-                <div id="album-box-container" class="flex flex-wrap justify-center gap-8 px-4"></div>
-                <div id="cd-selection-container" class="flex flex-wrap justify-center gap-8 px-4 mt-8"></div>
+                <div id="cd-selection-container" class="flex flex-wrap justify-center gap-8 px-4"></div>
             </div>
         </div>
         
@@ -380,95 +379,114 @@
     </div>
 
     <script>
-        const albums = [
-             {
-                id: 'validation',
-                name: "Validation",
-                coverUrl: "https://i1.sndcdn.com/artworks-zMJy5oUhjfM05LnK-AzuGwA-t500x500.jpg",
-                theme: { name: 'validation', primary: '#66ff66', secondary: '#00529b', bg: 'rgba(0, 82, 155, 0.2)' },
-                tracks: [
-                    { audioId: 'tkl_smLRtcE', title: "Sucesso FM", musicVideoId: 'tqdOIs3K-SA' }, 
-                    { audioId: 'gTsZ-vQLq74', title: "Rumo a Vitória" },
-                    { audioId: 'fGhkeEmMDSU', title: "Goddamn" }, 
-                    { audioId: 'pKyoxG2ZDh8', title: "I Walk", musicVideoId: 'lvABzBQDYGY' },
-                    { audioId: '-1WfKz06Hgc', title: "Waiting to Fly", musicVideoId: 'hX2NJxJP6Mc' }, 
-                    { audioId: 'llJZ4H4zQ2k', title: "Sonhar", musicVideoId: 'WCtvzfzKStU', videoStart: 39 },
-                    { audioId: 'TQ2OtyCtOMc', title: "I'm in Love" }, 
-                    { audioId: 'u3M_KURTWKY', title: "For my Family", musicVideoId: 'krU-M8WusuY' }, 
-                    { audioId: 'm8SzrWpCjKU', title: "Going Home" }, 
-                    { audioId: 'rfIV2uGZ2kM', title: "The Lord and Me" },
-                    { audioId: 'ozu12D-DdJk', title: "Anjos da Guarda", musicVideoId: 'gI_2-LacLiI' }, 
-                    { audioId: 'HjA6fwTInT0', title: "We Gold" },
-                ]
-            },
-            {
-                id: 'bittersweet',
-                name: "Bittersweet Memories",
-                coverUrl: "https://i.scdn.co/image/ab67616d0000b2732e8e4cfa666ea534d070c041",
-                theme: { name: 'bittersweet', primary: '#ff8c00', secondary: '#ffd700', bg: 'rgba(255, 140, 0, 0.2)' },
-                tracks: [
-                    { audioId: 'xXeDMfisrU8', title: "Saúde" }, { audioId: 'rsxeE1WkHqw', title: "Filho Pródigo" },
-                    { audioId: 'KzUUemEW_iI', title: "Let It Pour" }, { audioId: 'qkaxqSGI_OE', title: "The Story" },
-                    { audioId: 'fnRyVCxqLqk', title: "Back Home" }, { audioId: 'RMeJND0yzeM', title: "Melhor Não" },
-                    { audioId: 'yApMEdYtkGM', title: "Old School" }, { audioId: 'ZBe3GmoFJys', title: "Dirty Dancing" },
-                    { audioId: 'g0_DLkqjylU', title: "Prefiro Morrer" },
-                    { audioId: 'vLQR5UCq5J0', title: "Quase Perfeito" }, 
-                    { audioId: 'Z7LsJA7NJF0', title: "Máquina do Tempo", musicVideoId: 'Z7LsJA7NJF0' },
-                    { audioId: 'tR-m63k2nNM', title: "Flores de Outro Carnaval" },
-                ]
-            },
-            {
-                id: '13lentes',
-                name: "13 lentes de um final feliz",
-                coverUrl: "https://cdn-images.dzcdn.net/images/cover/a01cc5f5bbb09711637d4927e9ab83cd/500x500.jpg",
-                theme: { name: '13-lentes', primary: '#ffffff', secondary: '#888888', bg: 'rgba(128, 128, 128, 0.2)' },
-                tracks: [
-                    { audioId: 'asI5cHpQPAA', title: "Au revoir" }, { audioId: 'wRlhPzhgqu0', title: "Carruagem" },
-                    { audioId: 'GPemhYrDATw', title: "Agradeço" }, { audioId: 'mNlhepSXi4g', title: "Corrida" },
-                    { audioId: 'WlylgE8fSLs', title: "Joias da Familia" }, 
-                    { audioId: 'TSLRScqwemI', title: "Nunca Paro", musicVideoId: 'P9NqaluDZuk', videoLoop: true },
-                    { audioId: 'GC-BHmtlhFQ', title: "Memórias" }, { audioId: '6ep0itQcsUM', title: "Lost in Translation" },
-                    { audioId: 'nKJyKsFgDJY', title: "Primavera" }, { audioId: 'MVrIi0zI6gc', title: "Let me see the sun" },
-                    { audioId: 'vWsdkDa3vOw', title: "Adeus" }, { audioId: 'cgW6sqr8X0k', title: "Deixa Doer" },
-                    { audioId: 'lUu0sFJfN80', title: "Não me faça falar", musicVideoId: 'Ryz5LuaFznM' },
-                ]
-            },
-            {
-                id: 'optica',
-                name: "Óptica",
-                coverUrl: "https://images.genius.com/a1c5e0cebf8fdb9629ff8205d02af9ff.1000x1000x1.png",
-                theme: { name: 'optica', primary: '#add8e6', secondary: '#ffffff', bg: 'rgba(173, 216, 230, 0.2)' },
-                tracks: [
-                    { audioId: 'DWV5g3m3118', title: "Absorver" }, { audioId: 'YbQj7ByNkNM', title: "Reflexo" },
-                    { audioId: 'ENmHHlGVAtE', title: "Sombra", musicVideoId: '1EYOFvZmnJE' },
-                    { audioId: 'd-mQtP2JHJY', title: "Transparência" }
-                ]
-            },
-            {
-                id: 'bonstempos',
-                name: "Bons tempos",
-                coverUrl: "https://akamai.sscdn.co/uploadfile/letras/albuns/3/0/9/c/2338071724245865.jpg",
-                theme: { name: 'bonstempos', primary: '#9370db', secondary: '#e6e6fa', bg: 'rgba(75, 0, 130, 0.3)', bgImage: 'url(https://www.transparenttextures.com/patterns/stardust.png)' },
-                tracks: [
-                    { audioId: 'XUYNTXXhmbc', title: 'Quando a noite vem' },
-                    { audioId: 'wwVejlwrKTA', title: 'Oxford Shoes' },
-                    { audioId: 'R3BWRueflA4', title: 'Twist', musicVideoId: 'hcL33v1N8uQ', videoLoop: true },
-                    { audioId: '61o4MC3kEsM', title: 'American Dream' },
-                    { audioId: 'MUqryi1MIrs', title: 'A Cidade sem você' },
-                    { audioId: 'amC0UxaMz9Y', title: 'Um certo alguem' },
-                    { audioId: 'slgXDu2Ck2A', title: 'Playback' },
-                    { audioId: 'wVmcDQ_yX5g', title: 'Amiga fiel' },
-                    { audioId: 'yqRAcdaqLNI', title: 'Televisão' },
-                    { audioId: 'y1v-bI4_k2I', title: 'Raise my hands' }
-                ]
-            }
-        ];
-        
-        const dom = {
+        // Main application state
+        const AppState = {
+            albums: [
+                {
+                    id: 'validation',
+                    name: "Validation",
+                    coverUrl: "https://i1.sndcdn.com/artworks-zMJy5oUhjfM05LnK-AzuGwA-t500x500.jpg",
+                    theme: { name: 'validation', primary: '#66ff66', secondary: '#00529b', bg: 'rgba(0, 82, 155, 0.2)' },
+                    tracks: [
+                        { audioId: 'tkl_smLRtcE', title: "Sucesso FM", musicVideoId: 'tqdOIs3K-SA' }, 
+                        { audioId: 'gTsZ-vQLq74', title: "Rumo a Vitória" },
+                        { audioId: 'fGhkeEmMDSU', title: "Goddamn" }, 
+                        { audioId: 'pKyoxG2ZDh8', title: "I Walk", musicVideoId: 'lvABzBQDYGY' },
+                        { audioId: '-1WfKz06Hgc', title: "Waiting to Fly", musicVideoId: 'hX2NJxJP6Mc' }, 
+                        { audioId: 'llJZ4H4zQ2k', title: "Sonhar", musicVideoId: 'WCtvzfzKStU', videoStart: 39 },
+                        { audioId: 'TQ2OtyCtOMc', title: "I'm in Love" }, 
+                        { audioId: 'u3M_KURTWKY', title: "For my Family", musicVideoId: 'krU-M8WusuY' }, 
+                        { audioId: 'm8SzrWpCjKU', title: "Going Home" }, 
+                        { audioId: 'rfIV2uGZ2kM', title: "The Lord and Me" },
+                        { audioId: 'ozu12D-DdJk', title: "Anjos da Guarda", musicVideoId: 'gI_2-LacLiI' }, 
+                        { audioId: 'HjA6fwTInT0', title: "We Gold" },
+                    ]
+                },
+                {
+                    id: 'bittersweet',
+                    name: "Bittersweet Memories",
+                    coverUrl: "https://i.scdn.co/image/ab67616d0000b2732e8e4cfa666ea534d070c041",
+                    theme: { name: 'bittersweet', primary: '#ff8c00', secondary: '#ffd700', bg: 'rgba(255, 140, 0, 0.2)' },
+                    tracks: [
+                        { audioId: 'xXeDMfisrU8', title: "Saúde" }, { audioId: 'rsxeE1WkHqw', title: "Filho Pródigo" },
+                        { audioId: 'KzUUemEW_iI', title: "Let It Pour" }, { audioId: 'qkaxqSGI_OE', title: "The Story" },
+                        { audioId: 'fnRyVCxqLqk', title: "Back Home" }, { audioId: 'RMeJND0yzeM', title: "Melhor Não" },
+                        { audioId: 'yApMEdYtkGM', title: "Old School" }, { audioId: 'ZBe3GmoFJys', title: "Dirty Dancing" },
+                        { audioId: 'g0_DLkqjylU', title: "Prefiro Morrer" },
+                        { audioId: 'vLQR5UCq5J0', title: "Quase Perfeito" }, 
+                        { audioId: 'Z7LsJA7NJF0', title: "Máquina do Tempo", musicVideoId: 'Z7LsJA7NJF0' },
+                        { audioId: 'tR-m63k2nNM', title: "Flores de Outro Carnaval" },
+                    ]
+                },
+                {
+                    id: '13lentes',
+                    name: "13 lentes de um final feliz",
+                    coverUrl: "https://cdn-images.dzcdn.net/images/cover/a01cc5f5bbb09711637d4927e9ab83cd/500x500.jpg",
+                    theme: { name: '13-lentes', primary: '#ffffff', secondary: '#888888', bg: 'rgba(128, 128, 128, 0.2)' },
+                    tracks: [
+                        { audioId: 'asI5cHpQPAA', title: "Au revoir" }, { audioId: 'wRlhPzhgqu0', title: "Carruagem" },
+                        { audioId: 'GPemhYrDATw', title: "Agradeço" }, { audioId: 'mNlhepSXi4g', title: "Corrida" },
+                        { audioId: 'WlylgE8fSLs', title: "Joias da Familia" }, 
+                        { audioId: 'TSLRScqwemI', title: "Nunca Paro", musicVideoId: 'P9NqaluDZuk', videoLoop: true },
+                        { audioId: 'GC-BHmtlhFQ', title: "Memórias" }, { audioId: '6ep0itQcsUM', title: "Lost in Translation" },
+                        { audioId: 'nKJyKsFgDJY', title: "Primavera" }, { audioId: 'MVrIi0zI6gc', title: "Let me see the sun" },
+                        { audioId: 'vWsdkDa3vOw', title: "Adeus" }, { audioId: 'cgW6sqr8X0k', title: "Deixa Doer" },
+                        { audioId: 'lUu0sFJfN80', title: "Não me faça falar", musicVideoId: 'Ryz5LuaFznM' },
+                    ]
+                },
+                {
+                    id: 'optica',
+                    name: "Óptica",
+                    coverUrl: "https://images.genius.com/a1c5e0cebf8fdb9629ff8205d02af9ff.1000x1000x1.png",
+                    theme: { name: 'optica', primary: '#add8e6', secondary: '#ffffff', bg: 'rgba(173, 216, 230, 0.2)' },
+                    tracks: [
+                        { audioId: 'DWV5g3m3118', title: "Absorver" }, { audioId: 'YbQj7ByNkNM', title: "Reflexo" },
+                        { audioId: 'ENmHHlGVAtE', title: "Sombra", musicVideoId: '1EYOFvZmnJE' },
+                        { audioId: 'd-mQtP2JHJY', title: "Transparência" }
+                    ]
+                },
+                {
+                    id: 'bonstempos',
+                    name: "Bons tempos",
+                    coverUrl: "https://akamai.sscdn.co/uploadfile/letras/albuns/3/0/9/c/2338071724245865.jpg",
+                    theme: { name: 'bonstempos', primary: '#9370db', secondary: '#e6e6fa', bg: 'rgba(75, 0, 130, 0.3)', bgImage: 'url(https://www.transparenttextures.com/patterns/stardust.png)' },
+                    tracks: [
+                        { audioId: 'XUYNTXXhmbc', title: 'Quando a noite vem' },
+                        { audioId: 'wwVejlwrKTA', title: 'Oxford Shoes' },
+                        { audioId: 'R3BWRueflA4', title: 'Twist', musicVideoId: 'hcL33v1N8uQ', videoLoop: true },
+                        { audioId: '61o4MC3kEsM', title: 'American Dream' },
+                        { audioId: 'MUqryi1MIrs', title: 'A Cidade sem você' },
+                        { audioId: 'amC0UxaMz9Y', title: 'Um certo alguem' },
+                        { audioId: 'slgXDu2Ck2A', title: 'Playback' },
+                        { audioId: 'wVmcDQ_yX5g', title: 'Amiga fiel' },
+                        { audioId: 'yqRAcdaqLNI', title: 'Televisão' },
+                        { audioId: 'y1v-bI4_k2I', title: 'Raise my hands' }
+                    ]
+                }
+            ],
+            
+            currentAlbumIndex: 0,
+            currentTrackIndex: 0,
+            audioPlayer: null,
+            videoPlayer: null,
+            progressInterval: null,
+            isApiLoaded: false,
+            isPlayerReady: false,
+            isShuffle: false,
+            repeatMode: 'all',
+            visualizerMode: 'bars',
+            clockInterval: null,
+            isSoundscapeMode: false,
+            screensaverTimeout: null,
+            bgHoverTimeout: null,
+            visualizerId: null
+        };
+
+        // DOM elements
+        const DOM = {
             body: document.body,
             selectionScreen: document.getElementById('selection-screen'),
             selectionBgHover: document.getElementById('selection-bg-hover'),
-            albumBoxContainer: document.getElementById('album-box-container'),
             playerScreen: document.getElementById('player-screen'),
             videoBgContainer: document.getElementById('video-background-container'),
             playerContainer: document.getElementById('player-container'),
@@ -504,430 +522,488 @@
             tracklistUl: document.getElementById('tracklist-ul'),
             closeTracklistBtn: document.getElementById('close-tracklist-btn'),
             visualizer: document.getElementById('visualizer'),
-            clock: document.getElementById('clock'),
+            clock: document.getElementById('clock')
         };
 
-        const state = {
-            currentAlbumIndex: 0,
-            currentTrackIndex: 0,
-            audioPlayer: null,
-            videoPlayer: null,
-            progressInterval: null,
-            isApiLoaded: false,
-            isPlayerReady: false,
-            isShuffle: false,
-            repeatMode: 'all',
-            visualizerMode: 'bars',
-            clockInterval: null,
-            isSoundscapeMode: false,
-            screensaverTimeout: null,
-            bgHoverTimeout: null,
+        // Utility functions
+        const Utils = {
+            formatTime: (seconds) => {
+                seconds = Math.floor(seconds) || 0;
+                const minutes = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                return `${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+            },
+            
+            fadeOutAudio: (callback) => {
+                const currentVolume = DOM.volumeSlider.value;
+                if (currentVolume == 0) { if(callback) callback(); return; }
+                let fadeVolume = currentVolume;
+                const fadeOutInterval = setInterval(() => {
+                    fadeVolume -= 5;
+                    if (fadeVolume <= 0) {
+                        clearInterval(fadeOutInterval);
+                        if(callback) callback();
+                        setTimeout(() => AppState.audioPlayer.setVolume(currentVolume), 500);
+                    } else {
+                        AppState.audioPlayer.setVolume(fadeVolume);
+                    }
+                }, 50);
+            }
         };
 
-        function loadYouTubeAPI() {
-            if (state.isApiLoaded) return;
-            state.isApiLoaded = true;
-            const tag = document.createElement('script');
-            tag.src = "https://www.youtube.com/iframe_api";
-            document.head.appendChild(tag);
-        }
+        // Screen management
+        const ScreenManager = {
+            transitionToScreen: (targetScreen, isAnimatingCD = false) => {
+                const currentScreen = document.querySelector('.screen.active');
+                if (currentScreen) {
+                    currentScreen.classList.add('hiding');
+                    setTimeout(() => currentScreen.classList.remove('active', 'hiding'), 500);
+                }
+                targetScreen.classList.add('active');
+                if (isAnimatingCD) {
+                    DOM.playerContainer.classList.remove('ui-ready');
+                }
+                if(targetScreen === DOM.playerScreen) ClockManager.startClock();
+                else ClockManager.stopClock();
+            },
+            
+            renderSelectionScreen: () => {
+                DOM.cdSelectionContainer.innerHTML = '';
+                AppState.albums.forEach((album, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'cd-selection-item';
+                    item.innerHTML = `
+                        <div class="cd-case">
+                            <div class="cd-spine"></div>
+                            <div class="cd-front-cover">
+                               <div class="cd-art" style="background-image: url('${album.coverUrl}')"></div>
+                            </div>
+                        </div>`;
+                    item.onclick = (e) => PlayerManager.selectAlbum(index, e.currentTarget);
+                    item.onmouseenter = () => {
+                        if(AppState.bgHoverTimeout) clearTimeout(AppState.bgHoverTimeout);
+                        DOM.selectionBgHover.style.backgroundImage = `url('${album.coverUrl}')`;
+                        DOM.selectionBgHover.style.opacity = 0.2;
+                    };
+                    DOM.cdSelectionContainer.appendChild(item);
+                });
+            }
+        };
 
+        // Clock management
+        const ClockManager = {
+            startClock: () => {
+                if (AppState.clockInterval) clearInterval(AppState.clockInterval);
+                AppState.clockInterval = setInterval(() => {
+                    const now = new Date();
+                    DOM.clock.textContent = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                }, 1000);
+            },
+            
+            stopClock: () => {
+                clearInterval(AppState.clockInterval);
+            }
+        };
+
+        // Screensaver management
+        const ScreensaverManager = {
+            resetScreensaverTimer: () => {
+                clearTimeout(AppState.screensaverTimeout);
+                DOM.dvdScreensaver.classList.remove('active');
+                AppState.screensaverTimeout = setTimeout(() => {
+                    DOM.dvdScreensaver.classList.add('active');
+                }, 120000); // 2 minutes
+            }
+        };
+
+        // Player management
+        const PlayerManager = {
+            loadYouTubeAPI: () => {
+                if (AppState.isApiLoaded) return;
+                AppState.isApiLoaded = true;
+                const tag = document.createElement('script');
+                tag.src = "https://www.youtube.com/iframe_api";
+                document.head.appendChild(tag);
+            },
+            
+            selectAlbum: (index, clickedElement) => {
+                AppState.currentAlbumIndex = index;
+                AppState.currentTrackIndex = 0;
+                
+                const album = AppState.albums[index];
+                const startRect = clickedElement.getBoundingClientRect();
+                
+                const transitionCD = document.createElement('div');
+                transitionCD.id = 'cd-transition-element';
+                transitionCD.style.backgroundImage = `url('${album.coverUrl}')`;
+                transitionCD.style.left = `${startRect.left}px`;
+                transitionCD.style.width = `${startRect.width}px`;
+                transitionCD.style.height = `${startRect.height}px`;
+                transitionCD.style.top = `${startRect.top}px`;
+                document.body.appendChild(transitionCD);
+
+                ScreenManager.transitionToScreen(DOM.playerScreen, true);
+                
+                requestAnimationFrame(() => {
+                    const targetRect = DOM.cd2d.getBoundingClientRect();
+                    transitionCD.style.left = `${targetRect.left}px`;
+                    transitionCD.style.top = `${targetRect.top}px`;
+                    transitionCD.style.width = `${targetRect.width}px`;
+                    transitionCD.style.height = `${targetRect.height}px`;
+                    transitionCD.style.transform = 'rotate(720deg)';
+
+                    transitionCD.addEventListener('transitionend', () => {
+                        transitionCD.remove();
+                        DOM.playerContainer.classList.add('ui-ready');
+                        if (!AppState.isApiLoaded) PlayerManager.loadYouTubeAPI();
+                        else if (!AppState.audioPlayer || !AppState.isPlayerReady) window.onYouTubeIframeAPIReady();
+                        else PlayerManager.loadTrack(AppState.currentTrackIndex, true);
+                    }, { once: true });
+                });
+            },
+            
+            returnToSelection: () => {
+                PlayerManager.exitAllModes();
+                DOM.playerContainer.classList.remove('ui-ready');
+                Utils.fadeOutAudio(PlayerManager.stopMusic);
+                PlayerManager.resetTheme();
+                ScreenManager.transitionToScreen(DOM.selectionScreen);
+            },
+            
+            loadTrack: (index, autoplay = false) => {
+                if (!AppState.isPlayerReady) return;
+                PlayerManager.exitAllModes();
+                const album = AppState.albums[AppState.currentAlbumIndex];
+                if (index < 0 || index >= album.tracks.length) return;
+                const track = album.tracks[index];
+                AppState.currentTrackIndex = index;
+
+                PlayerManager.applyTheme(album.theme);
+                PlayerManager.updateTrackInfo(album, track, index + 1);
+                
+                DOM.body.classList.toggle('vhs-active', track.title === 'Máquina do Tempo');
+                DOM.videoBgContainer.classList.toggle('blue-tint', album.id === 'validation');
+                
+                const audioPlayerVars = {
+                    'videoId': track.audioId,
+                    'startSeconds': track.videoStart || 0,
+                };
+                
+                if (autoplay) AppState.audioPlayer.loadVideoById(audioPlayerVars);
+                else AppState.audioPlayer.cueVideoById(audioPlayerVars);
+
+                if (track.musicVideoId) {
+                    DOM.videoBgContainer.classList.add('visible');
+                    const videoPlayerVars = {
+                        'videoId': track.musicVideoId,
+                        'startSeconds': track.videoStart || 0,
+                        'loop': track.videoLoop ? 1 : 0,
+                        'playlist': track.videoLoop ? track.musicVideoId : undefined
+                    };
+                    AppState.videoPlayer.loadVideoById(videoPlayerVars);
+                } else {
+                    DOM.videoBgContainer.classList.remove('visible');
+                    if (AppState.videoPlayer && typeof AppState.videoPlayer.stopVideo === 'function') {
+                        AppState.videoPlayer.stopVideo();
+                    }
+                }
+            },
+            
+            playMusic: () => { 
+                if (AppState.audioPlayer) AppState.audioPlayer.playVideo(); 
+            },
+            
+            pauseMusic: () => { 
+                Utils.fadeOutAudio(() => AppState.audioPlayer.pauseVideo()); 
+            },
+            
+            stopMusic: () => {
+                if (AppState.audioPlayer && typeof AppState.audioPlayer.stopVideo === 'function') {
+                    Utils.fadeOutAudio(() => {
+                        AppState.audioPlayer.stopVideo();
+                        DOM.videoBgContainer.classList.remove('visible');
+                    });
+                }
+                PlayerManager.updateUIIsPlaying(false);
+            },
+            
+            playNextTrack: () => {
+                if (AppState.repeatMode === 'one') { 
+                    PlayerManager.loadTrack(AppState.currentTrackIndex, true); 
+                    return; 
+                }
+                
+                if (AppState.isShuffle) {
+                    let nextIndex;
+                    do { 
+                        nextIndex = Math.floor(Math.random() * AppState.albums[AppState.currentAlbumIndex].tracks.length); 
+                    } while (AppState.albums[AppState.currentAlbumIndex].tracks.length > 1 && nextIndex === AppState.currentTrackIndex);
+                    PlayerManager.loadTrack(nextIndex, true);
+                    return;
+                }
+                
+                const isLastTrack = AppState.currentTrackIndex === AppState.albums[AppState.currentAlbumIndex].tracks.length - 1;
+                if (isLastTrack && AppState.repeatMode === 'none') { 
+                    PlayerManager.stopMusic(); 
+                    return; 
+                }
+                
+                const nextTrackIndex = (AppState.currentTrackIndex + 1) % AppState.albums[AppState.currentAlbumIndex].tracks.length;
+                PlayerManager.loadTrack(nextTrackIndex, true);
+            },
+            
+            playPrevTrack: () => { 
+                PlayerManager.loadTrack(
+                    (AppState.currentTrackIndex - 1 + AppState.albums[AppState.currentAlbumIndex].tracks.length) % 
+                    AppState.albums[AppState.currentAlbumIndex].tracks.length, 
+                    true
+                ); 
+            },
+            
+            seek: (seconds) => {
+                if (!AppState.audioPlayer || typeof AppState.audioPlayer.getCurrentTime !== 'function') return;
+                const newTime = AppState.audioPlayer.getCurrentTime() + seconds;
+                AppState.audioPlayer.seekTo(newTime, true);
+                if (AppState.videoPlayer && typeof AppState.videoPlayer.seekTo === 'function') {
+                    AppState.videoPlayer.seekTo(newTime, true);
+                }
+            },
+            
+            applyTheme: (theme) => {
+                document.documentElement.style.setProperty('--ps2-blue', theme.primary || '#0096ff');
+                document.documentElement.style.setProperty('--ps2-yellow', theme.secondary || '#ffff00');
+                DOM.playerScreen.style.backgroundColor = theme.bg || 'var(--ps2-bg)';
+                DOM.playerScreen.style.backgroundImage = theme.bgImage || 'none';
+            },
+            
+            resetTheme: () => {
+                document.documentElement.style.setProperty('--ps2-blue', '#0096ff');
+                document.documentElement.style.setProperty('--ps2-yellow', '#ffff00');
+                DOM.playerScreen.style.backgroundColor = 'var(--ps2-bg)';
+                DOM.playerScreen.style.backgroundImage = 'none';
+                DOM.videoBgContainer.classList.remove('visible');
+                DOM.body.classList.remove('vhs-active');
+            },
+            
+            updateTrackInfo: (album, track, trackNumber) => {
+                DOM.trackNumber.textContent = `Track ${String(trackNumber).padStart(2, '0')}`;
+                DOM.trackName.textContent = track.title;
+                const coverUrl = `url('${album.coverUrl}')`;
+                DOM.cd2d.style.backgroundImage = coverUrl;
+                DOM.soundscapeCd.style.backgroundImage = coverUrl;
+                DOM.soundscapeBg.style.backgroundImage = coverUrl;
+                DOM.trackName.classList.toggle('scrolling', track.title.length > 20);
+            },
+            
+            updateUIIsPlaying: (playing) => {
+                DOM.cd2d.classList.toggle('playing', playing);
+                DOM.soundscapeCd.classList.toggle('playing', playing);
+                DOM.playBtn.classList.toggle('hidden', playing);
+                DOM.pauseBtn.classList.toggle('hidden', !playing);
+            },
+            
+            updateTimeDisplay: (currentTime, duration) => {
+                const timeText = `${Utils.formatTime(currentTime)} / ${Utils.formatTime(duration)}`;
+                DOM.timeDisplay.textContent = timeText;
+                DOM.soundscapeTime.textContent = timeText;
+                PlayerManager.updateProgressBar(currentTime, duration);
+            },
+            
+            updateProgressBar: (currentTime, duration) => {
+                const percentage = duration > 0 ? (currentTime / duration) * 100 : 0;
+                const blockCount = 40;
+                const activeBlocks = Math.floor(blockCount * (percentage / 100));
+                
+                DOM.progressBarContainer.innerHTML = '';
+                for (let i = 0; i < blockCount; i++) {
+                    const block = document.createElement('div');
+                    block.className = 'progress-block';
+                    block.style.transition = `background-color 0.5s ease ${i * 15}ms`;
+                    if (i < activeBlocks) block.classList.add('active');
+                    block.onclick = (e) => {
+                        e.stopPropagation();
+                        const newTime = (i / blockCount) * duration;
+                        PlayerManager.seek(newTime);
+                    };
+                    DOM.progressBarContainer.appendChild(block);
+                }
+            },
+            
+            startProgressUpdater: () => {
+                PlayerManager.stopProgressUpdater();
+                AppState.progressInterval = setInterval(() => {
+                    if (AppState.audioPlayer && typeof AppState.audioPlayer.getCurrentTime === 'function') {
+                        PlayerManager.updateTimeDisplay(
+                            AppState.audioPlayer.getCurrentTime(), 
+                            AppState.audioPlayer.getDuration()
+                        );
+                    }
+                }, 500);
+                VisualizerManager.drawVisualizer();
+            },
+            
+            stopProgressUpdater: () => {
+                clearInterval(AppState.progressInterval);
+                VisualizerManager.stopVisualizer();
+            },
+            
+            toggleSoundscapeMode: () => {
+                const track = AppState.albums[AppState.currentAlbumIndex].tracks[AppState.currentTrackIndex];
+                if (track.musicVideoId) {
+                    DOM.playerScreen.classList.toggle('fullscreen-video');
+                } else {
+                    AppState.isSoundscapeMode = !AppState.isSoundscapeMode;
+                    DOM.playerScreen.classList.toggle('soundscape-mode', AppState.isSoundscapeMode);
+                }
+                DOM.soundscapeBtn.classList.toggle('active', 
+                    AppState.isSoundscapeMode || DOM.playerScreen.classList.contains('fullscreen-video')
+                );
+            },
+            
+            exitAllModes: () => {
+                if (AppState.isSoundscapeMode) {
+                    AppState.isSoundscapeMode = false;
+                    DOM.playerScreen.classList.remove('soundscape-mode');
+                }
+                if (DOM.playerScreen.classList.contains('fullscreen-video')) {
+                    DOM.playerScreen.classList.remove('fullscreen-video');
+                }
+                DOM.soundscapeBtn.classList.remove('active');
+            }
+        };
+
+        // Tracklist management
+        const TracklistManager = {
+            showTracklist: () => {
+                const album = AppState.albums[AppState.currentAlbumIndex];
+                DOM.tracklistTitle.textContent = album.name;
+                DOM.tracklistUl.innerHTML = '';
+                album.tracks.forEach((track, index) => {
+                    const li = document.createElement('li');
+                    li.className = 'p-2 cursor-pointer tracklist-item transition-colors';
+                    li.textContent = `${String(index + 1).padStart(2, '0')}. ${track.title}`;
+                    if (index === AppState.currentTrackIndex) li.style.color = 'var(--ps2-yellow)';
+                    li.onclick = () => { 
+                        PlayerManager.loadTrack(index, true); 
+                        TracklistManager.hideTracklist(); 
+                    };
+                    DOM.tracklistUl.appendChild(li);
+                });
+                DOM.tracklistPopup.classList.remove('hidden');
+            },
+            
+            hideTracklist: () => { 
+                DOM.tracklistPopup.classList.add('hidden'); 
+            }
+        };
+
+        // Visualizer management
+        const VisualizerManager = {
+            drawVisualizer: () => {
+                AppState.visualizerId = requestAnimationFrame(VisualizerManager.drawVisualizer);
+                const ctx = DOM.visualizer.getContext('2d');
+                const width = DOM.visualizer.width;
+                const height = DOM.visualizer.height;
+                ctx.clearRect(0, 0, width, height);
+                if(DOM.playerScreen.classList.contains('soundscape-mode') || DOM.playerScreen.classList.contains('fullscreen-video')) return;
+                
+                const isPlaying = AppState.audioPlayer && AppState.audioPlayer.getPlayerState() === YT.PlayerState.PLAYING;
+                ctx.fillStyle = document.documentElement.style.getPropertyValue('--ps2-blue');
+
+                if (AppState.visualizerMode === 'bars') {
+                    const barCount = 32;
+                    const barWidth = width / barCount;
+                    for (let i = 0; i < barCount; i++) {
+                        const barHeight = isPlaying ? Math.random() * height : 2;
+                        ctx.fillRect(i * barWidth, height - barHeight, barWidth - 2, barHeight);
+                    }
+                } 
+            },
+            
+            stopVisualizer: () => {
+                cancelAnimationFrame(AppState.visualizerId);
+            }
+        };
+
+        // YouTube API callbacks
         window.onYouTubeIframeAPIReady = () => {
-            state.audioPlayer = new YT.Player('youtube-player-iframe', {
+            AppState.audioPlayer = new YT.Player('youtube-player-iframe', {
                 playerVars: { 'controls': 0, 'fs': 0, 'iv_load_policy': 3, 'modestbranding': 1, 'rel': 0, 'showinfo': 0, 'autoplay': 1 },
-                events: { 'onReady': onPlayerReady, 'onStateChange': onAudioPlayerStateChange }
+                events: { 'onReady': PlayerManager.onPlayerReady, 'onStateChange': PlayerManager.onAudioPlayerStateChange }
             });
-            state.videoPlayer = new YT.Player('youtube-videoclip-iframe', {
+            AppState.videoPlayer = new YT.Player('youtube-videoclip-iframe', {
                 playerVars: { 'controls': 0, 'fs': 0, 'iv_load_policy': 3, 'modestbranding': 1, 'rel': 0, 'showinfo': 0, 'autoplay': 1, 'loop': 1 },
                 events: { 'onReady': (e) => e.target.mute() }
             });
-        }
+        };
+
+        PlayerManager.onPlayerReady = (event) => {
+            AppState.isPlayerReady = true;
+            AppState.audioPlayer.setVolume(DOM.volumeSlider.value);
+            PlayerManager.loadTrack(AppState.currentTrackIndex, true);
+        };
         
-        function onAudioPlayerStateChange(event) {
+        PlayerManager.onAudioPlayerStateChange = (event) => {
             const isPlaying = event.data === YT.PlayerState.PLAYING;
-            updateUIIsPlaying(isPlaying);
+            PlayerManager.updateUIIsPlaying(isPlaying);
             
-            if (state.videoPlayer && typeof state.videoPlayer.playVideo === 'function') {
-                if (isPlaying) state.videoPlayer.playVideo();
-                else state.videoPlayer.pauseVideo();
+            if (AppState.videoPlayer && typeof AppState.videoPlayer.playVideo === 'function') {
+                if (isPlaying) AppState.videoPlayer.playVideo();
+                else AppState.videoPlayer.pauseVideo();
             }
 
-            if (isPlaying) startProgressUpdater(); else stopProgressUpdater();
-            if (event.data === YT.PlayerState.ENDED) playNextTrack();
-        }
-
-        function renderSelectionScreen() {
-            dom.cdSelectionContainer.innerHTML = '';
-            albums.forEach((album, index) => {
-                const item = document.createElement('div');
-                item.className = 'cd-selection-item';
-                item.innerHTML = `
-                    <div class="cd-case">
-                        <div class="cd-spine"></div>
-                        <div class="cd-front-cover">
-                           <div class="cd-art" style="background-image: url('${album.coverUrl}')"></div>
-                        </div>
-                    </div>`;
-                item.onclick = (e) => selectAlbum(index, e.currentTarget);
-                item.onmouseenter = () => {
-                    if(state.bgHoverTimeout) clearTimeout(state.bgHoverTimeout);
-                    dom.selectionBgHover.style.backgroundImage = `url('${album.coverUrl}')`;
-                    dom.selectionBgHover.style.opacity = 0.2;
-                };
-                dom.cdSelectionContainer.appendChild(item);
-            });
-        }
-
-        function selectAlbum(index, clickedElement) {
-            state.currentAlbumIndex = index;
-            state.currentTrackIndex = 0;
+            if (isPlaying) PlayerManager.startProgressUpdater(); 
+            else PlayerManager.stopProgressUpdater();
             
-            const album = albums[index];
-            const startRect = clickedElement.getBoundingClientRect();
-            
-            const transitionCD = document.createElement('div');
-            transitionCD.id = 'cd-transition-element';
-            transitionCD.style.backgroundImage = `url('${album.coverUrl}')`;
-            transitionCD.style.left = `${startRect.left}px`;
-            transitionCD.style.width = `${startRect.width}px`;
-            transitionCD.style.height = `${startRect.height}px`;
-            transitionCD.style.top = `110vh`;
-            document.body.appendChild(transitionCD);
+            if (event.data === YT.PlayerState.ENDED) PlayerManager.playNextTrack();
+        };
 
-            transitionToScreen(dom.playerScreen, true);
-            
-            requestAnimationFrame(() => {
-                const targetRect = dom.cd2d.getBoundingClientRect();
-                transitionCD.style.left = `${targetRect.left}px`;
-                transitionCD.style.top = `${targetRect.top}px`;
-                transitionCD.style.width = `${targetRect.width}px`;
-                transitionCD.style.height = `${targetRect.height}px`;
-                transitionCD.style.transform = 'rotate(720deg)';
-
-                transitionCD.addEventListener('transitionend', () => {
-                    transitionCD.remove();
-                    dom.playerContainer.classList.add('ui-ready');
-                    if (!state.isApiLoaded) loadYouTubeAPI();
-                    else if (!state.audioPlayer || !state.isPlayerReady) onYouTubeIframeAPIReady();
-                    else loadTrack(state.currentTrackIndex, true);
-                }, { once: true });
-            });
-        }
-
-        function onPlayerReady(event) {
-            state.isPlayerReady = true;
-            state.audioPlayer.setVolume(dom.volumeSlider.value);
-            loadTrack(state.currentTrackIndex, true);
-        }
-        
-        function returnToSelection() {
-            exitAllModes();
-            dom.playerContainer.classList.remove('ui-ready');
-            fadeOutAudio(stopMusic);
-            resetTheme();
-            transitionToScreen(dom.selectionScreen);
-        }
-
-        function transitionToScreen(targetScreen, isAnimatingCD = false) {
-            const currentScreen = document.querySelector('.screen.active');
-            if (currentScreen) {
-                currentScreen.classList.add('hiding');
-                setTimeout(() => currentScreen.classList.remove('active', 'hiding'), 500);
-            }
-            targetScreen.classList.add('active');
-            if (isAnimatingCD) {
-                dom.playerContainer.classList.remove('ui-ready');
-            }
-            if(targetScreen === dom.playerScreen) startClock();
-            else stopClock();
-        }
-
-        function loadTrack(index, autoplay = false) {
-            if (!state.isPlayerReady) return;
-            exitAllModes();
-            const album = albums[state.currentAlbumIndex];
-            if (index < 0 || index >= album.tracks.length) return;
-            const track = album.tracks[index];
-            state.currentTrackIndex = index;
-
-            applyTheme(album.theme);
-            updateTrackInfo(album, track, index + 1);
-            
-            dom.body.classList.toggle('vhs-active', track.title === 'Máquina do Tempo');
-            dom.videoBgContainer.classList.toggle('blue-tint', album.id === 'validation');
-            
-            const audioPlayerVars = {
-                'videoId': track.audioId,
-                'startSeconds': track.videoStart || 0,
-            };
-            
-            if (autoplay) state.audioPlayer.loadVideoById(audioPlayerVars);
-            else state.audioPlayer.cueVideoById(audioPlayerVars);
-
-            if (track.musicVideoId) {
-                dom.videoBgContainer.classList.add('visible');
-                const videoPlayerVars = {
-                    'videoId': track.musicVideoId,
-                    'startSeconds': track.videoStart || 0,
-                    'loop': track.videoLoop ? 1 : 0,
-                    'playlist': track.videoLoop ? track.musicVideoId : undefined
-                };
-                state.videoPlayer.loadVideoById(videoPlayerVars);
-            } else {
-                dom.videoBgContainer.classList.remove('visible');
-                if (state.videoPlayer && typeof state.videoPlayer.stopVideo === 'function') {
-                    state.videoPlayer.stopVideo();
-                }
-            }
-        }
-        
-        function fadeOutAudio(callback) {
-            const currentVolume = dom.volumeSlider.value;
-            if (currentVolume == 0) { if(callback) callback(); return; }
-            let fadeVolume = currentVolume;
-            const fadeOutInterval = setInterval(() => {
-                fadeVolume -= 5;
-                if (fadeVolume <= 0) {
-                    clearInterval(fadeOutInterval);
-                    if(callback) callback();
-                    setTimeout(() => state.audioPlayer.setVolume(currentVolume), 500);
-                } else {
-                    state.audioPlayer.setVolume(fadeVolume);
-                }
-            }, 50);
-        }
-
-        function playMusic() { if (state.audioPlayer) state.audioPlayer.playVideo(); }
-        function pauseMusic() { fadeOutAudio(() => state.audioPlayer.pauseVideo()); }
-        function stopMusic() {
-            if (state.audioPlayer && typeof state.audioPlayer.stopVideo === 'function') {
-                fadeOutAudio(() => {
-                    state.audioPlayer.stopVideo();
-                    dom.videoBgContainer.classList.remove('visible');
-                });
-            }
-            updateUIIsPlaying(false);
-        }
-
-        function playNextTrack() {
-            if (state.repeatMode === 'one') { loadTrack(state.currentTrackIndex, true); return; }
-            if (state.isShuffle) {
-                let nextIndex;
-                do { nextIndex = Math.floor(Math.random() * albums[state.currentAlbumIndex].tracks.length); }
-                while (albums[state.currentAlbumIndex].tracks.length > 1 && nextIndex === state.currentTrackIndex);
-                loadTrack(nextIndex, true);
-                return;
-            }
-            const isLastTrack = state.currentTrackIndex === albums[state.currentAlbumIndex].tracks.length - 1;
-            if (isLastTrack && state.repeatMode === 'none') { stopMusic(); return; }
-            const nextTrackIndex = (state.currentTrackIndex + 1) % albums[state.currentAlbumIndex].tracks.length;
-            loadTrack(nextTrackIndex, true);
-        }
-        function playPrevTrack() { loadTrack((state.currentTrackIndex - 1 + albums[state.currentAlbumIndex].tracks.length) % albums[state.currentAlbumIndex].tracks.length, true); }
-        
-        function seek(seconds) {
-            if (!state.audioPlayer || typeof state.audioPlayer.getCurrentTime !== 'function') return;
-            const newTime = state.audioPlayer.getCurrentTime() + seconds;
-            state.audioPlayer.seekTo(newTime, true);
-            if (state.videoPlayer && typeof state.videoPlayer.seekTo === 'function') {
-                state.videoPlayer.seekTo(newTime, true);
-            }
-        }
-
-        function applyTheme(theme) {
-            document.documentElement.style.setProperty('--ps2-blue', theme.primary || '#0096ff');
-            document.documentElement.style.setProperty('--ps2-yellow', theme.secondary || '#ffff00');
-            dom.playerScreen.style.backgroundColor = theme.bg || 'var(--ps2-bg)';
-            dom.playerScreen.style.backgroundImage = theme.bgImage || 'none';
-        }
-
-        function resetTheme() {
-            document.documentElement.style.setProperty('--ps2-blue', '#0096ff');
-            document.documentElement.style.setProperty('--ps2-yellow', '#ffff00');
-            dom.playerScreen.style.backgroundColor = 'var(--ps2-bg)';
-            dom.playerScreen.style.backgroundImage = 'none';
-            dom.videoBgContainer.classList.remove('visible');
-            dom.body.classList.remove('vhs-active');
-        }
-
-        function updateTrackInfo(album, track, trackNumber) {
-            dom.trackNumber.textContent = `Track ${String(trackNumber).padStart(2, '0')}`;
-            dom.trackName.textContent = track.title;
-            const coverUrl = `url('${album.coverUrl}')`;
-            dom.cd2d.style.backgroundImage = coverUrl;
-            dom.soundscapeCd.style.backgroundImage = coverUrl;
-            dom.soundscapeBg.style.backgroundImage = coverUrl;
-            dom.trackName.classList.toggle('scrolling', track.title.length > 20);
-        }
-        function updateUIIsPlaying(playing) {
-            dom.cd2d.classList.toggle('playing', playing);
-            dom.soundscapeCd.classList.toggle('playing', playing);
-            dom.playBtn.classList.toggle('hidden', playing);
-            dom.pauseBtn.classList.toggle('hidden', !playing);
-        }
-        function formatTime(seconds) {
-            seconds = Math.floor(seconds) || 0;
-            const minutes = Math.floor(seconds / 60);
-            const secs = seconds % 60;
-            return `${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-        }
-        
-        function updateTimeDisplay(currentTime, duration) {
-            const timeText = `${formatTime(currentTime)} / ${formatTime(duration)}`;
-            dom.timeDisplay.textContent = timeText;
-            dom.soundscapeTime.textContent = timeText;
-            updateProgressBar(currentTime, duration);
-        }
-
-        function updateProgressBar(currentTime, duration) {
-            const percentage = duration > 0 ? (currentTime / duration) * 100 : 0;
-            const blockCount = 40;
-            const activeBlocks = Math.floor(blockCount * (percentage / 100));
-            
-            dom.progressBarContainer.innerHTML = '';
-            for (let i = 0; i < blockCount; i++) {
-                const block = document.createElement('div');
-                block.className = 'progress-block';
-                block.style.transition = `background-color 0.5s ease ${i * 15}ms`;
-                if (i < activeBlocks) block.classList.add('active');
-                block.onclick = (e) => {
-                    e.stopPropagation();
-                    const newTime = (i / blockCount) * duration;
-                    seek(newTime);
-                };
-                dom.progressBarContainer.appendChild(block);
-            }
-        }
-
-        let visualizerId;
-        function drawVisualizer() {
-            visualizerId = requestAnimationFrame(drawVisualizer);
-            const ctx = dom.visualizer.getContext('2d');
-            const width = dom.visualizer.width;
-            const height = dom.visualizer.height;
-            ctx.clearRect(0, 0, width, height);
-            if(dom.playerScreen.classList.contains('soundscape-mode') || dom.playerScreen.classList.contains('fullscreen-video')) return;
-            
-            const isPlaying = state.audioPlayer && state.audioPlayer.getPlayerState() === YT.PlayerState.PLAYING;
-            ctx.fillStyle = document.documentElement.style.getPropertyValue('--ps2-blue');
-
-            if (state.visualizerMode === 'bars') {
-                const barCount = 32;
-                const barWidth = width / barCount;
-                for (let i = 0; i < barCount; i++) {
-                    const barHeight = isPlaying ? Math.random() * height : 2;
-                    ctx.fillRect(i * barWidth, height - barHeight, barWidth - 2, barHeight);
-                }
-            } 
-        }
-
-        function startProgressUpdater() {
-            stopProgressUpdater();
-            state.progressInterval = setInterval(() => {
-                if (state.audioPlayer && typeof state.audioPlayer.getCurrentTime === 'function') {
-                    updateTimeDisplay(state.audioPlayer.getCurrentTime(), state.audioPlayer.getDuration());
-                }
-            }, 500);
-            drawVisualizer();
-        }
-        function stopProgressUpdater() {
-            clearInterval(state.progressInterval);
-            cancelAnimationFrame(visualizerId);
-        }
-
-        function showTracklist() {
-            const album = albums[state.currentAlbumIndex];
-            dom.tracklistTitle.textContent = album.name;
-            dom.tracklistUl.innerHTML = '';
-            album.tracks.forEach((track, index) => {
-                const li = document.createElement('li');
-                li.className = 'p-2 cursor-pointer tracklist-item transition-colors';
-                li.textContent = `${String(index + 1).padStart(2, '0')}. ${track.title}`;
-                if (index === state.currentTrackIndex) li.style.color = 'var(--ps2-yellow)';
-                li.onclick = () => { loadTrack(index, true); hideTracklist(); };
-                dom.tracklistUl.appendChild(li);
-            });
-            dom.tracklistPopup.classList.remove('hidden');
-        }
-        function hideTracklist() { dom.tracklistPopup.classList.add('hidden'); }
-        
-        function toggleSoundscapeMode() {
-            const track = albums[state.currentAlbumIndex].tracks[state.currentTrackIndex];
-            if (track.musicVideoId) {
-                dom.playerScreen.classList.toggle('fullscreen-video');
-            } else {
-                state.isSoundscapeMode = !state.isSoundscapeMode;
-                dom.playerScreen.classList.toggle('soundscape-mode', state.isSoundscapeMode);
-            }
-            dom.soundscapeBtn.classList.toggle('active', state.isSoundscapeMode || dom.playerScreen.classList.contains('fullscreen-video'));
-        }
-
-        function exitAllModes() {
-            if (state.isSoundscapeMode) {
-                state.isSoundscapeMode = false;
-                dom.playerScreen.classList.remove('soundscape-mode');
-            }
-            if (dom.playerScreen.classList.contains('fullscreen-video')) {
-                dom.playerScreen.classList.remove('fullscreen-video');
-            }
-            dom.soundscapeBtn.classList.remove('active');
-        }
-        
-        function resetScreensaverTimer() {
-            clearTimeout(state.screensaverTimeout);
-            dom.dvdScreensaver.classList.remove('active');
-            state.screensaverTimeout = setTimeout(() => {
-                dom.dvdScreensaver.classList.add('active');
-            }, 120000); // 2 minutes
-        }
-
-        function startClock() {
-            if (state.clockInterval) clearInterval(state.clockInterval);
-            state.clockInterval = setInterval(() => {
-                const now = new Date();
-                dom.clock.textContent = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-            }, 1000);
-        }
-        function stopClock() { clearInterval(state.clockInterval); }
-
+        // Initialize the application
         window.onload = () => {
-            renderSelectionScreen();
-            resetScreensaverTimer();
+            ScreenManager.renderSelectionScreen();
+            ScreensaverManager.resetScreensaverTimer();
             
-            ['mousemove', 'keydown', 'click'].forEach(evt => document.addEventListener(evt, resetScreensaverTimer, false));
+            // Event listeners
+            ['mousemove', 'keydown', 'click'].forEach(evt => 
+                document.addEventListener(evt, ScreensaverManager.resetScreensaverTimer, false)
+            );
 
-            dom.playBtn.addEventListener('click', playMusic);
-            dom.pauseBtn.addEventListener('click', pauseMusic);
-            dom.stopBtn.addEventListener('click', stopMusic);
-            dom.nextBtn.addEventListener('click', playNextTrack);
-            dom.prevBtn.addEventListener('click', playPrevTrack);
-            dom.rewindBtn.addEventListener('click', () => seek(-10));
-            dom.forwardBtn.addEventListener('click', () => seek(10));
-            dom.backBtn.addEventListener('click', returnToSelection);
-            dom.volumeSlider.addEventListener('input', (e) => {
-                if (state.audioPlayer && state.isPlayerReady) state.audioPlayer.setVolume(e.target.value);
-            });
-            dom.tracklistBtn.addEventListener('click', showTracklist);
-            dom.closeTracklistBtn.addEventListener('click', hideTracklist);
-            dom.soundscapeBtn.addEventListener('click', toggleSoundscapeMode);
-            dom.exitSoundscapeBtn.addEventListener('click', toggleSoundscapeMode);
-            dom.exitFullscreenBtn.addEventListener('click', toggleSoundscapeMode);
+            DOM.playBtn.addEventListener('click', PlayerManager.playMusic);
+            DOM.pauseBtn.addEventListener('click', PlayerManager.pauseMusic);
+            DOM.stopBtn.addEventListener('click', PlayerManager.stopMusic);
+            DOM.nextBtn.addEventListener('click', PlayerManager.playNextTrack);
+            DOM.prevBtn.addEventListener('click', PlayerManager.playPrevTrack);
+            DOM.rewindBtn.addEventListener('click', () => PlayerManager.seek(-10));
+            DOM.forwardBtn.addEventListener('click', () => PlayerManager.seek(10));
+            DOM.backBtn.addEventListener('click', PlayerManager.returnToSelection);
             
-            dom.shuffleBtn.addEventListener('click', () => {
-                state.isShuffle = !state.isShuffle;
-                dom.shuffleBtn.classList.toggle('active', state.isShuffle);
+            DOM.volumeSlider.addEventListener('input', (e) => {
+                if (AppState.audioPlayer && AppState.isPlayerReady) {
+                    AppState.audioPlayer.setVolume(e.target.value);
+                }
             });
             
-            dom.repeatBtn.addEventListener('click', () => {
+            DOM.tracklistBtn.addEventListener('click', TracklistManager.showTracklist);
+            DOM.closeTracklistBtn.addEventListener('click', TracklistManager.hideTracklist);
+            DOM.soundscapeBtn.addEventListener('click', PlayerManager.toggleSoundscapeMode);
+            DOM.exitSoundscapeBtn.addEventListener('click', PlayerManager.toggleSoundscapeMode);
+            DOM.exitFullscreenBtn.addEventListener('click', PlayerManager.toggleSoundscapeMode);
+            
+            DOM.shuffleBtn.addEventListener('click', () => {
+                AppState.isShuffle = !AppState.isShuffle;
+                DOM.shuffleBtn.classList.toggle('active', AppState.isShuffle);
+            });
+            
+            DOM.repeatBtn.addEventListener('click', () => {
                 const modes = ['all', 'one', 'none'];
-                state.repeatMode = modes[(modes.indexOf(state.repeatMode) + 1) % modes.length];
-                dom.repeatBtn.textContent = `Repeat ${state.repeatMode.charAt(0).toUpperCase() + state.repeatMode.slice(1)}`;
-                dom.repeatBtn.classList.toggle('active', state.repeatMode !== 'none');
+                AppState.repeatMode = modes[(modes.indexOf(AppState.repeatMode) + 1) % modes.length];
+                DOM.repeatBtn.textContent = `Repeat ${AppState.repeatMode.charAt(0).toUpperCase() + AppState.repeatMode.slice(1)}`;
+                DOM.repeatBtn.classList.toggle('active', AppState.repeatMode !== 'none');
             });
 
-            dom.vizBtn.addEventListener('click', () => {
-                state.visualizerMode = state.visualizerMode === 'bars' ? 'off' : 'bars';
-                dom.vizBtn.textContent = `Viz: ${state.visualizerMode.charAt(0).toUpperCase() + state.visualizerMode.slice(1)}`;
+            DOM.vizBtn.addEventListener('click', () => {
+                AppState.visualizerMode = AppState.visualizerMode === 'bars' ? 'off' : 'bars';
+                DOM.vizBtn.textContent = `Viz: ${AppState.visualizerMode.charAt(0).toUpperCase() + AppState.visualizerMode.slice(1)}`;
             });
         };
     </script>
