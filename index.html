@@ -23,14 +23,14 @@
         @keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(20px); } }
         @keyframes scanlines { 0% { background-position: 0 0; } 100% { background-position: 0 50px; } }
         @keyframes cd-glare { 0% { transform: translateX(-150%) skewX(-30deg); } 100% { transform: translateX(150%) skewX(-30deg); } }
-        @keyframes jitter { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(0.5px, -0.5px); } 50% { transform: translate(-0.5px, 0.5px); } 75% { transform: translate(0.5px, 0.5px); } }
+        @keyframes jitter-subtle { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(0.2px, -0.2px); } 50% { transform: translate(-0.2px, 0.2px); } 75% { transform: translate(0.2px, 0.2px); } }
         @keyframes background-pan { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
         body { background-color: #111; font-family: 'VT323', monospace; color: var(--ps2-white); overflow: hidden; }
 
         .crt-filter {
             position: relative; width: 100vw; height: 100vh;
-            filter: blur(0.6px) contrast(1.2); animation: jitter 0.1s infinite;
+            filter: blur(0.5px) contrast(1.1) saturate(1.2); animation: jitter-subtle 0.2s infinite;
         }
         .crt-filter::before {
             content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
@@ -59,13 +59,27 @@
             background-image: radial-gradient(circle, rgba(0, 50, 100, 0.3) 0%, transparent 70%), radial-gradient(circle, rgba(100, 0, 50, 0.2) 100%, transparent 70%);
             animation: background-pan 40s infinite linear;
         }
+        .cd-selection-item {
+            position: relative;
+            width: 180px; height: 180px;
+            cursor: pointer;
+        }
         #selection-screen .cd-art {
-            width: 150px; height: 150px; border-radius: 50%; background-size: cover; background-position: center;
+            width: 180px; height: 180px; border-radius: 50%; background-size: cover; background-position: center;
             border: 5px solid #333; box-shadow: 0 10px 20px rgba(0,0,0,0.4); transition: transform 0.4s ease;
         }
-        #selection-screen .cd-selection-item:hover .cd-art { transform: scale(1.1); }
+        .cd-case {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://i.imgur.com/Q0Gg3E1.png') no-repeat center center;
+            background-size: contain;
+            opacity: 0; transition: opacity 0.3s ease;
+            transform: rotate(-10deg);
+        }
+        .cd-selection-item:hover .cd-case { opacity: 0.7; }
+        #selection-screen .cd-selection-item:hover .cd-art { transform: scale(1.05) translateX(10px); }
 
-        .player-container { width: 100%; max-width: 900px; margin: auto; position: relative; z-index: 5; }
+        .player-container { width: 100%; max-width: 900px; margin: auto; position: relative; z-index: 5; transition: opacity 0.5s ease; }
+        .player-container.screensaver { opacity: 0; }
         .cd-2d-container { width: 280px; height: 280px; }
         .cd-2d {
             width: 100%; height: 100%; border-radius: 50%; position: relative; background-size: cover; background-position: center;
@@ -105,7 +119,7 @@
         .footer-prompts { font-size: 1.5rem; }
         .ps2-logo { font-weight: bold; border: 2px solid var(--ps2-white); padding: 0 8px; }
         
-        .tracklist-popup {
+        .popup {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             background-color: rgba(40,40,60,0.95); border: 2px solid var(--ps2-blue);
             max-height: 80%; width: 80%; max-width: 500px; z-index: 20;
@@ -200,6 +214,7 @@
                              <button id="tracklist-btn" class="text-lg border-2 border-transparent hover:border-white px-2">Track List</button>
                              <button id="shuffle-btn" class="text-lg border-2 border-white px-2">Shuffle</button>
                              <button id="repeat-btn" class="text-lg border-2 border-white px-2">Repeat All</button>
+                             <button id="viz-btn" class="text-lg border-2 border-white px-2">Viz: Bars</button>
                              <input id="volume-slider" type="range" min="0" max="100" value="100" class="volume-slider w-24">
                         </div>
                     </div>
@@ -212,10 +227,20 @@
     </div>
 
     <div id="youtube-player" class="absolute -left-full top-0"></div>
-    <div id="tracklist-popup" class="tracklist-popup p-4 hidden">
+    <div id="tracklist-popup" class="popup p-4 hidden">
         <h3 id="tracklist-title" class="text-2xl text-center mb-4 text-yellow-300"></h3>
         <ul id="tracklist-ul" class="overflow-y-auto max-h-64 text-lg"></ul>
         <button id="close-tracklist-btn" class="absolute top-2 right-2 text-2xl">X</button>
+    </div>
+    <div id="info-popup" class="popup p-4 hidden text-lg">
+        <h3 class="text-2xl text-center mb-4 text-yellow-300">System Information</h3>
+        <ul>
+            <li><span class="text-yellow-300">Console:</span> PS2 Music Player v1.0</li>
+            <li><span class="text-yellow-300">BIOS:</span> Ver. 3.14 (P)</li>
+            <li><span class="text-yellow-300">CD-ROM:</span> v2.71</li>
+            <li><span class="text-yellow-300">Memory Card (1):</span> 1.5MB Free</li>
+        </ul>
+        <button id="close-info-btn" class="absolute top-2 right-2 text-2xl">X</button>
     </div>
 
     <script>
@@ -277,6 +302,7 @@
             forwardBtn: document.getElementById('forward-btn'),
             shuffleBtn: document.getElementById('shuffle-btn'),
             repeatBtn: document.getElementById('repeat-btn'),
+            vizBtn: document.getElementById('viz-btn'),
             albumTitle: document.getElementById('album-title'),
             trackNumber: document.getElementById('track-number'),
             trackName: document.getElementById('track-name'),
@@ -288,6 +314,9 @@
             tracklistTitle: document.getElementById('tracklist-title'),
             tracklistUl: document.getElementById('tracklist-ul'),
             closeTracklistBtn: document.getElementById('close-tracklist-btn'),
+            infoBtn: document.createElement('button'), // To be added
+            infoPopup: document.getElementById('info-popup'),
+            closeInfoBtn: document.getElementById('close-info-btn'),
             visualizer: document.getElementById('visualizer'),
             specialBgContainer: document.getElementById('special-bg-container'),
             specialBgImage: document.getElementById('special-bg-image'),
@@ -307,9 +336,10 @@
             currentVisualizerColor: 'rgba(0, 150, 255, 0.7)',
             isShuffle: false,
             repeatMode: 'all', // 'none', 'one', 'all'
-            lastRotation: 0,
-            cdSpinningInterval: null,
+            visualizerMode: 'bars', // 'bars', 'wave', 'circle'
             clockInterval: null,
+            screensaverTimeout: null,
+            uiSfx: null,
         };
 
         function loadYouTubeAPI() {
@@ -345,7 +375,7 @@
             albums.forEach((album, index) => {
                 const item = document.createElement('div');
                 item.className = 'cd-selection-item';
-                item.innerHTML = `<div class="cd-art" style="background-image: url('${album.coverUrl}')"></div>`;
+                item.innerHTML = `<div class="cd-case"></div><div class="cd-art" style="background-image: url('${album.coverUrl}')"></div>`;
                 item.onclick = () => selectAlbum(index);
                 dom.cdSelectionContainer.appendChild(item);
             });
@@ -520,14 +550,37 @@
             const width = dom.visualizer.width;
             const height = dom.visualizer.height;
             ctx.clearRect(0, 0, width, height);
-            const barCount = 32;
-            const barWidth = width / barCount;
             const isPlaying = state.ytPlayer && state.ytPlayer.getPlayerState() === YT.PlayerState.PLAYING;
+            ctx.fillStyle = state.currentVisualizerColor;
 
-            for (let i = 0; i < barCount; i++) {
-                const barHeight = isPlaying ? Math.random() * height : 2;
+            if (state.visualizerMode === 'bars') {
+                const barCount = 32;
+                const barWidth = width / barCount;
+                for (let i = 0; i < barCount; i++) {
+                    const barHeight = isPlaying ? Math.random() * height : 2;
+                    ctx.fillRect(i * barWidth, height - barHeight, barWidth - 2, barHeight);
+                }
+            } else if (state.visualizerMode === 'wave') {
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = state.currentVisualizerColor;
+                ctx.beginPath();
+                const sliceWidth = width * 1.0 / 64;
+                let x = 0;
+                for (let i = 0; i < 64; i++) {
+                    const v = isPlaying ? Math.random() * height : height / 2;
+                    const y = v;
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                    x += sliceWidth;
+                }
+                ctx.lineTo(width, height / 2);
+                ctx.stroke();
+            } else if (state.visualizerMode === 'circle') {
+                const radius = isPlaying ? 10 + (Math.random() * (height/2 - 10)) : 10;
+                ctx.beginPath();
+                ctx.arc(width / 2, height / 2, radius, 0, 2 * Math.PI, false);
                 ctx.fillStyle = state.currentVisualizerColor;
-                ctx.fillRect(i * barWidth, height - barHeight, barWidth - 2, barHeight);
+                ctx.fill();
             }
             visualizerId = requestAnimationFrame(drawVisualizer);
         }
@@ -568,11 +621,25 @@
             const synth = new Tone.PolySynth(Tone.Synth, {
                 oscillator: { type: "sine" },
                 envelope: { attack: 0.01, decay: 0.5, sustain: 0.2, release: 2 },
+                volume: -12 // Lower volume
             }).toDestination();
             synth.triggerAttackRelease(["C2", "G2", "C3"], "2s", Tone.now());
             synth.triggerAttackRelease(["E3", "G3", "C4"], "2s", Tone.now() + 0.1);
         }
         
+        function playUiSound() {
+            if (!state.uiSfx) {
+                state.uiSfx = new Tone.Player({
+                    url: "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=", // Simple tick sound
+                    autostart: false,
+                    volume: -10
+                }).toDestination();
+            }
+            if (state.uiSfx.loaded) {
+                state.uiSfx.start();
+            }
+        }
+
         function showSavingIndicator() {
             dom.savingOverlay.style.opacity = '1';
             setTimeout(() => {
@@ -589,12 +656,23 @@
                 dom.clock.textContent = `${hours}:${minutes}`;
             }, 1000);
         }
-        function stopClock() {
-            clearInterval(state.clockInterval);
+        function stopClock() { clearInterval(state.clockInterval); }
+
+        function resetScreensaver() {
+            clearTimeout(state.screensaverTimeout);
+            document.querySelector('.player-container').classList.remove('screensaver');
+            state.screensaverTimeout = setTimeout(() => {
+                document.querySelector('.player-container').classList.add('screensaver');
+            }, 120000); // 2 minutes
         }
 
         window.onload = () => {
             renderSelectionScreen();
+            const controls = document.querySelector('.controls');
+            controls.addEventListener('click', (e) => {
+                if(e.target.closest('button')) playUiSound();
+            });
+
             dom.playBtn.addEventListener('click', playMusic);
             dom.pauseBtn.addEventListener('click', pauseMusic);
             dom.stopBtn.addEventListener('click', stopMusic);
@@ -624,7 +702,17 @@
                 dom.repeatBtn.classList.toggle('active', state.repeatMode !== 'none');
                 dom.repeatBtn.style.color = state.repeatMode !== 'none' ? 'var(--ps2-yellow)' : 'var(--ps2-white)';
             });
+
+            dom.vizBtn.addEventListener('click', () => {
+                const modes = ['bars', 'wave', 'circle'];
+                const currentModeIndex = modes.indexOf(state.visualizerMode);
+                state.visualizerMode = modes[(currentModeIndex + 1) % modes.length];
+                dom.vizBtn.textContent = `Viz: ${state.visualizerMode.charAt(0).toUpperCase() + state.visualizerMode.slice(1)}`;
+            });
+            
+            window.addEventListener('mousemove', resetScreensaver);
+            window.addEventListener('keydown', resetScreensaver);
         };
     </script>
 </body>
-</ht
+</html>
