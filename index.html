@@ -25,8 +25,15 @@
         @keyframes cd-glare { 0% { transform: translateX(-150%) skewX(-30deg); } 100% { transform: translateX(150%) skewX(-30deg); } }
         @keyframes jitter-subtle { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(0.2px, -0.2px); } 50% { transform: translate(-0.2px, 0.2px); } 75% { transform: translate(0.2px, 0.2px); } }
         @keyframes background-pan { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
         body { background-color: #111; font-family: 'VT323', monospace; color: var(--ps2-white); overflow: hidden; }
+        .theme-default { cursor: default; }
+        .theme-validation { cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" style="font-size: 24px;"><text y="24" fill="var(--ps2-blue)">▶</text></svg>'), auto; }
+        .theme-bittersweet { cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" style="font-size: 24px;"><text y="24" fill="darkorange">▶</text></svg>'), auto; }
+        .theme-13-lentes { cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" style="font-size: 24px;"><text y="24" fill="black">▶</text></svg>'), auto; }
+        .theme-optica { cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" style="font-size: 24px;"><text y="24" fill="lightblue">▶</text></svg>'), auto; }
+
 
         .crt-filter {
             position: relative; width: 100vw; height: 100vh;
@@ -103,7 +110,9 @@
         
         .track-info { font-size: 1.5rem; line-height: 1.75rem; }
         .track-number { color: var(--ps2-yellow); font-weight: bold; font-size: 2.25rem; }
-        .track-name { font-size: 1.875rem; min-height: 56px; }
+        .track-name-wrapper { overflow: hidden; white-space: nowrap; }
+        .track-name { font-size: 1.875rem; min-height: 56px; display: inline-block; }
+        .track-name.scrolling { animation: marquee 10s linear infinite; }
         .time-display { font-size: 1.5rem; }
 
         .progress-bar-container { display: flex; gap: 2px; width: 100%; height: 20px; cursor: pointer; }
@@ -163,7 +172,7 @@
 
     </style>
 </head>
-<body>
+<body class="theme-default">
 
     <div class="crt-filter">
         <div id="noise-overlay"></div>
@@ -215,7 +224,7 @@
                                 <span id="album-title" class="text-lg"></span>
                             </div>
                             <h2 id="track-number" class="track-number">Track 01</h2>
-                            <p id="track-name" class="track-name">Loading...</p>
+                            <div class="track-name-wrapper"><p id="track-name" class="track-name">Loading...</p></div>
                             <div id="progress-bar-container" class="progress-bar-container"></div>
                             <p id="time-display" class="time-display">00:00 / 00:00</p>
                             
@@ -269,7 +278,7 @@
             {
                 name: "Validation",
                 coverUrl: "https://i1.sndcdn.com/artworks-zMJy5oUhjfM05LnK-AzuGwA-t500x500.jpg",
-                theme: { bg: "rgba(0, 80, 150, 0.2)", primary: 'var(--ps2-blue)', secondary: 'var(--ps2-yellow)', visualizer: 'rgba(0, 150, 255, 0.7)' },
+                theme: { name: 'validation', bg: "rgba(0, 80, 150, 0.2)", primary: 'var(--ps2-blue)', secondary: 'var(--ps2-yellow)', visualizer: 'rgba(0, 150, 255, 0.7)' },
                 tracks: [
                     { videoId: 'tkl_smLRtcE', title: "Sucesso FM", videoBg: 'tqdOIs3K-SA', captions: [
                         { start: 5, end: 8, text: "A sentir a vibe da PS2..." },
@@ -291,7 +300,7 @@
             {
                 name: "Bittersweet Memories",
                 coverUrl: "https://i.scdn.co/image/ab67616d0000b2732e8e4cfa666ea534d070c041",
-                theme: { bg: "rgba(255, 140, 0, 0.2)", primary: 'darkorange', secondary: 'gold', visualizer: 'darkorange' },
+                theme: { name: 'bittersweet', bg: "rgba(255, 140, 0, 0.2)", primary: 'darkorange', secondary: 'gold', visualizer: 'darkorange' },
                 tracks: [
                     { videoId: 'xXeDMfisrU8', title: "Saúde" }, { videoId: 'rsxeE1WkHqw', title: "Filho Pródigo" },
                     { videoId: 'KzUUemEW_iI', title: "Let It Pour" }, { videoId: 'qkaxqSGI_OE', title: "The Story" },
@@ -305,11 +314,11 @@
             {
                 name: "13 lentes de um final feliz",
                 coverUrl: "https://cdn-images.dzcdn.net/images/cover/a01cc5f5bbb09711637d4927e9ab83cd/500x500.jpg",
-                theme: { bg: "rgba(255, 255, 255, 0.2)", primary: '#000000', secondary: '#000000', visualizer: '#000000' },
+                theme: { name: '13-lentes', bg: "rgba(200, 200, 200, 0.2)", primary: '#000000', secondary: '#000000', visualizer: '#000000' },
                 tracks: [
                     { videoId: 'asI5cHpQPAA', title: "Au revoir" }, { videoId: 'wRlhPzhgqu0', title: "Carruagem" },
                     { videoId: 'GPemhYrDATw', title: "Agradeço" }, { videoId: 'mNlhepSXi4g', title: "Corrida" },
-                    { videoId: 'WlylgE8fSLs', title: "Joias da Familia" }, { videoId: 'TSLRScqwemI', title: "Nunca Paro" },
+                    { videoId: 'WlylgE8fSLs', title: "Joias da Familia" }, { videoId: 'TSLRScqwemI', title: "Nunca Paro", videoBg: 'P9NqaluDZuk' },
                     { videoId: 'GC-BHmtlhFQ', title: "Memórias" }, { videoId: '6ep0itQcsUM', title: "Lost in Translation" },
                     { videoId: 'nKJyKsFgDJY', title: "Primavera" }, { videoId: 'MVrIi0zI6gc', title: "Let me see the sun" },
                     { videoId: 'vWsdkDa3vOw', title: "Adeus" }, { videoId: 'cgW6sqr8X0k', title: "Deixa Doer" },
@@ -319,7 +328,7 @@
             {
                 name: "Óptica",
                 coverUrl: "https://images.genius.com/a1c5e0cebf8fdb9629ff8205d02af9ff.1000x1000x1.png",
-                theme: { bg: "rgba(173, 216, 230, 0.2)", primary: '#add8e6', secondary: '#000000', visualizer: '#add8e6' },
+                theme: { name: 'optica', bg: "rgba(173, 216, 230, 0.2)", primary: '#add8e6', secondary: '#000000', visualizer: '#add8e6' },
                 tracks: [
                     { videoId: 'DWV5g3m3118', title: "Absorver" },
                     { videoId: 'YbQj7ByNkNM', title: "Reflexo" },
@@ -330,6 +339,7 @@
         ];
         
         const dom = {
+            body: document.body,
             selectionScreen: document.getElementById('selection-screen'),
             loadingScreen: document.getElementById('loading-screen'),
             playerScreen: document.getElementById('player-screen'),
@@ -350,6 +360,7 @@
             albumTitle: document.getElementById('album-title'),
             trackNumber: document.getElementById('track-number'),
             trackName: document.getElementById('track-name'),
+            trackNameWrapper: document.querySelector('.track-name-wrapper'),
             timeDisplay: document.getElementById('time-display'),
             progressBarContainer: document.getElementById('progress-bar-container'),
             volumeSlider: document.getElementById('volume-slider'),
@@ -358,7 +369,6 @@
             tracklistTitle: document.getElementById('tracklist-title'),
             tracklistUl: document.getElementById('tracklist-ul'),
             closeTracklistBtn: document.getElementById('close-tracklist-btn'),
-            infoBtn: document.createElement('button'), // To be added
             infoPopup: document.getElementById('info-popup'),
             closeInfoBtn: document.getElementById('close-info-btn'),
             visualizer: document.getElementById('visualizer'),
@@ -399,7 +409,7 @@
         function onYouTubeIframeAPIReady() {
             state.ytPlayer = new YT.Player('youtube-player', {
                 height: '1', width: '1',
-                playerVars: { 'controls': 0, 'fs': 0, 'iv_load_policy': 3, 'modestbranding': 1 },
+                playerVars: { 'controls': 0, 'fs': 0, 'iv_load_policy': 3, 'modestbranding': 1, 'cc_load_policy': 1 },
                 events: { 'onReady': onPlayerReady, 'onStateChange': onPlayerStateChange }
             });
             state.bgPlayer = new YT.Player('bg-youtube-player', {
@@ -524,6 +534,7 @@
             document.documentElement.style.setProperty('--ps2-yellow', theme.secondary || '#ffff00');
             dom.playerScreen.style.backgroundColor = theme.bg || 'var(--ps2-bg)';
             state.currentVisualizerColor = theme.visualizer || 'rgba(0, 150, 255, 0.7)';
+            dom.body.className = `theme-${theme.name || 'default'}`;
         }
 
         function resetTheme() {
@@ -531,6 +542,7 @@
             document.documentElement.style.setProperty('--ps2-yellow', '#ffff00');
             dom.playerScreen.style.backgroundColor = 'var(--ps2-bg)';
             state.currentVisualizerColor = 'rgba(0, 150, 255, 0.7)';
+            dom.body.className = 'theme-default';
         }
 
         function handleSpecialBackground(track) {
@@ -555,6 +567,7 @@
             dom.trackNumber.textContent = `Track ${String(trackNumber).padStart(2, '0')}`;
             dom.trackName.textContent = track.title;
             dom.cd2d.style.backgroundImage = `url('${album.coverUrl}')`;
+            dom.trackName.classList.toggle('scrolling', track.title.length > 20);
         }
         function updateUIIsPlaying(playing) {
             dom.cd2d.classList.toggle('playing', playing);
@@ -773,7 +786,14 @@
             });
 
             dom.ccBtn.addEventListener('click', () => {
+                if (!state.ytPlayer) return;
                 state.captionsEnabled = !state.captionsEnabled;
+                const player = state.ytPlayer.getIframe();
+                if (state.captionsEnabled) {
+                    state.ytPlayer.loadModule('captions');
+                } else {
+                    state.ytPlayer.unloadModule('captions');
+                }
                 dom.ccBtn.classList.toggle('active', state.captionsEnabled);
                 dom.ccBtn.style.color = state.captionsEnabled ? 'var(--ps2-yellow)' : 'var(--ps2-white)';
                 dom.captionDisplay.classList.toggle('visible', state.captionsEnabled);
