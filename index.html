@@ -211,7 +211,7 @@
             {
                 name: "Sucesso FM",
                 coverUrl: "https://i1.sndcdn.com/artworks-zMJy5oUhjfM05LnK-AzuGwA-t500x500.jpg",
-                theme: { bg: "rgba(0, 80, 150, 0.2)", primary: 'var(--ps2-blue)', secondary: 'var(--ps2-yellow)' },
+                theme: { bg: "rgba(0, 80, 150, 0.2)", primary: 'var(--ps2-blue)', secondary: 'var(--ps2-yellow)', visualizer: 'rgba(0, 150, 255, 0.7)' },
                 tracks: [
                     { videoId: 'tkl_smLRtcE', title: "Sucesso FM" }, { videoId: 'gTsZ-vQLq74', title: "Rumo a Vitória" },
                     { videoId: 'fGhkeEmMDSU', title: "Goddamn" }, { videoId: 'pKyoxG2ZDh8', title: "I Walk" },
@@ -224,7 +224,7 @@
             {
                 name: "Saúde",
                 coverUrl: "https://i.scdn.co/image/ab67616d0000b2732e8e4cfa666ea534d070c041",
-                theme: { bg: "rgba(255, 140, 0, 0.2)", primary: 'darkorange', secondary: 'gold' },
+                theme: { bg: "rgba(255, 140, 0, 0.2)", primary: 'darkorange', secondary: 'gold', visualizer: 'darkorange' },
                 tracks: [
                     { videoId: 'xXeDMfisrU8', title: "Saúde" }, { videoId: 'rsxeE1WkHqw', title: "Filho Pródigo" },
                     { videoId: 'KzUUemEW_iI', title: "Let It Pour" }, { videoId: 'qkaxqSGI_OE', title: "The Story" },
@@ -238,7 +238,7 @@
             {
                 name: "Quando a Noite Vem",
                 coverUrl: "https://akamai.sscdn.co/uploadfile/letras/albuns/3/0/9/c/2338071724245865.jpg",
-                theme: { bg: "rgba(0, 0, 139, 0.2)", primary: '#aaccff', secondary: '#f0f0c0' },
+                theme: { bg: "rgba(0, 0, 139, 0.2)", primary: '#aaccff', secondary: '#f0f0c0', visualizer: '#aaccff' },
                 tracks: [
                     { videoId: 'XUYNTXXhmbc', title: "Quando a Noite Vem" }, { videoId: 'wwVejlwrKTA', title: "Oxford Shoes" },
                     { videoId: 'R3BWRueflA4', title: "Twist" }, { videoId: '61o4MC3kEsM', title: "American Dream" },
@@ -250,6 +250,7 @@
         ];
         let currentAlbumIndex = 0, currentTrackIndex = 0, ytPlayer, progressInterval, bgPlayer;
         let isApiLoaded = false, isPlayerReady = false, hasPlayedStartup = false;
+        let currentVisualizerColor = 'rgba(0, 150, 255, 0.7)';
 
         const dom = {
             selectionScreen: document.getElementById('selection-screen'),
@@ -394,12 +395,14 @@
             document.documentElement.style.setProperty('--ps2-blue', theme.primary || '#0096ff');
             document.documentElement.style.setProperty('--ps2-yellow', theme.secondary || '#ffff00');
             dom.playerScreen.style.backgroundColor = theme.bg || 'var(--ps2-bg)';
+            currentVisualizerColor = theme.visualizer || 'rgba(0, 150, 255, 0.7)';
         }
 
         function resetTheme() {
             document.documentElement.style.setProperty('--ps2-blue', '#0096ff');
             document.documentElement.style.setProperty('--ps2-yellow', '#ffff00');
             dom.playerScreen.style.backgroundColor = 'var(--ps2-bg)';
+            currentVisualizerColor = 'rgba(0, 150, 255, 0.7)';
         }
 
         function handleSpecialBackground(track) {
@@ -471,7 +474,7 @@
 
             for (let i = 0; i < barCount; i++) {
                 const barHeight = isPlaying ? Math.random() * height : 2;
-                ctx.fillStyle = 'rgba(0, 150, 255, 0.7)';
+                ctx.fillStyle = currentVisualizerColor;
                 ctx.fillRect(i * barWidth, height - barHeight, barWidth - 2, barHeight);
             }
             visualizerId = requestAnimationFrame(drawVisualizer);
