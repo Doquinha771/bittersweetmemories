@@ -61,18 +61,16 @@
         #selection-screen .cd-selection-item:hover .cd-art { transform: scale(1.1); }
 
         .player-container { width: 100%; max-width: 900px; margin: auto; position: relative; z-index: 5; }
-        .cd-2d-container { width: 280px; height: 280px; } /* Increased size */
+        .cd-2d-container { width: 280px; height: 280px; }
         .cd-2d {
             width: 100%; height: 100%; border-radius: 50%; position: relative; background-size: cover; background-position: center;
             box-shadow: 0 0 35px rgba(0,0,0,0.6); 
             animation: spin-2d 15s linear infinite;
-            animation-play-state: paused; /* Start paused */
-            transition: transform 0.5s ease-out; /* Smooth transitions */
+            animation-play-state: paused;
+            transition: transform 0.5s ease-out;
             overflow: hidden;
         }
-        .cd-2d.playing {
-            animation-play-state: running; /* Run animation when playing */
-        }
+        .cd-2d.playing { animation-play-state: running; }
         .cd-2d::after {
             content: ''; position: absolute; top: 0; left: 0; width: 50%; height: 100%;
             background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%);
@@ -93,10 +91,11 @@
         .progress-block { flex-grow: 1; background-color: var(--ps2-dark-grey); transition: background-color 0.3s ease-in-out; }
         .progress-block.active { background-color: var(--ps2-blue); }
 
-        .controls svg { width: 32px; height: 32px; fill: var(--ps2-white); }
+        .controls svg { width: 28px; height: 28px; fill: var(--ps2-white); }
         .controls .play-icon { fill: var(--ps2-blue); }
-        .controls button { background: none; border: none; padding: 8px; opacity: 0.8; transition: opacity 0.2s; cursor: pointer; }
+        .controls button { background: none; border: none; padding: 4px; opacity: 0.8; transition: opacity 0.2s, color 0.2s; cursor: pointer; }
         .controls button:hover { opacity: 1; }
+        .controls button.active { color: var(--ps2-yellow); }
 
         .footer-prompts { font-size: 1.5rem; }
         .ps2-logo { font-weight: bold; border: 2px solid var(--ps2-white); padding: 0 8px; }
@@ -113,19 +112,16 @@
 
         #visualizer { width: 100%; height: 60px; }
         
-        #special-bg-container {
+        #special-bg-container, #saving-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             z-index: 1; opacity: 0; transition: opacity 0.5s; pointer-events: none;
         }
-        #special-bg-image {
-            width: 100%; height: 100%; background-size: cover; background-position: center;
-        }
+        #special-bg-image { width: 100%; height: 100%; background-size: cover; background-position: center; }
         #bg-youtube-player {
-            position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            min-width: 100%; min-height: 100%;
-            width: auto; height: auto;
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            min-width: 100%; min-height: 100%; width: auto; height: auto;
         }
+        #saving-overlay { z-index: 30; display: flex; align-items: flex-start; justify-content: flex-end; padding: 2rem; }
 
     </style>
 </head>
@@ -135,6 +131,13 @@
         <div id="special-bg-container">
             <div id="special-bg-image"></div>
             <div id="bg-youtube-player"></div>
+        </div>
+        
+        <div id="saving-overlay">
+             <div class="flex items-center gap-2 p-2 bg-black/50 rounded">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="var(--ps2-white)"><path d="M18 2h-8L4 8v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-6 6h-2V4h2v4zm3 0h-2V4h2v4zm3 0h-2V4h2v4z"/></svg>
+                <span>A guardar...</span>
+            </div>
         </div>
 
         <!-- Screen 1: CD Selection -->
@@ -188,6 +191,8 @@
                         </div>
                         <div class="flex items-center justify-center md:justify-start gap-4 mt-4">
                              <button id="tracklist-btn" class="text-lg border-2 border-transparent hover:border-white px-2">Track List</button>
+                             <button id="shuffle-btn" class="text-lg border-2 border-white px-2">Shuffle</button>
+                             <button id="repeat-btn" class="text-lg border-2 border-white px-2">Repeat All</button>
                              <input id="volume-slider" type="range" min="0" max="100" value="100" class="volume-slider w-24">
                         </div>
                     </div>
@@ -230,7 +235,7 @@
                     { videoId: 'KzUUemEW_iI', title: "Let It Pour" }, { videoId: 'qkaxqSGI_OE', title: "The Story" },
                     { videoId: 'fnRyVCxqLqk', title: "Back Home" }, { videoId: 'RMeJND0yzeM', title: "Melhor Não" },
                     { videoId: 'yApMEdYtkGM', title: "Old School" }, { videoId: 'ZBe3GmoFJys', title: "Dirty Dancing" },
-                    { videoId: 'g0_DLkqjylU', title: "Prefiro Morrer", specialBg: 'url(https://media.giphy.com/media/3o7aD4grHwn8rP9u9i/giphy.gif)' },
+                    { videoId: 'g0_DLkqjylU', title: "Prefiro Morrer" },
                     { videoId: 'vLQR5UCq5J0', title: "Quase Perfeito" }, { videoId: 'Z7LsJA7NJF0', title: "Máquina do Tempo", videoBg: 'Z7LsJA7NJF0' },
                     { videoId: 'tR-m63k2nNM', title: "Flores de Outro Carnaval" },
                 ]
@@ -248,10 +253,7 @@
                 ]
             }
         ];
-        let currentAlbumIndex = 0, currentTrackIndex = 0, ytPlayer, progressInterval, bgPlayer;
-        let isApiLoaded = false, isPlayerReady = false, hasPlayedStartup = false;
-        let currentVisualizerColor = 'rgba(0, 150, 255, 0.7)';
-
+        
         const dom = {
             selectionScreen: document.getElementById('selection-screen'),
             loadingScreen: document.getElementById('loading-screen'),
@@ -266,6 +268,8 @@
             backBtn: document.getElementById('back-btn'),
             rewindBtn: document.getElementById('rewind-btn'),
             forwardBtn: document.getElementById('forward-btn'),
+            shuffleBtn: document.getElementById('shuffle-btn'),
+            repeatBtn: document.getElementById('repeat-btn'),
             albumTitle: document.getElementById('album-title'),
             trackNumber: document.getElementById('track-number'),
             trackName: document.getElementById('track-name'),
@@ -280,23 +284,40 @@
             visualizer: document.getElementById('visualizer'),
             specialBgContainer: document.getElementById('special-bg-container'),
             specialBgImage: document.getElementById('special-bg-image'),
+            savingOverlay: document.getElementById('saving-overlay'),
+        };
+
+        const state = {
+            currentAlbumIndex: 0,
+            currentTrackIndex: 0,
+            ytPlayer: null,
+            bgPlayer: null,
+            progressInterval: null,
+            isApiLoaded: false,
+            isPlayerReady: false,
+            hasPlayedStartup: false,
+            currentVisualizerColor: 'rgba(0, 150, 255, 0.7)',
+            isShuffle: false,
+            repeatMode: 'all', // 'none', 'one', 'all'
+            lastRotation: 0,
+            cdSpinningInterval: null
         };
 
         function loadYouTubeAPI() {
-            if (isApiLoaded) return;
-            isApiLoaded = true;
+            if (state.isApiLoaded) return;
+            state.isApiLoaded = true;
             const tag = document.createElement('script');
             tag.src = "https://www.youtube.com/iframe_api";
             document.head.appendChild(tag);
         }
 
         function onYouTubeIframeAPIReady() {
-            ytPlayer = new YT.Player('youtube-player', {
+            state.ytPlayer = new YT.Player('youtube-player', {
                 height: '1', width: '1',
                 playerVars: { 'controls': 0, 'fs': 0, 'iv_load_policy': 3, 'modestbranding': 1 },
                 events: { 'onReady': onPlayerReady, 'onStateChange': onPlayerStateChange }
             });
-            bgPlayer = new YT.Player('bg-youtube-player', {
+            state.bgPlayer = new YT.Player('bg-youtube-player', {
                 height: '100%', width: '100%',
                 playerVars: { 'controls': 0, 'fs': 0, 'iv_load_policy': 3, 'modestbranding': 1, 'autoplay': 1, 'loop': 1 },
                 events: { 'onReady': (e) => e.target.mute() }
@@ -322,28 +343,28 @@
         }
 
         function selectAlbum(index) {
-            currentAlbumIndex = index;
-            currentTrackIndex = 0;
+            state.currentAlbumIndex = index;
+            state.currentTrackIndex = 0;
             
             transitionToScreen(dom.loadingScreen);
             
-            if (!hasPlayedStartup) {
+            if (!state.hasPlayedStartup) {
                 playStartupSound();
-                hasPlayedStartup = true;
+                state.hasPlayedStartup = true;
             }
 
             setTimeout(() => {
-                if (!isApiLoaded) loadYouTubeAPI();
-                else if (!ytPlayer) onYouTubeIframeAPIReady();
-                else loadTrack(currentTrackIndex, true);
+                if (!state.isApiLoaded) loadYouTubeAPI();
+                else if (!state.ytPlayer) onYouTubeIframeAPIReady();
+                else loadTrack(state.currentTrackIndex, true);
                 transitionToScreen(dom.playerScreen);
             }, 2500);
         }
 
         function onPlayerReady(event) {
-            isPlayerReady = true;
-            ytPlayer.setVolume(dom.volumeSlider.value);
-            loadTrack(currentTrackIndex, true);
+            state.isPlayerReady = true;
+            state.ytPlayer.setVolume(dom.volumeSlider.value);
+            loadTrack(state.currentTrackIndex, true);
         }
         
         function returnToSelection() {
@@ -365,56 +386,76 @@
         }
 
         function loadTrack(index, autoplay = false) {
-            if (!isPlayerReady) return;
-            const album = albums[currentAlbumIndex];
+            if (!state.isPlayerReady) return;
+            const album = albums[state.currentAlbumIndex];
             if (index < 0 || index >= album.tracks.length) return;
             const track = album.tracks[index];
-            currentTrackIndex = index;
+            state.currentTrackIndex = index;
             applyTheme(album.theme);
             updateTrackInfo(album, track, index + 1);
             handleSpecialBackground(track);
-            if (autoplay) ytPlayer.loadVideoById(track.videoId); else ytPlayer.cueVideoById(track.videoId);
+            if (autoplay) state.ytPlayer.loadVideoById(track.videoId); else state.ytPlayer.cueVideoById(track.videoId);
         }
 
-        function playMusic() { if (ytPlayer) ytPlayer.playVideo(); }
-        function pauseMusic() { if (ytPlayer) ytPlayer.pauseVideo(); }
+        function playMusic() { if (state.ytPlayer) state.ytPlayer.playVideo(); }
+        function pauseMusic() { if (state.ytPlayer) state.ytPlayer.pauseVideo(); }
         function stopMusic() {
-            if (ytPlayer && typeof ytPlayer.stopVideo === 'function') ytPlayer.stopVideo();
+            if (state.ytPlayer && typeof state.ytPlayer.stopVideo === 'function') state.ytPlayer.stopVideo();
             updateUIIsPlaying(false);
         }
-        function playNextTrack() { loadTrack((currentTrackIndex + 1) % albums[currentAlbumIndex].tracks.length, true); }
-        function playPrevTrack() { loadTrack((currentTrackIndex - 1 + albums[currentAlbumIndex].tracks.length) % albums[currentAlbumIndex].tracks.length, true); }
+        function playNextTrack() {
+            if (state.repeatMode === 'one') {
+                loadTrack(state.currentTrackIndex, true);
+                return;
+            }
+            if (state.isShuffle) {
+                let nextIndex;
+                do {
+                    nextIndex = Math.floor(Math.random() * albums[state.currentAlbumIndex].tracks.length);
+                } while (albums[state.currentAlbumIndex].tracks.length > 1 && nextIndex === state.currentTrackIndex);
+                loadTrack(nextIndex, true);
+                return;
+            }
+            const isLastTrack = state.currentTrackIndex === albums[state.currentAlbumIndex].tracks.length - 1;
+            if (isLastTrack && state.repeatMode === 'none') {
+                stopMusic();
+                return;
+            }
+            const nextTrackIndex = (state.currentTrackIndex + 1) % albums[state.currentAlbumIndex].tracks.length;
+            loadTrack(nextTrackIndex, true);
+        }
+        function playPrevTrack() { loadTrack((state.currentTrackIndex - 1 + albums[state.currentAlbumIndex].tracks.length) % albums[state.currentAlbumIndex].tracks.length, true); }
         
         function seek(seconds) {
-            if (!ytPlayer || typeof ytPlayer.getCurrentTime !== 'function') return;
-            const newTime = ytPlayer.getCurrentTime() + seconds;
-            ytPlayer.seekTo(newTime, true);
+            if (!state.ytPlayer || typeof state.ytPlayer.getCurrentTime !== 'function') return;
+            const newTime = state.ytPlayer.getCurrentTime() + seconds;
+            state.ytPlayer.seekTo(newTime, true);
         }
 
         function applyTheme(theme) {
             document.documentElement.style.setProperty('--ps2-blue', theme.primary || '#0096ff');
             document.documentElement.style.setProperty('--ps2-yellow', theme.secondary || '#ffff00');
             dom.playerScreen.style.backgroundColor = theme.bg || 'var(--ps2-bg)';
-            currentVisualizerColor = theme.visualizer || 'rgba(0, 150, 255, 0.7)';
+            state.currentVisualizerColor = theme.visualizer || 'rgba(0, 150, 255, 0.7)';
         }
 
         function resetTheme() {
             document.documentElement.style.setProperty('--ps2-blue', '#0096ff');
             document.documentElement.style.setProperty('--ps2-yellow', '#ffff00');
             dom.playerScreen.style.backgroundColor = 'var(--ps2-bg)';
-            currentVisualizerColor = 'rgba(0, 150, 255, 0.7)';
+            state.currentVisualizerColor = 'rgba(0, 150, 255, 0.7)';
         }
 
         function handleSpecialBackground(track) {
             dom.specialBgImage.style.backgroundImage = 'none';
-            if (bgPlayer && typeof bgPlayer.stopVideo === 'function') bgPlayer.stopVideo();
+            if (state.bgPlayer && typeof state.bgPlayer.stopVideo === 'function') state.bgPlayer.stopVideo();
             
             if (track.specialBg) {
                 dom.specialBgImage.style.backgroundImage = track.specialBg;
                 dom.specialBgContainer.style.opacity = '0.3';
             } else if (track.videoBg) {
-                if (bgPlayer && typeof bgPlayer.loadVideoById === 'function') {
-                    bgPlayer.loadVideoById({videoId: track.videoBg, startSeconds: 0});
+                if (state.bgPlayer && typeof state.bgPlayer.loadVideoById === 'function') {
+                    state.bgPlayer.loadVideoById({videoId: track.videoBg, startSeconds: 0});
                 }
                 dom.specialBgContainer.style.opacity = '0.3';
             } else {
@@ -452,7 +493,7 @@
                 block.onclick = (e) => {
                     e.stopPropagation();
                     const newTime = (i / blockCount) * duration;
-                    ytPlayer.seekTo(newTime, true);
+                    state.ytPlayer.seekTo(newTime, true);
                 };
                 dom.progressBarContainer.appendChild(block);
             }
@@ -470,11 +511,11 @@
             ctx.clearRect(0, 0, width, height);
             const barCount = 32;
             const barWidth = width / barCount;
-            const isPlaying = ytPlayer && ytPlayer.getPlayerState() === YT.PlayerState.PLAYING;
+            const isPlaying = state.ytPlayer && state.ytPlayer.getPlayerState() === YT.PlayerState.PLAYING;
 
             for (let i = 0; i < barCount; i++) {
                 const barHeight = isPlaying ? Math.random() * height : 2;
-                ctx.fillStyle = currentVisualizerColor;
+                ctx.fillStyle = state.currentVisualizerColor;
                 ctx.fillRect(i * barWidth, height - barHeight, barWidth - 2, barHeight);
             }
             visualizerId = requestAnimationFrame(drawVisualizer);
@@ -482,29 +523,29 @@
 
         function startProgressUpdater() {
             stopProgressUpdater();
-            progressInterval = setInterval(() => {
-                if (ytPlayer && typeof ytPlayer.getCurrentTime === 'function') {
-                    updateTimeDisplay(ytPlayer.getCurrentTime(), ytPlayer.getDuration());
+            state.progressInterval = setInterval(() => {
+                if (state.ytPlayer && typeof state.ytPlayer.getCurrentTime === 'function') {
+                    updateTimeDisplay(state.ytPlayer.getCurrentTime(), state.ytPlayer.getDuration());
                 }
             }, 500);
             drawVisualizer();
         }
         function stopProgressUpdater() {
-            clearInterval(progressInterval);
+            clearInterval(state.progressInterval);
             cancelAnimationFrame(visualizerId);
             const ctx = dom.visualizer.getContext('2d');
             ctx.clearRect(0, 0, dom.visualizer.width, dom.visualizer.height);
         }
 
         function showTracklist() {
-            const album = albums[currentAlbumIndex];
+            const album = albums[state.currentAlbumIndex];
             dom.tracklistTitle.textContent = album.name;
             dom.tracklistUl.innerHTML = '';
             album.tracks.forEach((track, index) => {
                 const li = document.createElement('li');
                 li.className = 'p-2 cursor-pointer tracklist-item';
                 li.textContent = `${String(index + 1).padStart(2, '0')}. ${track.title}`;
-                if (index === currentTrackIndex) li.style.color = 'var(--ps2-yellow)';
+                if (index === state.currentTrackIndex) li.style.color = 'var(--ps2-yellow)';
                 li.onclick = () => { loadTrack(index, true); hideTracklist(); };
                 dom.tracklistUl.appendChild(li);
             });
@@ -521,6 +562,13 @@
             synth.triggerAttackRelease(["E3", "G3", "C4"], "2s", Tone.now() + 0.1);
         }
         
+        function showSavingIndicator() {
+            dom.savingOverlay.style.opacity = '1';
+            setTimeout(() => {
+                dom.savingOverlay.style.opacity = '0';
+            }, 1000);
+        }
+
         window.onload = () => {
             renderSelectionScreen();
             dom.playBtn.addEventListener('click', playMusic);
@@ -532,10 +580,26 @@
             dom.forwardBtn.addEventListener('click', () => seek(10));
             dom.backBtn.addEventListener('click', returnToSelection);
             dom.volumeSlider.addEventListener('input', (e) => {
-                if (ytPlayer) ytPlayer.setVolume(e.target.value);
+                if (state.ytPlayer) state.ytPlayer.setVolume(e.target.value);
             });
+            dom.volumeSlider.addEventListener('change', showSavingIndicator);
             dom.tracklistBtn.addEventListener('click', showTracklist);
             dom.closeTracklistBtn.addEventListener('click', hideTracklist);
+            
+            dom.shuffleBtn.addEventListener('click', () => {
+                state.isShuffle = !state.isShuffle;
+                dom.shuffleBtn.classList.toggle('active', state.isShuffle);
+                dom.shuffleBtn.style.color = state.isShuffle ? 'var(--ps2-yellow)' : 'var(--ps2-white)';
+            });
+            
+            dom.repeatBtn.addEventListener('click', () => {
+                const modes = ['all', 'one', 'none'];
+                const currentModeIndex = modes.indexOf(state.repeatMode);
+                state.repeatMode = modes[(currentModeIndex + 1) % modes.length];
+                dom.repeatBtn.textContent = `Repeat ${state.repeatMode.charAt(0).toUpperCase() + state.repeatMode.slice(1)}`;
+                dom.repeatBtn.classList.toggle('active', state.repeatMode !== 'none');
+                dom.repeatBtn.style.color = state.repeatMode !== 'none' ? 'var(--ps2-yellow)' : 'var(--ps2-white)';
+            });
         };
     </script>
 </body>
