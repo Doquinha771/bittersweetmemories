@@ -41,13 +41,13 @@
         
         .crt-filter {
             position: relative; width: 100vw; height: 100vh;
-            filter: blur(0.7px) contrast(1.2) saturate(1.5); /* Efeito TV de Tubo */
+            filter: blur(0.7px) contrast(1.2) saturate(1.5);
             animation: jitter-subtle 0.2s infinite;
         }
         .crt-filter::before, .crt-filter::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 2; pointer-events: none; }
         .crt-filter::before {
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            background-size: 100% 4px, 4px 100%; /* Linhas mais grossas */
+            background-size: 100% 4px, 4px 100%;
             animation: scanlines 0.2s infinite linear;
         }
         .crt-filter::after { box-shadow: inset 0 0 120px rgba(0,0,0,0.6); }
@@ -123,22 +123,8 @@
             transform: translate(-50%, -50%);
             border-radius: 50%; background-size: cover; background-position: center;
         }
-        .album-box {
-            border: 2px solid var(--ps2-white);
-            padding: 1rem;
-            margin: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .album-box:hover {
-            background-color: rgba(255,255,255,0.1);
-            border-color: var(--ps2-yellow);
-        }
-        .cd-collection {
-            display: none;
-        }
 
-        #player-screen { background-color: transparent; }
+        #player-screen { background-color: transparent; transition: background-color 0.5s, background-image 0.5s; }
         #video-background-container {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             overflow: hidden; z-index: -1; opacity: 0; transition: opacity 0.8s ease-in-out;
@@ -155,7 +141,7 @@
         }
         #player-screen.fullscreen-video #video-background-container.visible { opacity: 1; }
 
-        #youtube-player-iframe {
+        #youtube-player-iframe, #youtube-videoclip-iframe {
             position: absolute; top: 50%; left: 50%;
             width: 120%; height: 120%;
             transform: translate(-50%, -50%) scale(1.05);
@@ -321,7 +307,7 @@
         
         <div id="player-screen" class="screen">
             <div id="video-background-container">
-                 <div id="youtube-player-iframe"></div>
+                 <div id="youtube-videoclip-iframe" class="pointer-events-none"></div>
             </div>
 
             <div id="soundscape-overlay">
@@ -386,6 +372,7 @@
         <div id="dvd-screensaver"><div id="dvd-logo"></div></div>
     </div>
 
+    <div id="youtube-player-iframe" class="absolute -left-full top-0"></div>
     <div id="tracklist-popup" class="popup p-4 hidden">
         <h3 id="tracklist-title" class="text-2xl text-center mb-4 text-yellow-300"></h3>
         <ul id="tracklist-ul" class="overflow-y-auto max-h-64 text-lg"></ul>
@@ -398,7 +385,7 @@
                 id: 'validation',
                 name: "Validation",
                 coverUrl: "https://i1.sndcdn.com/artworks-zMJy5oUhjfM05LnK-AzuGwA-t500x500.jpg",
-                theme: { name: 'validation', primary: '#00529b', secondary: '#66ff66' },
+                theme: { name: 'validation', primary: '#66ff66', secondary: '#00529b', bg: 'rgba(0, 82, 155, 0.2)' },
                 tracks: [
                     { audioId: 'tkl_smLRtcE', title: "Sucesso FM", musicVideoId: 'tqdOIs3K-SA' }, 
                     { audioId: 'gTsZ-vQLq74', title: "Rumo a Vitória" },
@@ -418,7 +405,7 @@
                 id: 'bittersweet',
                 name: "Bittersweet Memories",
                 coverUrl: "https://i.scdn.co/image/ab67616d0000b2732e8e4cfa666ea534d070c041",
-                theme: { name: 'bittersweet', primary: '#ff8c00', secondary: '#ffd700' },
+                theme: { name: 'bittersweet', primary: '#ff8c00', secondary: '#ffd700', bg: 'rgba(255, 140, 0, 0.2)' },
                 tracks: [
                     { audioId: 'xXeDMfisrU8', title: "Saúde" }, { audioId: 'rsxeE1WkHqw', title: "Filho Pródigo" },
                     { audioId: 'KzUUemEW_iI', title: "Let It Pour" }, { audioId: 'qkaxqSGI_OE', title: "The Story" },
@@ -434,7 +421,7 @@
                 id: '13lentes',
                 name: "13 lentes de um final feliz",
                 coverUrl: "https://cdn-images.dzcdn.net/images/cover/a01cc5f5bbb09711637d4927e9ab83cd/500x500.jpg",
-                theme: { name: '13-lentes', primary: '#cccccc', secondary: '#888888' },
+                theme: { name: '13-lentes', primary: '#ffffff', secondary: '#888888', bg: 'rgba(128, 128, 128, 0.2)' },
                 tracks: [
                     { audioId: 'asI5cHpQPAA', title: "Au revoir" }, { audioId: 'wRlhPzhgqu0', title: "Carruagem" },
                     { audioId: 'GPemhYrDATw', title: "Agradeço" }, { audioId: 'mNlhepSXi4g', title: "Corrida" },
@@ -450,7 +437,7 @@
                 id: 'optica',
                 name: "Óptica",
                 coverUrl: "https://images.genius.com/a1c5e0cebf8fdb9629ff8205d02af9ff.1000x1000x1.png",
-                theme: { name: 'optica', primary: '#add8e6', secondary: '#ffffff' },
+                theme: { name: 'optica', primary: '#add8e6', secondary: '#ffffff', bg: 'rgba(173, 216, 230, 0.2)' },
                 tracks: [
                     { audioId: 'DWV5g3m3118', title: "Absorver" }, { audioId: 'YbQj7ByNkNM', title: "Reflexo" },
                     { audioId: 'ENmHHlGVAtE', title: "Sombra", musicVideoId: '1EYOFvZmnJE' },
@@ -461,7 +448,7 @@
                 id: 'bonstempos',
                 name: "Bons tempos",
                 coverUrl: "https://akamai.sscdn.co/uploadfile/letras/albuns/3/0/9/c/2338071724245865.jpg",
-                theme: { name: 'bonstempos', primary: '#9370db', secondary: '#e6e6fa' },
+                theme: { name: 'bonstempos', primary: '#9370db', secondary: '#e6e6fa', bg: 'rgba(75, 0, 130, 0.3)', bgImage: 'url(https://www.transparenttextures.com/patterns/stardust.png)' },
                 tracks: [
                     { audioId: 'XUYNTXXhmbc', title: 'Quando a noite vem' },
                     { audioId: 'wwVejlwrKTA', title: 'Oxford Shoes' },
@@ -523,7 +510,8 @@
         const state = {
             currentAlbumIndex: 0,
             currentTrackIndex: 0,
-            ytPlayer: null,
+            audioPlayer: null,
+            videoPlayer: null,
             progressInterval: null,
             isApiLoaded: false,
             isPlayerReady: false,
@@ -545,52 +533,32 @@
         }
 
         window.onYouTubeIframeAPIReady = () => {
-            state.ytPlayer = new YT.Player('youtube-player-iframe', {
-                playerVars: { 'controls': 0, 'fs': 0, 'iv_load_policy': 3, 'modestbranding': 1, 'rel': 0, 'showinfo': 0, 'autoplay': 1, 'cc_load_policy': 0 },
-                events: { 'onReady': onPlayerReady, 'onStateChange': onPlayerStateChange }
+            state.audioPlayer = new YT.Player('youtube-player-iframe', {
+                playerVars: { 'controls': 0, 'fs': 0, 'iv_load_policy': 3, 'modestbranding': 1, 'rel': 0, 'showinfo': 0, 'autoplay': 1 },
+                events: { 'onReady': onPlayerReady, 'onStateChange': onAudioPlayerStateChange }
+            });
+            state.videoPlayer = new YT.Player('youtube-videoclip-iframe', {
+                playerVars: { 'controls': 0, 'fs': 0, 'iv_load_policy': 3, 'modestbranding': 1, 'rel': 0, 'showinfo': 0, 'autoplay': 1, 'loop': 1 },
+                events: { 'onReady': (e) => e.target.mute() }
             });
         }
         
-        function onPlayerStateChange(event) {
-            const track = albums[state.currentAlbumIndex].tracks[state.currentTrackIndex];
-            if (event.data === YT.PlayerState.ENDED && track.videoLoop) {
-                state.ytPlayer.seekTo(0);
-                state.ytPlayer.playVideo();
-            } else {
-                const isPlaying = event.data === YT.PlayerState.PLAYING;
-                updateUIIsPlaying(isPlaying);
-                if (isPlaying) startProgressUpdater(); else stopProgressUpdater();
-                if (event.data === YT.PlayerState.ENDED) playNextTrack();
+        function onAudioPlayerStateChange(event) {
+            const isPlaying = event.data === YT.PlayerState.PLAYING;
+            updateUIIsPlaying(isPlaying);
+            
+            if (state.videoPlayer && typeof state.videoPlayer.playVideo === 'function') {
+                if (isPlaying) state.videoPlayer.playVideo();
+                else state.videoPlayer.pauseVideo();
             }
+
+            if (isPlaying) startProgressUpdater(); else stopProgressUpdater();
+            if (event.data === YT.PlayerState.ENDED) playNextTrack();
         }
 
         function renderSelectionScreen() {
-            dom.albumBoxContainer.innerHTML = '';
             dom.cdSelectionContainer.innerHTML = '';
-
-            const albumBoxes = {
-                'Trilogia Validation': ['validation', 'bittersweet', '13lentes'],
-                'Bons tempos / Óptica': ['bonstempos', 'optica']
-            };
-
-            Object.keys(albumBoxes).forEach(boxName => {
-                const box = document.createElement('div');
-                box.className = 'album-box';
-                box.textContent = boxName;
-                box.onclick = () => {
-                    renderCDs(albumBoxes[boxName]);
-                    dom.albumBoxContainer.classList.add('hidden');
-                };
-                dom.albumBoxContainer.appendChild(box);
-            });
-        }
-        
-        function renderCDs(albumIds) {
-            dom.cdSelectionContainer.innerHTML = '';
-            albumIds.forEach(id => {
-                const album = albums.find(a => a.id === id);
-                if (!album) return;
-                
+            albums.forEach((album, index) => {
                 const item = document.createElement('div');
                 item.className = 'cd-selection-item';
                 item.innerHTML = `
@@ -600,7 +568,7 @@
                            <div class="cd-art" style="background-image: url('${album.coverUrl}')"></div>
                         </div>
                     </div>`;
-                item.onclick = (e) => selectAlbum(albums.indexOf(album), e.currentTarget);
+                item.onclick = (e) => selectAlbum(index, e.currentTarget);
                 item.onmouseenter = () => {
                     if(state.bgHoverTimeout) clearTimeout(state.bgHoverTimeout);
                     dom.selectionBgHover.style.backgroundImage = `url('${album.coverUrl}')`;
@@ -640,7 +608,7 @@
                     transitionCD.remove();
                     dom.playerContainer.classList.add('ui-ready');
                     if (!state.isApiLoaded) loadYouTubeAPI();
-                    else if (!state.ytPlayer || !state.isPlayerReady) onYouTubeIframeAPIReady();
+                    else if (!state.audioPlayer || !state.isPlayerReady) onYouTubeIframeAPIReady();
                     else loadTrack(state.currentTrackIndex, true);
                 }, { once: true });
             });
@@ -648,7 +616,7 @@
 
         function onPlayerReady(event) {
             state.isPlayerReady = true;
-            state.ytPlayer.setVolume(dom.volumeSlider.value);
+            state.audioPlayer.setVolume(dom.volumeSlider.value);
             loadTrack(state.currentTrackIndex, true);
         }
         
@@ -658,8 +626,6 @@
             fadeOutAudio(stopMusic);
             resetTheme();
             transitionToScreen(dom.selectionScreen);
-            dom.albumBoxContainer.classList.remove('hidden');
-            dom.cdSelectionContainer.innerHTML = '';
         }
 
         function transitionToScreen(targetScreen, isAnimatingCD = false) {
@@ -689,21 +655,30 @@
             
             dom.body.classList.toggle('vhs-active', track.title === 'Máquina do Tempo');
             dom.videoBgContainer.classList.toggle('blue-tint', album.id === 'validation');
-
-            const videoId = track.musicVideoId || track.audioId;
-            const playerVars = {
-                'videoId': videoId,
+            
+            const audioPlayerVars = {
+                'videoId': track.audioId,
                 'startSeconds': track.videoStart || 0,
             };
             
+            if (autoplay) state.audioPlayer.loadVideoById(audioPlayerVars);
+            else state.audioPlayer.cueVideoById(audioPlayerVars);
+
             if (track.musicVideoId) {
                 dom.videoBgContainer.classList.add('visible');
+                const videoPlayerVars = {
+                    'videoId': track.musicVideoId,
+                    'startSeconds': track.videoStart || 0,
+                    'loop': track.videoLoop ? 1 : 0,
+                    'playlist': track.videoLoop ? track.musicVideoId : undefined
+                };
+                state.videoPlayer.loadVideoById(videoPlayerVars);
             } else {
                 dom.videoBgContainer.classList.remove('visible');
+                if (state.videoPlayer && typeof state.videoPlayer.stopVideo === 'function') {
+                    state.videoPlayer.stopVideo();
+                }
             }
-            
-            if (autoplay) state.ytPlayer.loadVideoById(playerVars);
-            else state.ytPlayer.cueVideoById(playerVars);
         }
         
         function fadeOutAudio(callback) {
@@ -715,19 +690,19 @@
                 if (fadeVolume <= 0) {
                     clearInterval(fadeOutInterval);
                     if(callback) callback();
-                    setTimeout(() => state.ytPlayer.setVolume(currentVolume), 500);
+                    setTimeout(() => state.audioPlayer.setVolume(currentVolume), 500);
                 } else {
-                    state.ytPlayer.setVolume(fadeVolume);
+                    state.audioPlayer.setVolume(fadeVolume);
                 }
             }, 50);
         }
 
-        function playMusic() { if (state.ytPlayer) state.ytPlayer.playVideo(); }
-        function pauseMusic() { fadeOutAudio(() => state.ytPlayer.pauseVideo()); }
+        function playMusic() { if (state.audioPlayer) state.audioPlayer.playVideo(); }
+        function pauseMusic() { fadeOutAudio(() => state.audioPlayer.pauseVideo()); }
         function stopMusic() {
-            if (state.ytPlayer && typeof state.ytPlayer.stopVideo === 'function') {
+            if (state.audioPlayer && typeof state.audioPlayer.stopVideo === 'function') {
                 fadeOutAudio(() => {
-                    state.ytPlayer.stopVideo();
+                    state.audioPlayer.stopVideo();
                     dom.videoBgContainer.classList.remove('visible');
                 });
             }
@@ -751,19 +726,26 @@
         function playPrevTrack() { loadTrack((state.currentTrackIndex - 1 + albums[state.currentAlbumIndex].tracks.length) % albums[state.currentAlbumIndex].tracks.length, true); }
         
         function seek(seconds) {
-            if (!state.ytPlayer || typeof state.ytPlayer.getCurrentTime !== 'function') return;
-            const newTime = state.ytPlayer.getCurrentTime() + seconds;
-            state.ytPlayer.seekTo(newTime, true);
+            if (!state.audioPlayer || typeof state.audioPlayer.getCurrentTime !== 'function') return;
+            const newTime = state.audioPlayer.getCurrentTime() + seconds;
+            state.audioPlayer.seekTo(newTime, true);
+            if (state.videoPlayer && typeof state.videoPlayer.seekTo === 'function') {
+                state.videoPlayer.seekTo(newTime, true);
+            }
         }
 
         function applyTheme(theme) {
             document.documentElement.style.setProperty('--ps2-blue', theme.primary || '#0096ff');
             document.documentElement.style.setProperty('--ps2-yellow', theme.secondary || '#ffff00');
+            dom.playerScreen.style.backgroundColor = theme.bg || 'var(--ps2-bg)';
+            dom.playerScreen.style.backgroundImage = theme.bgImage || 'none';
         }
 
         function resetTheme() {
             document.documentElement.style.setProperty('--ps2-blue', '#0096ff');
             document.documentElement.style.setProperty('--ps2-yellow', '#ffff00');
+            dom.playerScreen.style.backgroundColor = 'var(--ps2-bg)';
+            dom.playerScreen.style.backgroundImage = 'none';
             dom.videoBgContainer.classList.remove('visible');
             dom.body.classList.remove('vhs-active');
         }
@@ -811,7 +793,7 @@
                 block.onclick = (e) => {
                     e.stopPropagation();
                     const newTime = (i / blockCount) * duration;
-                    state.ytPlayer.seekTo(newTime, true);
+                    seek(newTime);
                 };
                 dom.progressBarContainer.appendChild(block);
             }
@@ -826,7 +808,7 @@
             ctx.clearRect(0, 0, width, height);
             if(dom.playerScreen.classList.contains('soundscape-mode') || dom.playerScreen.classList.contains('fullscreen-video')) return;
             
-            const isPlaying = state.ytPlayer && state.ytPlayer.getPlayerState() === YT.PlayerState.PLAYING;
+            const isPlaying = state.audioPlayer && state.audioPlayer.getPlayerState() === YT.PlayerState.PLAYING;
             ctx.fillStyle = document.documentElement.style.getPropertyValue('--ps2-blue');
 
             if (state.visualizerMode === 'bars') {
@@ -842,8 +824,8 @@
         function startProgressUpdater() {
             stopProgressUpdater();
             state.progressInterval = setInterval(() => {
-                if (state.ytPlayer && typeof state.ytPlayer.getCurrentTime === 'function') {
-                    updateTimeDisplay(state.ytPlayer.getCurrentTime(), state.ytPlayer.getDuration());
+                if (state.audioPlayer && typeof state.audioPlayer.getCurrentTime === 'function') {
+                    updateTimeDisplay(state.audioPlayer.getCurrentTime(), state.audioPlayer.getDuration());
                 }
             }, 500);
             drawVisualizer();
@@ -923,7 +905,7 @@
             dom.forwardBtn.addEventListener('click', () => seek(10));
             dom.backBtn.addEventListener('click', returnToSelection);
             dom.volumeSlider.addEventListener('input', (e) => {
-                if (state.ytPlayer && state.isPlayerReady) state.ytPlayer.setVolume(e.target.value);
+                if (state.audioPlayer && state.isPlayerReady) state.audioPlayer.setVolume(e.target.value);
             });
             dom.tracklistBtn.addEventListener('click', showTracklist);
             dom.closeTracklistBtn.addEventListener('click', hideTracklist);
