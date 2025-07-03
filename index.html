@@ -112,7 +112,7 @@
 
         .controls svg { width: 28px; height: 28px; fill: var(--ps2-white); }
         .controls .play-icon { fill: var(--ps2-blue); }
-        .controls button { background: none; border: none; padding: 4px; opacity: 0.8; transition: opacity 0.2s, color 0.2s; cursor: pointer; }
+        .controls button { background: none; border: none; padding: 4px; opacity: 0.8; transition: opacity 0.2s, color 0.2s, background-color 0.2s; cursor: pointer; }
         .controls button:hover { opacity: 1; }
         .controls button.active { color: var(--ps2-yellow); }
 
@@ -141,6 +141,25 @@
             min-width: 100%; min-height: 100%; width: auto; height: auto;
         }
         #saving-overlay { z-index: 30; display: flex; align-items: flex-start; justify-content: flex-end; padding: 2rem; }
+        
+        #caption-display {
+            position: absolute;
+            bottom: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0,0,0,0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 1.25rem;
+            text-align: center;
+            z-index: 10;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        #caption-display.visible {
+            opacity: 1;
+        }
 
     </style>
 </head>
@@ -215,6 +234,7 @@
                              <button id="shuffle-btn" class="text-lg border-2 border-white px-2">Shuffle</button>
                              <button id="repeat-btn" class="text-lg border-2 border-white px-2">Repeat All</button>
                              <button id="viz-btn" class="text-lg border-2 border-white px-2">Viz: Bars</button>
+                             <button id="cc-btn" class="text-lg border-2 border-white px-2">CC</button>
                              <input id="volume-slider" type="range" min="0" max="100" value="100" class="volume-slider w-24">
                         </div>
                     </div>
@@ -223,6 +243,7 @@
                     <div><span class="prompt-icon" style="color: #ff4444; border-color: #ff4444;">O</span> Back</div>
                 </div>
             </div>
+            <div id="caption-display"></div>
         </div>
     </div>
 
@@ -250,7 +271,10 @@
                 coverUrl: "https://i1.sndcdn.com/artworks-zMJy5oUhjfM05LnK-AzuGwA-t500x500.jpg",
                 theme: { bg: "rgba(0, 80, 150, 0.2)", primary: 'var(--ps2-blue)', secondary: 'var(--ps2-yellow)', visualizer: 'rgba(0, 150, 255, 0.7)' },
                 tracks: [
-                    { videoId: 'tkl_smLRtcE', title: "Sucesso FM", videoBg: 'tqdOIs3K-SA' }, 
+                    { videoId: 'tkl_smLRtcE', title: "Sucesso FM", videoBg: 'tqdOIs3K-SA', captions: [
+                        { start: 5, end: 8, text: "A sentir a vibe da PS2..." },
+                        { start: 10, end: 14, text: "Isto é um teste de legendas." }
+                    ]}, 
                     { videoId: 'gTsZ-vQLq74', title: "Rumo a Vitória" },
                     { videoId: 'fGhkeEmMDSU', title: "Goddamn" }, 
                     { videoId: 'pKyoxG2ZDh8', title: "I Walk", videoBg: 'lvABzBQDYGY' },
@@ -281,7 +305,7 @@
             {
                 name: "13 lentes de um final feliz",
                 coverUrl: "https://cdn-images.dzcdn.net/images/cover/a01cc5f5bbb09711637d4927e9ab83cd/500x500.jpg",
-                theme: { bg: "rgba(0, 0, 0, 0.2)", primary: '#ffffff', secondary: '#000000', visualizer: '#ffffff' },
+                theme: { bg: "rgba(255, 255, 255, 0.2)", primary: '#000000', secondary: '#000000', visualizer: '#000000' },
                 tracks: [
                     { videoId: 'asI5cHpQPAA', title: "Au revoir" }, { videoId: 'wRlhPzhgqu0', title: "Carruagem" },
                     { videoId: 'GPemhYrDATw', title: "Agradeço" }, { videoId: 'mNlhepSXi4g', title: "Corrida" },
@@ -322,6 +346,7 @@
             shuffleBtn: document.getElementById('shuffle-btn'),
             repeatBtn: document.getElementById('repeat-btn'),
             vizBtn: document.getElementById('viz-btn'),
+            ccBtn: document.getElementById('cc-btn'),
             albumTitle: document.getElementById('album-title'),
             trackNumber: document.getElementById('track-number'),
             trackName: document.getElementById('track-name'),
@@ -341,6 +366,7 @@
             specialBgImage: document.getElementById('special-bg-image'),
             savingOverlay: document.getElementById('saving-overlay'),
             clock: document.getElementById('clock'),
+            captionDisplay: document.getElementById('caption-display'),
         };
 
         const state = {
@@ -356,6 +382,7 @@
             isShuffle: false,
             repeatMode: 'all', // 'none', 'one', 'all'
             visualizerMode: 'bars', // 'bars', 'wave', 'circle'
+            captionsEnabled: false,
             clockInterval: null,
             screensaverTimeout: null,
             uiSfx: null,
@@ -515,7 +542,7 @@
                 dom.specialBgContainer.style.opacity = '0.3';
             } else if (track.videoBg) {
                 if (state.bgPlayer && typeof state.bgPlayer.loadVideoById === 'function') {
-                    state.bgPlayer.loadVideoById({videoId: track.videoBg, startSeconds: 0});
+                    state.bgPlayer.loadVideoById({videoId: track.videoBg, startSeconds: track.videoBgStart || 0});
                 }
                 dom.specialBgContainer.style.opacity = '0.3';
             } else {
@@ -558,9 +585,25 @@
                 dom.progressBarContainer.appendChild(block);
             }
         }
+
+        function updateCaptions(currentTime) {
+            if (!state.captionsEnabled) {
+                dom.captionDisplay.textContent = '';
+                return;
+            }
+            const track = albums[state.currentAlbumIndex].tracks[state.currentTrackIndex];
+            if (!track.captions) {
+                dom.captionDisplay.textContent = '';
+                return;
+            }
+            const currentCaption = track.captions.find(c => currentTime >= c.start && currentTime <= c.end);
+            dom.captionDisplay.textContent = currentCaption ? currentCaption.text : '';
+        }
+
         function updateTimeDisplay(currentTime, duration) {
             dom.timeDisplay.textContent = `${formatTime(currentTime)} / ${formatTime(duration)}`;
             updateProgressBar(currentTime, duration);
+            updateCaptions(currentTime);
         }
 
         let visualizerId;
@@ -727,6 +770,13 @@
                 const currentModeIndex = modes.indexOf(state.visualizerMode);
                 state.visualizerMode = modes[(currentModeIndex + 1) % modes.length];
                 dom.vizBtn.textContent = `Viz: ${state.visualizerMode.charAt(0).toUpperCase() + state.visualizerMode.slice(1)}`;
+            });
+
+            dom.ccBtn.addEventListener('click', () => {
+                state.captionsEnabled = !state.captionsEnabled;
+                dom.ccBtn.classList.toggle('active', state.captionsEnabled);
+                dom.ccBtn.style.color = state.captionsEnabled ? 'var(--ps2-yellow)' : 'var(--ps2-white)';
+                dom.captionDisplay.classList.toggle('visible', state.captionsEnabled);
             });
             
             window.addEventListener('mousemove', resetScreensaver);
