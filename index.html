@@ -88,28 +88,54 @@
         .cd-selection-item {
             position: relative; width: 220px; height: 220px;
             cursor: pointer; transition: transform 0.3s ease;
+            perspective: 1000px;
         }
-        .cd-selection-item:hover { transform: scale(1.05) rotate(5deg); }
         .cd-case {
             width: 100%; height: 100%;
-            background: url('https://i.imgur.com/Q0Gg3E1.png') no-repeat center center;
-            background-size: contain;
             position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease;
+        }
+        .cd-selection-item:hover .cd-case {
+            transform: rotateY(-25deg);
+        }
+        .cd-front-cover {
+            position: absolute;
+            width: 100%; height: 100%;
+            background: linear-gradient(45deg, rgba(255,255,255,0.2), rgba(255,255,255,0.05));
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.1);
+            overflow: hidden;
+            backface-visibility: hidden;
+        }
+        .cd-spine {
+            position: absolute;
+            width: 25px; height: 100%;
+            background-color: #ccc;
+            background-image: linear-gradient(to right, #aaa, #ddd, #aaa);
+            transform: rotateY(90deg) translateZ(-12.5px);
+            border-radius: 8px 0 0 8px;
         }
         #selection-screen .cd-art {
             position: absolute;
             top: 50%; left: 50%;
-            width: 86%; height: 86%;
+            width: 95%; height: 95%;
             transform: translate(-50%, -50%);
             border-radius: 50%; background-size: cover; background-position: center;
         }
-        
-        .ps2-logo-overlay {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 60%; height: 60%;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path fill="rgba(255,255,255,0.5)" d="M100 0C44.8 0 0 44.8 0 100s44.8 100 100 100 100-44.8 100-100S155.2 0 100 0zm0 180c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80z"/><path fill="rgba(255,255,255,0.5)" d="M120 60h-20v80h20V60zm-40 0H80v80h20V60z"/></svg>') no-repeat center center;
-            background-size: contain;
-            opacity: 0.7;
+        .album-box {
+            border: 2px solid var(--ps2-white);
+            padding: 1rem;
+            margin: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .album-box:hover {
+            background-color: rgba(255,255,255,0.1);
+            border-color: var(--ps2-yellow);
+        }
+        .cd-collection {
+            display: none;
         }
 
         #player-screen { background-color: transparent; }
@@ -119,6 +145,14 @@
             background-color: #000;
         }
         #video-background-container.visible { opacity: 0.3; }
+        #video-background-container.blue-tint::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: blue;
+            mix-blend-mode: color;
+            opacity: 0.3;
+        }
         #player-screen.fullscreen-video #video-background-container.visible { opacity: 1; }
 
         #youtube-player-iframe {
@@ -149,6 +183,7 @@
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             width: 80px; height: 80px; border-radius: 50%; background-color: var(--ps2-bg);
             box-shadow: inset 0 0 10px rgba(0,0,0,0.7);
+            z-index: 1;
         }
         
         .player-container .animated-ui { opacity: 0; transform: translateY(15px); transition: opacity 0.5s ease, transform 0.5s ease; }
@@ -279,7 +314,8 @@
             <div id="selection-bg-hover"></div>
             <div class="text-center relative z-10">
                 <h1 class="text-5xl text-white mb-12" style="text-shadow: 2px 2px 0 var(--ps2-blue);">Select Disc</h1>
-                <div id="cd-selection-container" class="flex flex-wrap justify-center gap-8 px-4"></div>
+                <div id="album-box-container" class="flex flex-wrap justify-center gap-8 px-4"></div>
+                <div id="cd-selection-container" class="flex flex-wrap justify-center gap-8 px-4 mt-8"></div>
             </div>
         </div>
         
@@ -293,7 +329,6 @@
                 <button id="exit-soundscape-btn" class="exit-mode-btn">X</button>
                 <div id="soundscape-cd" class="cd-2d z-10">
                     <div class="cd-hole"></div>
-                    <div class="ps2-logo-overlay"></div>
                 </div>
                 <p id="soundscape-time" class="time-display z-10">00:00 / 00:00</p>
             </div>
@@ -307,7 +342,6 @@
                         <div class="cd-2d-container animated-ui">
                             <div id="cd-2d" class="cd-2d">
                                 <div class="cd-hole"></div>
-                                <div class="ps2-logo-overlay"></div>
                             </div>
                         </div>
                         <canvas id="visualizer" class="animated-ui"></canvas>
@@ -361,22 +395,30 @@
     <script>
         const albums = [
              {
+                id: 'validation',
                 name: "Validation",
                 coverUrl: "https://i1.sndcdn.com/artworks-zMJy5oUhjfM05LnK-AzuGwA-t500x500.jpg",
-                theme: { name: 'validation', bg: "rgba(0, 80, 150, 0.2)", primary: 'var(--ps2-blue)', secondary: 'var(--ps2-yellow)', visualizer: 'rgba(0, 150, 255, 0.7)' },
+                theme: { name: 'validation', primary: '#00529b', secondary: '#66ff66' },
                 tracks: [
-                    { audioId: 'tkl_smLRtcE', title: "Sucesso FM" }, { audioId: 'gTsZ-vQLq74', title: "Rumo a Vitória" },
-                    { audioId: 'fGhkeEmMDSU', title: "Goddamn" }, { audioId: 'pKyoxG2ZDh8', title: "I Walk" },
-                    { audioId: '-1WfKz06Hgc', title: "Waiting to Fly" }, { audioId: 'llJZ4H4zQ2k', title: "Sonhar" },
-                    { audioId: 'TQ2OtyCtOMc', title: "I'm in Love" }, { audioId: 'u3M_KURTWKY', title: "For my Family" }, 
-                    { audioId: 'm8SzrWpCjKU', title: "Going Home" }, { audioId: 'rfIV2uGZ2kM', title: "The Lord and Me" },
-                    { audioId: 'ozu12D-DdJk', title: "Anjos da Guarda" }, { audioId: 'HjA6fwTInT0', title: "We Gold" },
+                    { audioId: 'tkl_smLRtcE', title: "Sucesso FM", musicVideoId: 'tqdOIs3K-SA' }, 
+                    { audioId: 'gTsZ-vQLq74', title: "Rumo a Vitória" },
+                    { audioId: 'fGhkeEmMDSU', title: "Goddamn" }, 
+                    { audioId: 'pKyoxG2ZDh8', title: "I Walk", musicVideoId: 'lvABzBQDYGY' },
+                    { audioId: '-1WfKz06Hgc', title: "Waiting to Fly", musicVideoId: 'hX2NJxJP6Mc' }, 
+                    { audioId: 'llJZ4H4zQ2k', title: "Sonhar", musicVideoId: 'WCtvzfzKStU', videoStart: 39 },
+                    { audioId: 'TQ2OtyCtOMc', title: "I'm in Love" }, 
+                    { audioId: 'u3M_KURTWKY', title: "For my Family", musicVideoId: 'krU-M8WusuY' }, 
+                    { audioId: 'm8SzrWpCjKU', title: "Going Home" }, 
+                    { audioId: 'rfIV2uGZ2kM', title: "The Lord and Me" },
+                    { audioId: 'ozu12D-DdJk', title: "Anjos da Guarda", musicVideoId: 'gI_2-LacLiI' }, 
+                    { audioId: 'HjA6fwTInT0', title: "We Gold" },
                 ]
             },
             {
+                id: 'bittersweet',
                 name: "Bittersweet Memories",
                 coverUrl: "https://i.scdn.co/image/ab67616d0000b2732e8e4cfa666ea534d070c041",
-                theme: { name: 'bittersweet', bg: "rgba(255, 140, 0, 0.2)", primary: 'darkorange', secondary: 'gold', visualizer: 'darkorange' },
+                theme: { name: 'bittersweet', primary: '#ff8c00', secondary: '#ffd700' },
                 tracks: [
                     { audioId: 'xXeDMfisrU8', title: "Saúde" }, { audioId: 'rsxeE1WkHqw', title: "Filho Pródigo" },
                     { audioId: 'KzUUemEW_iI', title: "Let It Pour" }, { audioId: 'qkaxqSGI_OE', title: "The Story" },
@@ -389,13 +431,15 @@
                 ]
             },
             {
+                id: '13lentes',
                 name: "13 lentes de um final feliz",
                 coverUrl: "https://cdn-images.dzcdn.net/images/cover/a01cc5f5bbb09711637d4927e9ab83cd/500x500.jpg",
-                theme: { name: '13-lentes', bg: "rgba(255, 255, 255, 0.2)", primary: '#808080', secondary: '#ffffff', visualizer: '#ffffff' },
+                theme: { name: '13-lentes', primary: '#cccccc', secondary: '#888888' },
                 tracks: [
                     { audioId: 'asI5cHpQPAA', title: "Au revoir" }, { audioId: 'wRlhPzhgqu0', title: "Carruagem" },
                     { audioId: 'GPemhYrDATw', title: "Agradeço" }, { audioId: 'mNlhepSXi4g', title: "Corrida" },
-                    { audioId: 'WlylgE8fSLs', title: "Joias da Familia" }, { audioId: 'TSLRScqwemI', title: "Nunca Paro" },
+                    { audioId: 'WlylgE8fSLs', title: "Joias da Familia" }, 
+                    { audioId: 'TSLRScqwemI', title: "Nunca Paro", musicVideoId: 'P9NqaluDZuk', videoLoop: true },
                     { audioId: 'GC-BHmtlhFQ', title: "Memórias" }, { audioId: '6ep0itQcsUM', title: "Lost in Translation" },
                     { audioId: 'nKJyKsFgDJY', title: "Primavera" }, { audioId: 'MVrIi0zI6gc', title: "Let me see the sun" },
                     { audioId: 'vWsdkDa3vOw', title: "Adeus" }, { audioId: 'cgW6sqr8X0k', title: "Deixa Doer" },
@@ -403,13 +447,32 @@
                 ]
             },
             {
+                id: 'optica',
                 name: "Óptica",
                 coverUrl: "https://images.genius.com/a1c5e0cebf8fdb9629ff8205d02af9ff.1000x1000x1.png",
-                theme: { name: 'optica', bg: "rgba(173, 216, 230, 0.2)", primary: '#add8e6', secondary: '#000000', visualizer: '#add8e6' },
+                theme: { name: 'optica', primary: '#add8e6', secondary: '#ffffff' },
                 tracks: [
                     { audioId: 'DWV5g3m3118', title: "Absorver" }, { audioId: 'YbQj7ByNkNM', title: "Reflexo" },
                     { audioId: 'ENmHHlGVAtE', title: "Sombra", musicVideoId: '1EYOFvZmnJE' },
                     { audioId: 'd-mQtP2JHJY', title: "Transparência" }
+                ]
+            },
+            {
+                id: 'bonstempos',
+                name: "Bons tempos",
+                coverUrl: "https://akamai.sscdn.co/uploadfile/letras/albuns/3/0/9/c/2338071724245865.jpg",
+                theme: { name: 'bonstempos', primary: '#9370db', secondary: '#e6e6fa' },
+                tracks: [
+                    { audioId: 'XUYNTXXhmbc', title: 'Quando a noite vem' },
+                    { audioId: 'wwVejlwrKTA', title: 'Oxford Shoes' },
+                    { audioId: 'R3BWRueflA4', title: 'Twist', musicVideoId: 'hcL33v1N8uQ', videoLoop: true },
+                    { audioId: '61o4MC3kEsM', title: 'American Dream' },
+                    { audioId: 'MUqryi1MIrs', title: 'A Cidade sem você' },
+                    { audioId: 'amC0UxaMz9Y', title: 'Um certo alguem' },
+                    { audioId: 'slgXDu2Ck2A', title: 'Playback' },
+                    { audioId: 'wVmcDQ_yX5g', title: 'Amiga fiel' },
+                    { audioId: 'yqRAcdaqLNI', title: 'Televisão' },
+                    { audioId: 'y1v-bI4_k2I', title: 'Raise my hands' }
                 ]
             }
         ];
@@ -418,6 +481,7 @@
             body: document.body,
             selectionScreen: document.getElementById('selection-screen'),
             selectionBgHover: document.getElementById('selection-bg-hover'),
+            albumBoxContainer: document.getElementById('album-box-container'),
             playerScreen: document.getElementById('player-screen'),
             videoBgContainer: document.getElementById('video-background-container'),
             playerContainer: document.getElementById('player-container'),
@@ -488,24 +552,55 @@
         }
         
         function onPlayerStateChange(event) {
-            const isPlaying = event.data === YT.PlayerState.PLAYING;
-            updateUIIsPlaying(isPlaying);
-            if (isPlaying) startProgressUpdater(); else stopProgressUpdater();
-            if (event.data === YT.PlayerState.ENDED) playNextTrack();
+            const track = albums[state.currentAlbumIndex].tracks[state.currentTrackIndex];
+            if (event.data === YT.PlayerState.ENDED && track.videoLoop) {
+                state.ytPlayer.seekTo(0);
+                state.ytPlayer.playVideo();
+            } else {
+                const isPlaying = event.data === YT.PlayerState.PLAYING;
+                updateUIIsPlaying(isPlaying);
+                if (isPlaying) startProgressUpdater(); else stopProgressUpdater();
+                if (event.data === YT.PlayerState.ENDED) playNextTrack();
+            }
         }
 
         function renderSelectionScreen() {
+            dom.albumBoxContainer.innerHTML = '';
             dom.cdSelectionContainer.innerHTML = '';
-            albums.forEach((album, index) => {
+
+            const albumBoxes = {
+                'Trilogia Validation': ['validation', 'bittersweet', '13lentes'],
+                'Bons tempos / Óptica': ['bonstempos', 'optica']
+            };
+
+            Object.keys(albumBoxes).forEach(boxName => {
+                const box = document.createElement('div');
+                box.className = 'album-box';
+                box.textContent = boxName;
+                box.onclick = () => {
+                    renderCDs(albumBoxes[boxName]);
+                    dom.albumBoxContainer.classList.add('hidden');
+                };
+                dom.albumBoxContainer.appendChild(box);
+            });
+        }
+        
+        function renderCDs(albumIds) {
+            dom.cdSelectionContainer.innerHTML = '';
+            albumIds.forEach(id => {
+                const album = albums.find(a => a.id === id);
+                if (!album) return;
+                
                 const item = document.createElement('div');
                 item.className = 'cd-selection-item';
                 item.innerHTML = `
                     <div class="cd-case">
-                        <div class="cd-art" style="background-image: url('${album.coverUrl}')">
-                             <div class="ps2-logo-overlay"></div>
+                        <div class="cd-spine"></div>
+                        <div class="cd-front-cover">
+                           <div class="cd-art" style="background-image: url('${album.coverUrl}')"></div>
                         </div>
                     </div>`;
-                item.onclick = (e) => selectAlbum(index, e.currentTarget);
+                item.onclick = (e) => selectAlbum(albums.indexOf(album), e.currentTarget);
                 item.onmouseenter = () => {
                     if(state.bgHoverTimeout) clearTimeout(state.bgHoverTimeout);
                     dom.selectionBgHover.style.backgroundImage = `url('${album.coverUrl}')`;
@@ -513,11 +608,6 @@
                 };
                 dom.cdSelectionContainer.appendChild(item);
             });
-            dom.selectionScreen.onmouseleave = () => {
-                 state.bgHoverTimeout = setTimeout(() => {
-                    dom.selectionBgHover.style.opacity = 0;
-                 }, 200);
-            };
         }
 
         function selectAlbum(index, clickedElement) {
@@ -568,6 +658,8 @@
             fadeOutAudio(stopMusic);
             resetTheme();
             transitionToScreen(dom.selectionScreen);
+            dom.albumBoxContainer.classList.remove('hidden');
+            dom.cdSelectionContainer.innerHTML = '';
         }
 
         function transitionToScreen(targetScreen, isAnimatingCD = false) {
@@ -596,16 +688,22 @@
             updateTrackInfo(album, track, index + 1);
             
             dom.body.classList.toggle('vhs-active', track.title === 'Máquina do Tempo');
+            dom.videoBgContainer.classList.toggle('blue-tint', album.id === 'validation');
 
             const videoId = track.musicVideoId || track.audioId;
+            const playerVars = {
+                'videoId': videoId,
+                'startSeconds': track.videoStart || 0,
+            };
+            
             if (track.musicVideoId) {
                 dom.videoBgContainer.classList.add('visible');
             } else {
                 dom.videoBgContainer.classList.remove('visible');
             }
             
-            if (autoplay) state.ytPlayer.loadVideoById(videoId);
-            else state.ytPlayer.cueVideoById(videoId);
+            if (autoplay) state.ytPlayer.loadVideoById(playerVars);
+            else state.ytPlayer.cueVideoById(playerVars);
         }
         
         function fadeOutAudio(callback) {
