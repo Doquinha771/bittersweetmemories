@@ -29,7 +29,7 @@
 
         body { background-color: #111; font-family: 'VT323', monospace; color: var(--ps2-white); overflow: hidden; }
         .theme-default { cursor: default; }
-        .theme-validation { cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" style="font-size: 24px;"><text y="24" fill="var(--ps2-blue)">▶</text></svg>'), auto; }
+        .theme-validation { cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" style="font-size: 24px;"><text y="24" fill="rgb(0, 150, 255)">▶</text></svg>'), auto; }
         .theme-bittersweet { cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" style="font-size: 24px;"><text y="24" fill="darkorange">▶</text></svg>'), auto; }
         .theme-13-lentes { cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" style="font-size: 24px;"><text y="24" fill="grey">▶</text></svg>'), auto; }
         .theme-optica { cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" style="font-size: 24px;"><text y="24" fill="lightblue">▶</text></svg>'), auto; }
@@ -68,11 +68,11 @@
         }
         .cd-selection-item {
             position: relative;
-            width: 180px; height: 180px;
+            width: 200px; height: 200px;
             cursor: pointer;
         }
         #selection-screen .cd-art {
-            width: 180px; height: 180px; border-radius: 50%; background-size: cover; background-position: center;
+            width: 200px; height: 200px; border-radius: 50%; background-size: cover; background-position: center;
             border: 5px solid #333; box-shadow: 0 10px 20px rgba(0,0,0,0.4); transition: transform 0.4s ease;
         }
         .cd-case {
@@ -87,7 +87,7 @@
 
         .player-container { width: 100%; max-width: 900px; margin: auto; position: relative; z-index: 5; transition: opacity 0.5s ease; }
         .player-container.screensaver { opacity: 0; }
-        .cd-2d-container { width: 280px; height: 280px; }
+        .cd-2d-container { width: 300px; height: 300px; }
         .cd-2d {
             width: 100%; height: 100%; border-radius: 50%; position: relative; background-size: cover; background-position: center;
             box-shadow: 0 0 35px rgba(0,0,0,0.6); 
@@ -147,7 +147,7 @@
         #special-bg-image { width: 100%; height: 100%; background-size: cover; background-position: center; }
         #bg-youtube-player {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            min-width: 100%; min-height: 100%; width: auto; height: auto;
+            min-width: 120%; min-height: 120%; width: auto; height: auto;
         }
         #saving-overlay { z-index: 30; display: flex; align-items: flex-start; justify-content: flex-end; padding: 2rem; }
         
@@ -243,7 +243,6 @@
                              <button id="shuffle-btn" class="text-lg border-2 border-white px-2">Shuffle</button>
                              <button id="repeat-btn" class="text-lg border-2 border-white px-2">Repeat All</button>
                              <button id="viz-btn" class="text-lg border-2 border-white px-2">Viz: Bars</button>
-                             <button id="cc-btn" class="text-lg border-2 border-white px-2">CC</button>
                              <input id="volume-slider" type="range" min="0" max="100" value="100" class="volume-slider w-24">
                         </div>
                     </div>
@@ -356,7 +355,6 @@
             shuffleBtn: document.getElementById('shuffle-btn'),
             repeatBtn: document.getElementById('repeat-btn'),
             vizBtn: document.getElementById('viz-btn'),
-            ccBtn: document.getElementById('cc-btn'),
             albumTitle: document.getElementById('album-title'),
             trackNumber: document.getElementById('track-number'),
             trackName: document.getElementById('track-name'),
@@ -783,20 +781,6 @@
                 const currentModeIndex = modes.indexOf(state.visualizerMode);
                 state.visualizerMode = modes[(currentModeIndex + 1) % modes.length];
                 dom.vizBtn.textContent = `Viz: ${state.visualizerMode.charAt(0).toUpperCase() + state.visualizerMode.slice(1)}`;
-            });
-
-            dom.ccBtn.addEventListener('click', () => {
-                if (!state.ytPlayer) return;
-                state.captionsEnabled = !state.captionsEnabled;
-                const player = state.ytPlayer.getIframe();
-                if (state.captionsEnabled) {
-                    state.ytPlayer.loadModule('captions');
-                } else {
-                    state.ytPlayer.unloadModule('captions');
-                }
-                dom.ccBtn.classList.toggle('active', state.captionsEnabled);
-                dom.ccBtn.style.color = state.captionsEnabled ? 'var(--ps2-yellow)' : 'var(--ps2-white)';
-                dom.captionDisplay.classList.toggle('visible', state.captionsEnabled);
             });
             
             window.addEventListener('mousemove', resetScreensaver);
