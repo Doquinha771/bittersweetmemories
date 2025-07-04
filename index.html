@@ -181,6 +181,29 @@
             background-color: rgba(0, 51, 204, 0.4) !important; /* PS2 blue com opacidade */
         }
 
+        /* Efeito VHS */
+        .vhs-effect {
+            filter: sepia(0.3) contrast(1.1) brightness(0.9) blur(0.2px);
+        }
+        .vhs-effect::after {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: repeating-linear-gradient(0deg, rgba(0,0,0,0.1) 0px, rgba(0,0,0,0.1) 1px, transparent 1px, transparent 3px);
+            z-index: 1;
+            pointer-events: none;
+            animation: vhs-noise 0.1s steps(3, end) infinite;
+        }
+        @keyframes vhs-noise {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(2px, -3px); }
+            50% { transform: translate(-2px, 2px); }
+            75% { transform: translate(1px, 4px); }
+            100% { transform: translate(-1px, -2px); }
+        }
+
+
         /* Screensaver DVD */
         #dvd-screensaver {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
@@ -369,7 +392,8 @@
                     { title: "Back Home", audioId: 'fnRyVCxqLqk' }, { title: "Melhor Não", audioId: 'RMeJND0yzeM' },
                     { title: "Old School", audioId: 'yApMEdYtkGM' }, { title: "Dirty Dancing", audioId: 'ZBe3GmoFJys' },
                     { title: "Prefiro Morrer", audioId: 'g0_DLkqjylU' }, { title: "Quase Perfeito", audioId: 'vLQR5UCq5J0' },
-                    { title: "Máquina do Tempo", audioId: 'Z7LsJA7NJF0' }, { title: "Flores de Outro Carnaval", audioId: 'tR-m63k2nNM' },
+                    { title: "Máquina do Tempo", audioId: 'Z7LsJA7NJF0', musicVideoId: 'Z7LsJA7NJF0', videoLoop: true, vhs: true },
+                    { title: "Flores de Outro Carnaval", audioId: 'tR-m63k2nNM' },
                 ]
             },
             {
@@ -377,14 +401,19 @@
                 cover: "https://cdn-images.dzcdn.net/images/cover/a01cc5f5bbb09711637d4927e9ab83cd/500x500.jpg",
                 theme: { primary: '#e5e7eb', secondary: '#9ca3af' }, // Branco e Cinza
                 tracks: [
-                    { title: "Au revoir", audioId: 'dQw4w9WgXcQ' }, { title: "Carruagem", audioId: 'dQw4w9WgXcQ' },
-                    { title: "Agradeço", audioId: 'dQw4w9WgXcQ' }, { title: "Corrida", audioId: 'dQw4w9WgXcQ' },
-                    { title: "Joias da Família", audioId: 'dQw4w9WgXcQ' },
+                    { title: "Au revoir", audioId: 'asI5cHpQPAA' }, 
+                    { title: "Carruagem", audioId: 'wRlhPzhgqu0' },
+                    { title: "Agradeço", audioId: 'GPemhYrDATw' }, 
+                    { title: "Corrida", audioId: 'mNlhepSXi4g' },
+                    { title: "Joias da Família", audioId: 'WlylgE8fSLs' },
                     { title: "Nunca Paro", audioId: 'TSLRScqwemI', musicVideoId: 'P9NqaluDZuk', videoLoop: true },
-                    { title: "Memórias", audioId: 'dQw4w9WgXcQ' }, { title: "Lost in Translation", audioId: 'dQw4w9WgXcQ' },
-                    { title: "Primavera", audioId: 'dQw4w9WgXcQ' }, { title: "Let me see the sun", audioId: 'dQw4w9WgXcQ' },
-                    { title: "Adeus", audioId: 'dQw4w9WgXcQ' }, { title: "Deixa Doer", audioId: 'dQw4w9WgXcQ' },
-                    { title: "Não me faça falar", audioId: 'dQw4w9WgXcQ' },
+                    { title: "Memórias", audioId: 'GC-BHmtlhFQ' }, 
+                    { title: "Lost in Translation", audioId: '6ep0itQcsUM' },
+                    { title: "Primavera", audioId: 'nKJyKsFgDJY' }, 
+                    { title: "Let me see the sun", audioId: 'MVrIi0zI6gc' },
+                    { title: "Adeus", audioId: 'vWsdkDa3vOw' }, 
+                    { title: "Deixa Doer", audioId: 'cgW6sqr8X0k' },
+                    { title: "Não me faça falar", audioId: 'lUu0sFJfN80', musicVideoId: 'Ryz5LuaFznM', videoLoop: true },
                 ]
             },
             {
@@ -392,9 +421,10 @@
                 cover: "https://images.genius.com/a1c5e0cebf8fdb9629ff8205d02af9ff.1000x1000x1.png",
                 theme: { primary: '#a0c4ff', secondary: '#ffffff' }, // Azul Bebê e Branco
                 tracks: [
-                    { title: "Absorver", audioId: 'dQw4w9WgXcQ' }, { title: "Reflexo", audioId: 'dQw4w9WgXcQ' },
+                    { title: "Absorver", audioId: 'DWV5g3m3118' }, 
+                    { title: "Reflexo", audioId: 'YbQj7ByNkNM' },
                     { title: "Sombra", audioId: 'ENmHHlGVAtE', musicVideoId: '1EYOFvZmnJE', videoLoop: true },
-                    { title: "Transparência", audioId: 'dQw4w9WgXcQ' },
+                    { title: "Transparência", audioId: 'd-mQtP2JHJY' },
                 ]
             },
             {
@@ -554,6 +584,10 @@
             player.loadVideoById({ videoId: track.audioId, startSeconds: track.startSeconds || 0 });
             updateTrackInfo(track, trackIndexInAlbum);
             
+            // Aplica ou remove o efeito VHS
+            videoBgContainer.classList.toggle('vhs-effect', !!track.vhs);
+            fullscreenVideoMode.classList.toggle('vhs-effect', !!track.vhs);
+
             // BUG FIX: Garante que o player de vídeo exista antes de usá-lo
             if (track.musicVideoId && videoBgPlayer && typeof videoBgPlayer.loadVideoById === 'function') {
                 const videoOptions = { videoId: track.musicVideoId, startSeconds: track.videoStart || 0 };
@@ -856,14 +890,16 @@
             if(closeTracklistBtn) closeTracklistBtn.addEventListener('click', hideTracklist);
 
             if(progressBar) progressBar.addEventListener('click', (e) => {
+                // BUG FIX: Usar getBoundingClientRect para um cálculo de clique mais preciso
+                const rect = progressBar.getBoundingClientRect();
+                const clickX = e.clientX - rect.left; // Posição do clique relativa à barra
                 const barWidth = progressBar.offsetWidth;
-                const clickX = e.offsetX;
                 const progress = clickX / barWidth;
                 const duration = player.getDuration();
+                
                 if (duration > 0) {
                     const newTime = duration * progress;
                     player.seekTo(newTime, true);
-                    // BUG FIX: Sincroniza o vídeo de fundo ao clicar na barra
                     if(videoBgPlayer && typeof videoBgPlayer.seekTo === 'function') {
                         videoBgPlayer.seekTo(newTime, true);
                     }
