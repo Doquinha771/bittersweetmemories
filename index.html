@@ -276,11 +276,12 @@
             </div>
             <div id="progress-bar-container" class="w-full h-3 rounded-full"></div>
             <div class="flex items-center gap-4 text-3xl mt-2">
+                <button id="rewind-btn" class="player-btn">«5s</button>
                 <button id="prev-btn" class="player-btn">«</button>
                 <button id="play-btn" class="player-btn">▶</button>
                 <button id="pause-btn" class="player-btn hidden">❚❚</button>
-                <button id="stop-btn" class="player-btn">■</button>
                 <button id="next-btn" class="player-btn">»</button>
+                <button id="forward-btn" class="player-btn">5s»</button>
             </div>
              <div class="flex items-center gap-4 text-xl mt-2">
                 <button id="shuffle-btn" class="player-btn">Shuffle</button>
@@ -341,27 +342,27 @@
             {
                 title: "Validation",
                 cover: "https://i1.sndcdn.com/artworks-zMJy5oUhjfM05LnK-AzuGwA-t500x500.jpg",
-                theme: { primary: '#4CAF50', secondary: '#0033cc' },
-                videoTint: 'blue', // Adiciona o filtro azul para este álbum
+                theme: { primary: '#4CAF50', secondary: '#0033cc' }, // Verde e Azul
+                videoTint: 'blue',
                 tracks: [
-                    { title: "Sucesso FM", audioId: 'tkl_smLRtcE', musicVideoId: 'tqdOIs3K-SA' },
+                    { title: "Sucesso FM", audioId: 'tkl_smLRtcE', musicVideoId: 'tqdOIs3K-SA', videoLoop: true },
                     { title: "Rumo a Vitória", audioId: 'gTsZ-vQLq74' },
                     { title: "Goddamn", audioId: 'fGhkeEmMDSU' },
-                    { title: "I Walk", audioId: 'pKyoxG2ZDh8', musicVideoId: 'lvABzBQDYGY' },
-                    { title: "Waiting to Fly", audioId: '-1WfKz06Hgc', musicVideoId: 'hX2NJxJP6Mc' },
-                    { title: "Sonhar", audioId: 'llJZ4H4zQ2k', musicVideoId: 'WCtvzfzKStU', videoStart: 39 },
+                    { title: "I Walk", audioId: 'pKyoxG2ZDh8', musicVideoId: 'lvABzBQDYGY', videoLoop: true },
+                    { title: "Waiting to Fly", audioId: '-1WfKz06Hgc', musicVideoId: 'hX2NJxJP6Mc', videoLoop: true },
+                    { title: "Sonhar", audioId: 'llJZ4H4zQ2k', musicVideoId: 'WCtvzfzKStU', videoStart: 39, videoLoop: true },
                     { title: "I'm in Love", audioId: 'TQ2OtyCtOMc' },
-                    { title: "For my Family", audioId: 'u3M_KURTWKY', musicVideoId: 'krU-M8WusuY' },
+                    { title: "For my Family", audioId: 'u3M_KURTWKY', musicVideoId: 'krU-M8WusuY', videoLoop: true },
                     { title: "Going Home", audioId: 'm8SzrWpCjKU' },
                     { title: "The Lord and Me", audioId: 'rfIV2uGZ2kM' },
-                    { title: "Anjos da Guarda", audioId: 'ozu12D-DdJk', musicVideoId: 'gI_2-LacLiI' },
+                    { title: "Anjos da Guarda", audioId: 'ozu12D-DdJk', musicVideoId: 'gI_2-LacLiI', videoLoop: true },
                     { title: "We Gold", audioId: 'HjA6fwTInT0' },
                 ]
             },
             {
                 title: "Bittersweet Memories",
                 cover: "https://i.scdn.co/image/ab67616d0000b2732e8e4cfa666ea534d070c041",
-                theme: { primary: '#d97706', secondary: '#f59e0b' },
+                theme: { primary: '#f59e0b', secondary: '#fbbf24' }, // Laranja Dourado e Amarelo
                 tracks: [
                     { title: "Saúde", audioId: 'xXeDMfisrU8' }, { title: "Filho Pródigo", audioId: 'rsxeE1WkHqw' },
                     { title: "Let It Pour", audioId: 'KzUUemEW_iI' }, { title: "The Story", audioId: 'qkaxqSGI_OE' },
@@ -374,7 +375,7 @@
             {
                 title: "13 Lentes de um Final Feliz",
                 cover: "https://cdn-images.dzcdn.net/images/cover/a01cc5f5bbb09711637d4927e9ab83cd/500x500.jpg",
-                theme: { primary: '#9ca3af', secondary: '#e5e7eb' },
+                theme: { primary: '#e5e7eb', secondary: '#9ca3af' }, // Branco e Cinza
                 tracks: [
                     { title: "Au revoir", audioId: 'dQw4w9WgXcQ' }, { title: "Carruagem", audioId: 'dQw4w9WgXcQ' },
                     { title: "Agradeço", audioId: 'dQw4w9WgXcQ' }, { title: "Corrida", audioId: 'dQw4w9WgXcQ' },
@@ -389,17 +390,17 @@
             {
                 title: "Óptica",
                 cover: "https://images.genius.com/a1c5e0cebf8fdb9629ff8205d02af9ff.1000x1000x1.png",
-                theme: { primary: '#3b82f6', secondary: '#ffffff' },
+                theme: { primary: '#a0c4ff', secondary: '#ffffff' }, // Azul Bebê e Branco
                 tracks: [
                     { title: "Absorver", audioId: 'dQw4w9WgXcQ' }, { title: "Reflexo", audioId: 'dQw4w9WgXcQ' },
-                    { title: "Sombra", audioId: 'ENmHHlGVAtE', musicVideoId: '1EYOFvZmnJE' },
+                    { title: "Sombra", audioId: 'ENmHHlGVAtE', musicVideoId: '1EYOFvZmnJE', videoLoop: true },
                     { title: "Transparência", audioId: 'dQw4w9WgXcQ' },
                 ]
             },
             {
                 title: "Bons Tempos",
                 cover: "https://akamai.sscdn.co/uploadfile/letras/albuns/3/0/9/c/2338071724245865.jpg",
-                theme: { primary: '#a78bfa', secondary: '#c4b5fd' },
+                theme: { primary: '#a78bfa', secondary: '#fefce8' }, // Roxo e Cor da Lua (Marfim)
                 tracks: [
                     { title: "Quando a noite vem", audioId: 'XUYNTXXhmbc' },
                     { title: "Oxford Shoes", audioId: 'wwVejlwrKTA' },
@@ -431,6 +432,8 @@
         const stopBtn = document.getElementById('stop-btn');
         const nextBtn = document.getElementById('next-btn');
         const prevBtn = document.getElementById('prev-btn');
+        const rewindBtn = document.getElementById('rewind-btn');
+        const forwardBtn = document.getElementById('forward-btn');
         const shuffleBtn = document.getElementById('shuffle-btn');
         const repeatBtn = document.getElementById('repeat-btn');
         const vizBtn = document.getElementById('viz-btn');
@@ -471,47 +474,58 @@
         
         // Inicialização do YouTube IFrame API
         function onYouTubeIframeAPIReady() {
+            // Player de Áudio Principal
             player = new YT.Player('youtube-player', {
                 height: '0', width: '0',
                 events: { 'onReady': onPlayerReady, 'onStateChange': onPlayerStateChange }
             });
             
+            // Player de Vídeo de Fundo
             videoBgPlayer = new YT.Player('video-background-player', {
                 height: '100%', width: '100%',
-                playerVars: { 'autoplay': 1, 'controls': 0, 'showinfo': 0, 'rel': 0, 'mute': 1 },
-                events: { 'onReady': (event) => event.target.mute() }
+                playerVars: { 'autoplay': 1, 'controls': 0, 'showinfo': 0, 'rel': 0, 'mute': 1, 'playsinline': 1 },
+                events: { 'onReady': (event) => event.target.mute(), 'onStateChange': onVideoStateChange }
             });
 
+            // Player de Vídeo em Tela Cheia
             fullscreenVideoPlayer = new YT.Player('fullscreen-video-player', {
                 height: '100%', width: '100%',
-                playerVars: { 'controls': 0, 'showinfo': 0, 'rel': 0 },
-                 events: { 'onReady': (event) => event.target.setVolume(volumeSlider.value) }
+                playerVars: { 'autoplay': 0, 'controls': 0, 'showinfo': 0, 'rel': 0, 'mute': 1, 'playsinline': 1 },
+                 events: { 'onReady': (event) => event.target.mute(), 'onStateChange': onVideoStateChange }
             });
         }
 
         function onPlayerReady(event) {
-            volumeSlider.addEventListener('input', (e) => {
-                player.setVolume(e.target.value);
-                fullscreenVideoPlayer.setVolume(e.target.value);
-            });
+            // A configuração dos listeners foi movida para window.onload
         }
 
+        // Gerencia o estado do player de áudio
         function onPlayerStateChange(event) {
             resetInactivityTimer();
             const state = event.data;
             
             if (state === YT.PlayerState.PLAYING) {
                 startProgressInterval(); isPlaying = true; updatePlayPauseButtons(); playerCd.classList.add('playing');
-                videoBgPlayer.playVideo();
-                fullscreenVideoPlayer.playVideo();
+                if(videoBgPlayer && typeof videoBgPlayer.playVideo === 'function') videoBgPlayer.playVideo();
+                if(fullscreenVideoPlayer.isMuted() && typeof fullscreenVideoPlayer.playVideo === 'function') fullscreenVideoPlayer.playVideo();
             } else {
                 stopProgressInterval(); isPlaying = false; updatePlayPauseButtons(); playerCd.classList.remove('playing');
                 if (state === YT.PlayerState.PAUSED) {
-                    videoBgPlayer.pauseVideo();
-                    fullscreenVideoPlayer.pauseVideo();
+                    if(videoBgPlayer && typeof videoBgPlayer.pauseVideo === 'function') videoBgPlayer.pauseVideo();
+                    if(fullscreenVideoPlayer && typeof fullscreenVideoPlayer.pauseVideo === 'function') fullscreenVideoPlayer.pauseVideo();
                 }
             }
             if (state === YT.PlayerState.ENDED) { handleTrackEnd(); }
+        }
+
+        // BUG FIX: Gerencia o estado dos players de vídeo para garantir o loop
+        function onVideoStateChange(event) {
+            const track = albums[currentAlbumIndex].tracks[playlist[currentTrackIndex]];
+            // Se o vídeo terminar e tiver a flag de loop, reinicia ele.
+            if (event.data === YT.PlayerState.ENDED && track.videoLoop) {
+                event.target.seekTo(track.videoStart || 0);
+                event.target.playVideo();
+            }
         }
         
         function handleTrackEnd() {
@@ -540,19 +554,14 @@
             player.loadVideoById({ videoId: track.audioId, startSeconds: track.startSeconds || 0 });
             updateTrackInfo(track, trackIndexInAlbum);
             
-            if (track.musicVideoId) {
+            // BUG FIX: Garante que o player de vídeo exista antes de usá-lo
+            if (track.musicVideoId && videoBgPlayer && typeof videoBgPlayer.loadVideoById === 'function') {
                 const videoOptions = { videoId: track.musicVideoId, startSeconds: track.videoStart || 0 };
-                const playlistOptions = { playlist: [track.musicVideoId], listType: 'playlist' };
-
-                if (track.videoLoop) {
-                    videoBgPlayer.loadPlaylist(playlistOptions);
-                } else {
-                    videoBgPlayer.loadVideoById(videoOptions);
-                }
+                videoBgPlayer.loadVideoById(videoOptions);
                 videoBgContainer.style.opacity = '0.3';
                 soundscapeBtn.textContent = "Fullscreen";
             } else {
-                videoBgPlayer.stopVideo();
+                if(videoBgPlayer && typeof videoBgPlayer.stopVideo === 'function') videoBgPlayer.stopVideo();
                 videoBgContainer.style.opacity = '0';
                 soundscapeBtn.textContent = "Soundscape";
             }
@@ -575,9 +584,20 @@
         }
         
         function stopPlayback() {
-            player.stopVideo(); videoBgPlayer.stopVideo(); fullscreenVideoPlayer.stopVideo();
+            if(player && typeof player.stopVideo === 'function') player.stopVideo();
+            if(videoBgPlayer && typeof videoBgPlayer.stopVideo === 'function') videoBgPlayer.stopVideo();
+            if(fullscreenVideoPlayer && typeof fullscreenVideoPlayer.stopVideo === 'function') fullscreenVideoPlayer.stopVideo();
             stopProgressInterval(); resetProgressBar();
             isPlaying = false; updatePlayPauseButtons(); playerCd.classList.remove('playing');
+        }
+
+        function seekRelative(seconds) {
+            const currentTime = player.getCurrentTime();
+            const newTime = currentTime + seconds;
+            player.seekTo(newTime, true);
+            // Sincroniza os players de vídeo se existirem
+            if(videoBgPlayer && typeof videoBgPlayer.seekTo === 'function') videoBgPlayer.seekTo(newTime, true);
+            if(fullscreenVideoPlayer && typeof fullscreenVideoPlayer.seekTo === 'function') fullscreenVideoPlayer.seekTo(newTime, true);
         }
         
         function toggleShuffle() {
@@ -638,7 +658,7 @@
             soundscapeMode.style.backgroundImage = `url('${album.cover}')`;
             videoBgOverlay.classList.toggle('blue-tint', album.videoTint === 'blue');
             if (album.videoTint !== 'blue') {
-                videoBgOverlay.style.backgroundColor = `${album.theme.secondary}80`;
+                videoBgOverlay.style.backgroundColor = `${album.theme.secondary}66`; // 40% opacity
             } else {
                 videoBgOverlay.style.backgroundColor = '';
             }
@@ -739,27 +759,24 @@
         function toggleSoundscape() {
              const track = albums[currentAlbumIndex].tracks[playlist[currentTrackIndex]];
              if (track.musicVideoId) {
-                const videoOptions = { videoId: track.musicVideoId, startSeconds: player.getCurrentTime() };
-                const playlistOptions = { playlist: [track.musicVideoId], listType: 'playlist', startSeconds: player.getCurrentTime() };
-                
-                if (track.videoLoop) {
-                    fullscreenVideoPlayer.loadPlaylist(playlistOptions);
-                } else {
-                    fullscreenVideoPlayer.loadVideoById(videoOptions);
+                // BUG FIX: O player de fullscreen é sempre mudo. Apenas carrega e sincroniza o vídeo.
+                if (fullscreenVideoPlayer && typeof fullscreenVideoPlayer.loadVideoById === 'function') {
+                    fullscreenVideoPlayer.loadVideoById({ videoId: track.musicVideoId, startSeconds: player.getCurrentTime() });
+                    fullscreenVideoPlayer.mute(); // Garante que está mudo
                 }
-                fullscreenVideoPlayer.unMute();
-                fullscreenVideoPlayer.setVolume(volumeSlider.value);
-                player.mute();
                 showScreen(fullscreenVideoMode);
-             } else { showScreen(soundscapeMode); }
+             } else { 
+                showScreen(soundscapeMode); 
+             }
         }
         
         function exitSoundscape() { showScreen(playerScreen); }
         
         function exitFullscreen() {
-            player.unMute();
-            player.seekTo(fullscreenVideoPlayer.getCurrentTime(), true);
-            fullscreenVideoPlayer.stopVideo();
+            // BUG FIX: Para o vídeo de fullscreen e garante que o áudio principal não foi afetado.
+            if(fullscreenVideoPlayer && typeof fullscreenVideoPlayer.stopVideo === 'function') {
+                fullscreenVideoPlayer.stopVideo();
+            }
             showScreen(playerScreen);
         }
         
@@ -793,47 +810,65 @@
             dvdAnimation = requestAnimationFrame(animateDvdLogo);
         }
 
-        // Event Listeners
-        backBtn.addEventListener('click', () => {
-            stopPlayback(); showScreen(selectionScreen);
-            document.documentElement.style.setProperty('--album-theme-color', 'var(--ps2-blue)');
-        });
-        playBtn.addEventListener('click', () => player.playVideo());
-        pauseBtn.addEventListener('click', () => player.pauseVideo());
-        stopBtn.addEventListener('click', stopPlayback);
-        nextBtn.addEventListener('click', playNext);
-        prevBtn.addEventListener('click', playPrev);
-        shuffleBtn.addEventListener('click', toggleShuffle);
-        repeatBtn.addEventListener('click', toggleRepeat);
-        vizBtn.addEventListener('click', () => { visualizerEl.classList.toggle('hidden'); vizBtn.classList.toggle('active'); });
-        soundscapeBtn.addEventListener('click', toggleSoundscape);
-        exitSoundscapeBtn.addEventListener('click', exitSoundscape);
-        exitFullscreenBtn.addEventListener('click', exitFullscreen);
-        tracklistBtn.addEventListener('click', showTracklist);
-        closeTracklistBtn.addEventListener('click', hideTracklist);
-
-        progressBar.addEventListener('click', (e) => {
-            const barWidth = progressBar.offsetWidth;
-            const clickX = e.offsetX;
-            const progress = clickX / barWidth;
-            const duration = player.getDuration();
-            if (duration > 0) {
-                const newTime = duration * progress;
-                player.seekTo(newTime, true);
-                videoBgPlayer.seekTo(newTime, true);
-                fullscreenVideoPlayer.seekTo(newTime, true);
-            }
-        });
-
         // Inicialização
         window.onload = () => {
+            // Carregar API do YouTube
             const tag = document.createElement('script');
             tag.src = "https://www.youtube.com/iframe_api";
             document.getElementsByTagName('script')[0].parentNode.insertBefore(tag, document.getElementsByTagName('script')[0]);
-            initializeCDSelection(); createProgressBar(); createVisualizerBars();
-            setInterval(updateClock, 1000); updateClock(); requestAnimationFrame(animateVisualizer);
+            
+            // Inicializar UI
+            initializeCDSelection(); 
+            createProgressBar(); 
+            createVisualizerBars();
+            setInterval(updateClock, 1000); 
+            updateClock(); 
+            requestAnimationFrame(animateVisualizer);
+            
+            // Configurar Inatividade
             resetInactivityTimer();
             ['mousemove', 'keypress', 'click'].forEach(evt => document.addEventListener(evt, resetInactivityTimer));
+
+            // Event Listeners (Garantir que os elementos existem)
+            if(volumeSlider) {
+                volumeSlider.addEventListener('input', (e) => {
+                    if(player && typeof player.setVolume === 'function') player.setVolume(e.target.value);
+                });
+            }
+            if(backBtn) backBtn.addEventListener('click', () => {
+                stopPlayback(); showScreen(selectionScreen);
+                document.documentElement.style.setProperty('--album-theme-color', 'var(--ps2-blue)');
+            });
+            if(playBtn) playBtn.addEventListener('click', () => player.playVideo());
+            if(pauseBtn) pauseBtn.addEventListener('click', () => player.pauseVideo());
+            if(stopBtn) stopBtn.addEventListener('click', stopPlayback);
+            if(nextBtn) nextBtn.addEventListener('click', playNext);
+            if(prevBtn) prevBtn.addEventListener('click', playPrev);
+            if(rewindBtn) rewindBtn.addEventListener('click', () => seekRelative(-5));
+            if(forwardBtn) forwardBtn.addEventListener('click', () => seekRelative(5));
+            if(shuffleBtn) shuffleBtn.addEventListener('click', toggleShuffle);
+            if(repeatBtn) repeatBtn.addEventListener('click', toggleRepeat);
+            if(vizBtn) vizBtn.addEventListener('click', () => { visualizerEl.classList.toggle('hidden'); vizBtn.classList.toggle('active'); });
+            if(soundscapeBtn) soundscapeBtn.addEventListener('click', toggleSoundscape);
+            if(exitSoundscapeBtn) exitSoundscapeBtn.addEventListener('click', exitSoundscape);
+            if(exitFullscreenBtn) exitFullscreenBtn.addEventListener('click', exitFullscreen);
+            if(tracklistBtn) tracklistBtn.addEventListener('click', showTracklist);
+            if(closeTracklistBtn) closeTracklistBtn.addEventListener('click', hideTracklist);
+
+            if(progressBar) progressBar.addEventListener('click', (e) => {
+                const barWidth = progressBar.offsetWidth;
+                const clickX = e.offsetX;
+                const progress = clickX / barWidth;
+                const duration = player.getDuration();
+                if (duration > 0) {
+                    const newTime = duration * progress;
+                    player.seekTo(newTime, true);
+                    // BUG FIX: Sincroniza o vídeo de fundo ao clicar na barra
+                    if(videoBgPlayer && typeof videoBgPlayer.seekTo === 'function') {
+                        videoBgPlayer.seekTo(newTime, true);
+                    }
+                }
+            });
         };
     </script>
 </body>
