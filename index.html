@@ -21,6 +21,15 @@
             background-color: #0d0d0d;
             color: var(--ps2-text);
             overflow: hidden;
+            background: linear-gradient(-45deg, #001a66, #0d0d0d, #0033cc, #0d0d0d);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+        
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         /* Efeitos CRT (TV antiga) */
@@ -28,25 +37,18 @@
             content: " ";
             display: block;
             position: fixed;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            right: 0;
+            top: 0; left: 0; bottom: 0; right: 0;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
             z-index: 100;
             background-size: 100% 2px, 3px 100%;
             pointer-events: none;
             animation: flicker 0.15s infinite;
         }
-
         .crt-effect::after {
             content: " ";
             display: block;
             position: fixed;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            right: 0;
+            top: 0; left: 0; bottom: 0; right: 0;
             background: rgba(18, 16, 16, 0.1);
             opacity: 0;
             z-index: 100;
@@ -58,64 +60,44 @@
             0% { opacity: 0.2; } 20% { opacity: 0.8; } 40% { opacity: 0.3; }
             60% { opacity: 1; } 80% { opacity: 0.4; } 100% { opacity: 1; }
         }
-
         @keyframes scanline {
             0% { transform: translateY(0%); } 100% { transform: translateY(100%); }
         }
 
         .screen-container {
-            width: 100vw;
-            height: 100vh;
-            position: absolute;
-            top: 0;
-            left: 0;
+            width: 100vw; height: 100vh;
+            position: absolute; top: 0; left: 0;
             transition: opacity 0.5s ease-in-out, filter 0.5s ease-in-out;
             filter: blur(0);
         }
-
         .screen-hidden {
-            opacity: 0;
-            pointer-events: none;
-            filter: blur(5px);
+            opacity: 0; pointer-events: none; filter: blur(5px);
         }
         
         /* Tela de Seleção de CD */
-        #selection-screen {
-            perspective: 1500px;
-            background: radial-gradient(circle, var(--album-theme-color) 0%, #0d0d0d 70%);
-            transition: background 0.5s ease;
-        }
-
+        #selection-screen { perspective: 1500px; }
         .cd-selection-item {
             transform-style: preserve-3d;
             transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             cursor: pointer;
         }
-
-        .cd-selection-item:hover {
-            transform: rotateY(-30deg) scale(1.05);
-        }
-
+        .cd-selection-item:hover { transform: rotateY(-30deg) scale(1.05); }
         .cd-case {
             width: 200px; height: 200px; position: relative;
             transform-style: preserve-3d; transform: rotateY(0deg);
         }
-
         .cd-face {
             position: absolute; width: 100%; height: 100%;
             backface-visibility: hidden; background-color: #1a1a1a; border: 1px solid #333;
         }
-
         .cd-front-cover {
             transform: translateZ(10px); background-size: cover; background-position: center;
         }
-
         .cd-spine {
             width: 20px; height: 200px; left: 90px; background-color: #111;
             transform: rotateY(90deg) translateZ(-110px);
             display: flex; align-items: center; justify-content: center;
         }
-        
         .cd-spine-text {
             writing-mode: vertical-rl; text-orientation: mixed;
             transform: rotate(180deg); white-space: nowrap; font-size: 14px;
@@ -126,83 +108,78 @@
             width: 150px; height: 150px; border-radius: 50%;
             background-size: cover; background-position: center;
             box-shadow: 0 0 20px 5px rgba(255, 255, 255, 0.2);
-            transition: transform 1s linear;
+            transition: transform 1.5s ease-out; /* Animação de parada suave */
         }
-
-        .cd-2d.playing { animation: spin 4s linear infinite; }
-
+        .cd-2d.playing {
+            transition: transform 0.2s linear; /* Transição rápida ao girar */
+            animation: spin 4s linear infinite;
+        }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         
         #track-name-container { width: 250px; overflow: hidden; position: relative; }
-
         #track-name {
             display: inline-block; white-space: nowrap; position: absolute;
             left: 50%; transform: translateX(-50%);
         }
-
         .scrolling { animation: scroll-text 10s linear infinite; }
-
         @keyframes scroll-text {
             0%   { transform: translateX(100%); } 100% { transform: translateX(-100%); }
         }
         
         #progress-bar-container { display: flex; gap: 2px; cursor: pointer; }
-
         .progress-block {
             flex-grow: 1; height: 12px; background-color: #333; transition: background-color 0.2s;
         }
-
         .progress-block.filled { background-color: var(--ps2-text); }
         
         .player-btn {
-            background-color: transparent; border: 1px solid var(--ps2-text);
-            padding: 5px; transition: background-color 0.2s, color 0.2s;
+            background-color: rgba(0,0,0,0.3); border: 1px solid var(--ps2-text);
+            padding: 5px; transition: all 0.2s;
         }
         .player-btn:hover { background-color: var(--ps2-text); color: #0d0d0d; }
+        .player-btn:active { transform: scale(0.9); }
         .player-btn.active {
             background-color: var(--album-theme-color); border-color: var(--album-theme-color); color: #fff;
         }
 
-        /* Transição do CD */
-        #cd-transition-element {
-            position: fixed; z-index: 200; background-size: cover; background-position: center;
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 0;
+        /* Animação de Transição de CD */
+        #cd-transition-wrapper {
+            position: fixed; z-index: 200;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            pointer-events: none; /* Impede interação durante a animação */
+            opacity: 0;
         }
-        
-        /* Soundscape / Fullscreen */
-        #soundscape-mode, #fullscreen-video-mode { background-size: cover; background-position: center; }
-        
-        #soundscape-mode::before, #fullscreen-video-mode::before {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background-color: rgba(0,0,0,0.5); backdrop-filter: blur(20px);
+        #cd-transition-case-front {
+            width: 100%; height: 100%;
+            background-size: cover;
+            position: absolute;
+            transform-origin: left;
+            transition: transform 0.5s ease-in-out, opacity 0.3s linear;
         }
-
-        #video-background-overlay.blue-tint {
-            background-color: rgba(0, 51, 204, 0.4) !important; /* PS2 blue com opacidade */
+        #cd-transition-disc {
+            width: 90%; height: 90%;
+            background-size: cover;
+            border-radius: 50%;
+            position: absolute;
+            top: 5%; left: 5%;
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         /* Efeito VHS */
-        .vhs-effect {
-            filter: sepia(0.3) contrast(1.1) brightness(0.9) blur(0.2px);
-        }
+        .vhs-effect { filter: sepia(0.3) contrast(1.1) brightness(0.9) blur(0.2px); }
         .vhs-effect::after {
-            content: " ";
-            display: block;
-            position: absolute;
+            content: " "; display: block; position: absolute;
             top: 0; left: 0; bottom: 0; right: 0;
             background: repeating-linear-gradient(0deg, rgba(0,0,0,0.1) 0px, rgba(0,0,0,0.1) 1px, transparent 1px, transparent 3px);
-            z-index: 1;
-            pointer-events: none;
+            z-index: 1; pointer-events: none;
             animation: vhs-noise 0.1s steps(3, end) infinite;
         }
         @keyframes vhs-noise {
-            0% { transform: translate(0, 0); }
-            25% { transform: translate(2px, -3px); }
-            50% { transform: translate(-2px, 2px); }
-            75% { transform: translate(1px, 4px); }
+            0% { transform: translate(0, 0); } 25% { transform: translate(2px, -3px); }
+            50% { transform: translate(-2px, 2px); } 75% { transform: translate(1px, 4px); }
             100% { transform: translate(-1px, -2px); }
         }
-
 
         /* Screensaver DVD */
         #dvd-screensaver {
@@ -217,48 +194,54 @@
         /* Tracklist Modal */
         #tracklist-modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0,0,0,0.8);
-            backdrop-filter: blur(10px);
-            z-index: 250;
+            background-color: rgba(0,0,0,0.8); backdrop-filter: blur(10px);
+            z-index: 250; display: flex; align-items: center; justify-content: center;
+        }
+        #tracklist-content {
+            background-color: #0d0d0d; border: 2px solid var(--ps2-text);
+            width: 90%; max-width: 500px; max-height: 80vh;
+            display: flex; flex-direction: column;
+        }
+        #tracklist-header {
+            padding: 1rem; border-bottom: 2px solid var(--ps2-text);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        #tracklist-list { padding: 1rem; overflow-y: auto; }
+        .tracklist-item {
+            padding: 0.5rem; font-size: 1.5rem; cursor: pointer;
+            border-bottom: 1px solid #333;
+        }
+        .tracklist-item:hover { background-color: var(--album-theme-color); color: #fff; }
+        .tracklist-item.playing {
+            background-color: var(--album-theme-color); color: #fff; font-weight: bold;
+        }
+        
+        /* Fullscreen Mode melhorado */
+        #fullscreen-video-mode {
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        #tracklist-content {
-            background-color: #0d0d0d;
-            border: 2px solid var(--ps2-text);
-            width: 90%;
-            max-width: 500px;
-            max-height: 80vh;
+        #fullscreen-content {
+            position: relative; z-index: 5;
             display: flex;
-            flex-direction: column;
-        }
-        #tracklist-header {
-            padding: 1rem;
-            border-bottom: 2px solid var(--ps2-text);
-            display: flex;
-            justify-content: space-between;
             align-items: center;
+            gap: 2rem;
+            padding: 2rem;
+            background-color: rgba(0,0,0,0.5);
+            border: 2px solid var(--ps2-text);
         }
-        #tracklist-list {
-            padding: 1rem;
-            overflow-y: auto;
+        #fullscreen-cover {
+            width: 200px;
+            height: 200px;
+            background-size: cover;
+            border: 2px solid var(--ps2-text);
         }
-        .tracklist-item {
-            padding: 0.5rem;
-            font-size: 1.5rem;
-            cursor: pointer;
-            border-bottom: 1px solid #333;
+        #fullscreen-track-name {
+            font-size: 3rem;
+            max-width: 400px;
         }
-        .tracklist-item:hover {
-            background-color: var(--album-theme-color);
-            color: #fff;
-        }
-        .tracklist-item.playing {
-            background-color: var(--album-theme-color);
-            color: #fff;
-            font-weight: bold;
-        }
+
     </style>
 </head>
 <body class="bg-black text-white crt-effect">
@@ -269,30 +252,27 @@
         <div id="cd-selection-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-16">
             <!-- CDs serão inseridos aqui via JS -->
         </div>
+        <div id="secret-cd-container" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-16 mt-8">
+            <!-- CDs secretos aparecem aqui -->
+        </div>
     </div>
 
     <!-- Tela do Player -->
     <div id="player-screen" class="screen-container screen-hidden flex flex-col items-center justify-between p-4 h-full">
-        <!-- Vídeo de fundo -->
         <div id="video-background-container" class="absolute top-0 left-0 w-full h-full -z-10 opacity-30 overflow-hidden">
              <div id="video-background-player"></div>
              <div id="video-background-overlay" class="absolute top-0 left-0 w-full h-full"></div>
         </div>
-
         <div class="w-full flex justify-between items-start text-2xl">
             <button id="back-btn" class="player-btn">← Back</button>
             <div id="clock" class="pr-2">12:00:00</div>
         </div>
-
         <div class="flex flex-col items-center gap-4">
             <div id="player-cd" class="cd-2d"></div>
             <div id="track-number" class="text-2xl">TRACK 01</div>
             <div id="track-name-container" class="h-8 text-3xl text-center"><span id="track-name">Track Name</span></div>
-            <div id="visualizer" class="w-80 h-16 flex items-end justify-center gap-1">
-                <!-- Barras do visualizador serão inseridas aqui via JS -->
-            </div>
+            <div id="visualizer" class="w-80 h-16 flex items-end justify-center gap-1"></div>
         </div>
-
         <div class="w-full max-w-2xl flex flex-col items-center gap-3">
             <div class="w-full flex justify-between text-2xl">
                 <div id="time-display">0:00 / 0:00</div>
@@ -315,7 +295,7 @@
             </div>
              <div class="flex items-center gap-2 text-xl">
                 <span>Volume</span>
-                <input id="volume-slider" type="range" min="0" max="100" value="100" class="w-32">
+                <input id="volume-slider" type="range" min="0" max="100" value="80" class="w-32">
             </div>
         </div>
     </div>
@@ -327,9 +307,7 @@
                 <h2 id="tracklist-album-title" class="text-3xl">Tracklist</h2>
                 <button id="close-tracklist-btn" class="player-btn text-2xl">X</button>
             </div>
-            <div id="tracklist-list">
-                <!-- Itens da tracklist serão inseridos aqui via JS -->
-            </div>
+            <div id="tracklist-list"></div>
         </div>
     </div>
 
@@ -344,8 +322,12 @@
     </div>
 
     <!-- Modo Vídeo Fullscreen -->
-    <div id="fullscreen-video-mode" class="screen-container screen-hidden flex flex-col items-center justify-center">
+    <div id="fullscreen-video-mode" class="screen-container screen-hidden">
          <div id="fullscreen-video-player" class="absolute top-0 left-0 w-full h-full z-0"></div>
+         <div id="fullscreen-content">
+            <div id="fullscreen-cover"></div>
+            <h2 id="fullscreen-track-name"></h2>
+         </div>
          <button id="exit-fullscreen-btn" class="player-btn absolute bottom-5 z-10 text-2xl">Exit Fullscreen</button>
     </div>
     
@@ -355,7 +337,10 @@
     </div>
 
     <!-- Elemento de transição -->
-    <div id="cd-transition-element"></div>
+    <div id="cd-transition-wrapper">
+        <div id="cd-transition-case-front"></div>
+        <div id="cd-transition-disc"></div>
+    </div>
     
     <!-- Player do YouTube (invisível) -->
     <div id="youtube-player" class="absolute -top-full -left-full"></div>
@@ -445,6 +430,21 @@
                 ]
             }
         ];
+        
+        const secretAlbums = [
+            {
+                title: "O Retorno do Filho",
+                cover: "https://placehold.co/500x500/1a1a1a/ffffff?text=O+Retorno",
+                theme: { primary: '#b91c1c', secondary: '#fef2f2' },
+                tracks: [{ title: "A Jornada de Volta", audioId: 'dQw4w9WgXcQ' }]
+            },
+            {
+                title: "A Vitória Final",
+                cover: "https://placehold.co/500x500/a16207/ffffff?text=A+Vitória",
+                theme: { primary: '#a16207', secondary: '#fefce8' },
+                tracks: [{ title: "Coroação", audioId: 'dQw4w9WgXcQ' }]
+            }
+        ];
 
         // Elementos da DOM
         const selectionScreen = document.getElementById('selection-screen');
@@ -483,6 +483,9 @@
         const soundscapeMode = document.getElementById('soundscape-mode');
         const exitSoundscapeBtn = document.getElementById('exit-soundscape-btn');
         const fullscreenVideoMode = document.getElementById('fullscreen-video-mode');
+        const fullscreenContent = document.getElementById('fullscreen-content');
+        const fullscreenCover = document.getElementById('fullscreen-cover');
+        const fullscreenTrackName = document.getElementById('fullscreen-track-name');
         const exitFullscreenBtn = document.getElementById('exit-fullscreen-btn');
         const soundscapeCd = document.getElementById('soundscape-cd');
         const soundscapeTrackName = document.getElementById('soundscape-track-name');
@@ -501,57 +504,59 @@
         let currentAlbumIndex = 0, currentTrackIndex = 0;
         let playlist = [], isPlaying = false, isShuffle = false;
         let repeatMode = 'none', progressInterval, inactivityTimer;
+        let keySequence = '';
+        const secretPhrase = 'o filho prodigo sempre vence.';
+        let secretsUnlocked = false;
         
         // Inicialização do YouTube IFrame API
         function onYouTubeIframeAPIReady() {
-            // Player de Áudio Principal
             player = new YT.Player('youtube-player', {
                 height: '0', width: '0',
                 events: { 'onReady': onPlayerReady, 'onStateChange': onPlayerStateChange }
             });
-            
-            // Player de Vídeo de Fundo
             videoBgPlayer = new YT.Player('video-background-player', {
                 height: '100%', width: '100%',
                 playerVars: { 'autoplay': 1, 'controls': 0, 'showinfo': 0, 'rel': 0, 'mute': 1, 'playsinline': 1 },
-                events: { 'onReady': (event) => event.target.mute(), 'onStateChange': onVideoStateChange }
+                events: { 'onReady': (e) => e.target.mute(), 'onStateChange': onVideoStateChange }
             });
-
-            // Player de Vídeo em Tela Cheia
             fullscreenVideoPlayer = new YT.Player('fullscreen-video-player', {
                 height: '100%', width: '100%',
                 playerVars: { 'autoplay': 0, 'controls': 0, 'showinfo': 0, 'rel': 0, 'mute': 1, 'playsinline': 1 },
-                 events: { 'onReady': (event) => event.target.mute(), 'onStateChange': onVideoStateChange }
+                 events: { 'onReady': (e) => e.target.mute(), 'onStateChange': onVideoStateChange }
             });
         }
 
         function onPlayerReady(event) {
-            // A configuração dos listeners foi movida para window.onload
+            event.target.setVolume(volumeSlider.value);
         }
 
-        // Gerencia o estado do player de áudio
         function onPlayerStateChange(event) {
-            resetInactivityTimer();
             const state = event.data;
-            
             if (state === YT.PlayerState.PLAYING) {
-                startProgressInterval(); isPlaying = true; updatePlayPauseButtons(); playerCd.classList.add('playing');
-                if(videoBgPlayer && typeof videoBgPlayer.playVideo === 'function') videoBgPlayer.playVideo();
-                if(fullscreenVideoPlayer.isMuted() && typeof fullscreenVideoPlayer.playVideo === 'function') fullscreenVideoPlayer.playVideo();
+                isPlaying = true;
+                clearTimeout(inactivityTimer);
+                hideDvdScreensaver();
+                startProgressInterval();
+                updatePlayPauseButtons();
+                playerCd.classList.add('playing');
+                if(videoBgPlayer?.playVideo) videoBgPlayer.playVideo();
+                if(fullscreenVideoPlayer?.isMuted() && fullscreenVideoPlayer?.playVideo) fullscreenVideoPlayer.playVideo();
             } else {
-                stopProgressInterval(); isPlaying = false; updatePlayPauseButtons(); playerCd.classList.remove('playing');
+                isPlaying = false;
+                resetInactivityTimer();
+                stopProgressInterval();
+                updatePlayPauseButtons();
+                playerCd.classList.remove('playing');
                 if (state === YT.PlayerState.PAUSED) {
-                    if(videoBgPlayer && typeof videoBgPlayer.pauseVideo === 'function') videoBgPlayer.pauseVideo();
-                    if(fullscreenVideoPlayer && typeof fullscreenVideoPlayer.pauseVideo === 'function') fullscreenVideoPlayer.pauseVideo();
+                    if(videoBgPlayer?.pauseVideo) videoBgPlayer.pauseVideo();
+                    if(fullscreenVideoPlayer?.pauseVideo) fullscreenVideoPlayer.pauseVideo();
                 }
             }
             if (state === YT.PlayerState.ENDED) { handleTrackEnd(); }
         }
 
-        // BUG FIX: Gerencia o estado dos players de vídeo para garantir o loop
         function onVideoStateChange(event) {
             const track = albums[currentAlbumIndex].tracks[playlist[currentTrackIndex]];
-            // Se o vídeo terminar e tiver a flag de loop, reinicia ele.
             if (event.data === YT.PlayerState.ENDED && track.videoLoop) {
                 event.target.seekTo(track.videoStart || 0);
                 event.target.playVideo();
@@ -562,47 +567,44 @@
             if (repeatMode === 'one') { playTrack(currentTrackIndex); } else { playNext(); }
         }
 
-        // Funções do Player
-        function loadAlbum(albumIndex) {
+        function loadAlbum(albumIndex, isSecret = false) {
+            const source = isSecret ? secretAlbums : albums;
             currentAlbumIndex = albumIndex;
-            const album = albums[albumIndex];
+            const album = source[albumIndex];
             playlist = Array.from(Array(album.tracks.length).keys());
             if(isShuffle) { shufflePlaylist(); }
-            loadTrack(0);
+            loadTrack(0, isSecret);
             updatePlayerUIForAlbum(album);
             showScreen(playerScreen);
         }
 
-        function loadTrack(playlistIndex) {
+        function loadTrack(playlistIndex, isSecret = false) {
             if (playlistIndex < 0 || playlistIndex >= playlist.length) {
                  if (repeatMode === 'all') { currentTrackIndex = 0; } else { stopPlayback(); return; }
             } else { currentTrackIndex = playlistIndex; }
 
+            const source = isSecret ? secretAlbums : albums;
             const trackIndexInAlbum = playlist[currentTrackIndex];
-            const track = albums[currentAlbumIndex].tracks[trackIndexInAlbum];
+            const track = source[currentAlbumIndex].tracks[trackIndexInAlbum];
             
             player.loadVideoById({ videoId: track.audioId, startSeconds: track.startSeconds || 0 });
             updateTrackInfo(track, trackIndexInAlbum);
             
-            // Aplica ou remove o efeito VHS
             videoBgContainer.classList.toggle('vhs-effect', !!track.vhs);
             fullscreenVideoMode.classList.toggle('vhs-effect', !!track.vhs);
 
-            // BUG FIX: Garante que o player de vídeo exista antes de usá-lo
-            if (track.musicVideoId && videoBgPlayer && typeof videoBgPlayer.loadVideoById === 'function') {
-                const videoOptions = { videoId: track.musicVideoId, startSeconds: track.videoStart || 0 };
-                videoBgPlayer.loadVideoById(videoOptions);
+            if (track.musicVideoId && videoBgPlayer?.loadVideoById) {
+                videoBgPlayer.loadVideoById({ videoId: track.musicVideoId, startSeconds: track.videoStart || 0 });
                 videoBgContainer.style.opacity = '0.3';
                 soundscapeBtn.textContent = "Fullscreen";
             } else {
-                if(videoBgPlayer && typeof videoBgPlayer.stopVideo === 'function') videoBgPlayer.stopVideo();
+                if(videoBgPlayer?.stopVideo) videoBgPlayer.stopVideo();
                 videoBgContainer.style.opacity = '0';
                 soundscapeBtn.textContent = "Soundscape";
             }
         }
         
         function playTrack(playlistIndex) { loadTrack(playlistIndex); }
-
         function playNext() {
             let nextIndex = currentTrackIndex + 1;
             if (nextIndex >= playlist.length) {
@@ -610,30 +612,26 @@
             }
             playTrack(nextIndex);
         }
-
         function playPrev() {
             let prevIndex = currentTrackIndex - 1;
             if (prevIndex < 0) { prevIndex = playlist.length - 1; }
             playTrack(prevIndex);
         }
-        
         function stopPlayback() {
-            if(player && typeof player.stopVideo === 'function') player.stopVideo();
-            if(videoBgPlayer && typeof videoBgPlayer.stopVideo === 'function') videoBgPlayer.stopVideo();
-            if(fullscreenVideoPlayer && typeof fullscreenVideoPlayer.stopVideo === 'function') fullscreenVideoPlayer.stopVideo();
+            if(player?.stopVideo) player.stopVideo();
+            if(videoBgPlayer?.stopVideo) videoBgPlayer.stopVideo();
+            if(fullscreenVideoPlayer?.stopVideo) fullscreenVideoPlayer.stopVideo();
             stopProgressInterval(); resetProgressBar();
             isPlaying = false; updatePlayPauseButtons(); playerCd.classList.remove('playing');
+            resetInactivityTimer();
         }
-
         function seekRelative(seconds) {
             const currentTime = player.getCurrentTime();
             const newTime = currentTime + seconds;
             player.seekTo(newTime, true);
-            // Sincroniza os players de vídeo se existirem
-            if(videoBgPlayer && typeof videoBgPlayer.seekTo === 'function') videoBgPlayer.seekTo(newTime, true);
-            if(fullscreenVideoPlayer && typeof fullscreenVideoPlayer.seekTo === 'function') fullscreenVideoPlayer.seekTo(newTime, true);
+            if(videoBgPlayer?.seekTo) videoBgPlayer.seekTo(newTime, true);
+            if(fullscreenVideoPlayer?.seekTo) fullscreenVideoPlayer.seekTo(newTime, true);
         }
-        
         function toggleShuffle() {
             isShuffle = !isShuffle;
             shuffleBtn.classList.toggle('active', isShuffle);
@@ -642,14 +640,12 @@
             else { playlist = Array.from(Array(albums[currentAlbumIndex].tracks.length).keys()); }
             currentTrackIndex = playlist.findIndex(i => i === currentTrackRealIndex);
         }
-        
         function shufflePlaylist() {
             for (let i = playlist.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [playlist[i], playlist[j]] = [playlist[j], playlist[i]];
             }
         }
-        
         function toggleRepeat() {
             if(repeatMode === 'none') { repeatMode = 'all'; repeatBtn.textContent = 'Repeat All'; repeatBtn.classList.add('active'); } 
             else if (repeatMode === 'all') { repeatMode = 'one'; repeatBtn.textContent = 'Repeat One'; } 
@@ -657,27 +653,76 @@
         }
 
         // Funções de UI
+        function createCdElement(album, index, isSecret = false) {
+            const item = document.createElement('div');
+            item.className = 'cd-selection-item';
+            item.innerHTML = `<div class="cd-case"><div class="cd-face cd-front-cover" style="background-image: url('${album.cover}')"></div><div class="cd-face cd-spine"><span class="cd-spine-text">${album.title}</span></div></div>`;
+            item.addEventListener('mouseenter', () => document.documentElement.style.setProperty('--album-theme-color', album.theme.primary));
+            item.addEventListener('click', () => handleCDSelection(item, index, isSecret));
+            return item;
+        }
+
         function initializeCDSelection() {
             cdSelectionGrid.innerHTML = '';
             albums.forEach((album, index) => {
-                const item = document.createElement('div');
-                item.className = 'cd-selection-item';
-                item.innerHTML = `<div class="cd-case"><div class="cd-face cd-front-cover" style="background-image: url('${album.cover}')"></div><div class="cd-face cd-spine"><span class="cd-spine-text">${album.title}</span></div></div>`;
-                item.addEventListener('mouseenter', () => document.documentElement.style.setProperty('--album-theme-color', album.theme.primary));
-                item.addEventListener('click', () => handleCDSelection(item, index));
-                cdSelectionGrid.appendChild(item);
+                cdSelectionGrid.appendChild(createCdElement(album, index, false));
             });
         }
         
-        function handleCDSelection(element, albumIndex) {
+        function handleCDSelection(element, albumIndex, isSecret = false) {
+            const source = isSecret ? secretAlbums : albums;
+            const album = source[albumIndex];
             const startRect = element.getBoundingClientRect();
-            const targetRect = playerCd.getBoundingClientRect();
-            const transitionEl = document.getElementById('cd-transition-element');
-            transitionEl.style.backgroundImage = `url('${albums[albumIndex].cover}')`;
-            Object.assign(transitionEl.style, { left: `${startRect.left}px`, top: `${startRect.top}px`, width: `${startRect.width}px`, height: `${startRect.height}px`, borderRadius: '0', transform: 'rotateY(0deg) rotate(0deg)' });
+            const transitionWrapper = document.getElementById('cd-transition-wrapper');
+            const caseFront = document.getElementById('cd-transition-case-front');
+            const disc = document.getElementById('cd-transition-disc');
+
+            // Reset styles
+            transitionWrapper.style.transition = 'opacity 0.5s ease-in-out';
+            caseFront.style.transition = 'transform 0.5s ease-in-out, opacity 0.3s linear';
+            disc.style.transition = 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
+            
+            Object.assign(transitionWrapper.style, {
+                left: `${startRect.left}px`, top: `${startRect.top}px`,
+                width: `${startRect.width}px`, height: `${startRect.height}px`,
+                opacity: '1',
+            });
+            caseFront.style.backgroundImage = `url('${album.cover}')`;
+            caseFront.style.transform = 'rotateY(0deg)';
+            caseFront.style.opacity = '1';
+            disc.style.backgroundImage = `url('${album.cover}')`;
+            disc.style.transform = 'translateX(0%)';
+            disc.style.left = '5%';
+            disc.style.top = '5%';
+            disc.style.width = '90%';
+            disc.style.height = '90%';
+            
             selectionScreen.classList.add('screen-hidden');
-            setTimeout(() => Object.assign(transitionEl.style, { left: `${targetRect.left}px`, top: `${targetRect.top}px`, width: `${targetRect.width}px`, height: `${targetRect.height}px`, borderRadius: '50%', transform: 'rotate(720deg)' }), 50);
-            setTimeout(() => { transitionEl.style.backgroundImage = ''; loadAlbum(albumIndex); }, 850);
+
+            setTimeout(() => { // Abrir a caixa
+                caseFront.style.transform = 'rotateY(-120deg)';
+            }, 100);
+            
+            setTimeout(() => { // Disco desliza para fora
+                disc.style.transform = 'translateX(80%)';
+            }, 400);
+
+            setTimeout(() => { // Disco voa para o player
+                const targetRect = playerCd.getBoundingClientRect();
+                caseFront.style.opacity = '0';
+                Object.assign(disc.style, {
+                    left: `${targetRect.left - startRect.left}px`, 
+                    top: `${targetRect.top - startRect.top}px`,
+                    width: `${targetRect.width}px`, 
+                    height: `${targetRect.height}px`,
+                    transform: 'translateX(0) rotate(720deg)',
+                });
+            }, 900);
+
+            setTimeout(() => { // Animação termina
+                loadAlbum(albumIndex, isSecret);
+                transitionWrapper.style.opacity = '0';
+            }, 1700); // 900ms (start) + 800ms (duration)
         }
 
         function showScreen(screen) {
@@ -692,7 +737,7 @@
             soundscapeMode.style.backgroundImage = `url('${album.cover}')`;
             videoBgOverlay.classList.toggle('blue-tint', album.videoTint === 'blue');
             if (album.videoTint !== 'blue') {
-                videoBgOverlay.style.backgroundColor = `${album.theme.secondary}66`; // 40% opacity
+                videoBgOverlay.style.backgroundColor = `${album.theme.secondary}66`;
             } else {
                 videoBgOverlay.style.backgroundColor = '';
             }
@@ -761,19 +806,15 @@
             requestAnimationFrame(animateVisualizer);
         }
 
-        // Tracklist Functions
         function showTracklist() {
             const album = albums[currentAlbumIndex];
             tracklistAlbumTitle.textContent = album.title;
             tracklistList.innerHTML = '';
-
             album.tracks.forEach((track, index) => {
                 const item = document.createElement('div');
                 item.className = 'tracklist-item';
                 item.textContent = `${String(index + 1).padStart(2, '0')}. ${track.title}`;
-                if (playlist[currentTrackIndex] === index) {
-                    item.classList.add('playing');
-                }
+                if (playlist[currentTrackIndex] === index) item.classList.add('playing');
                 item.addEventListener('click', () => {
                     const playlistIndex = playlist.findIndex(i => i === index);
                     playTrack(playlistIndex);
@@ -781,59 +822,50 @@
                 });
                 tracklistList.appendChild(item);
             });
-
             tracklistModal.classList.remove('screen-hidden');
         }
+        function hideTracklist() { tracklistModal.classList.add('screen-hidden'); }
 
-        function hideTracklist() {
-            tracklistModal.classList.add('screen-hidden');
-        }
-
-        // Modos
         function toggleSoundscape() {
              const track = albums[currentAlbumIndex].tracks[playlist[currentTrackIndex]];
              if (track.musicVideoId) {
-                // BUG FIX: O player de fullscreen é sempre mudo. Apenas carrega e sincroniza o vídeo.
-                if (fullscreenVideoPlayer && typeof fullscreenVideoPlayer.loadVideoById === 'function') {
+                if (fullscreenVideoPlayer?.loadVideoById) {
+                    fullscreenCover.style.backgroundImage = `url('${albums[currentAlbumIndex].cover}')`;
+                    fullscreenTrackName.textContent = track.title;
                     fullscreenVideoPlayer.loadVideoById({ videoId: track.musicVideoId, startSeconds: player.getCurrentTime() });
-                    fullscreenVideoPlayer.mute(); // Garante que está mudo
+                    fullscreenVideoPlayer.mute();
                 }
                 showScreen(fullscreenVideoMode);
-             } else { 
-                showScreen(soundscapeMode); 
-             }
+             } else { showScreen(soundscapeMode); }
         }
-        
         function exitSoundscape() { showScreen(playerScreen); }
-        
         function exitFullscreen() {
-            // BUG FIX: Para o vídeo de fullscreen e garante que o áudio principal não foi afetado.
-            if(fullscreenVideoPlayer && typeof fullscreenVideoPlayer.stopVideo === 'function') {
-                fullscreenVideoPlayer.stopVideo();
-            }
+            if(fullscreenVideoPlayer?.stopVideo) fullscreenVideoPlayer.stopVideo();
             showScreen(playerScreen);
         }
         
         // Screensaver
+        function hideDvdScreensaver() {
+            if (dvdScreensaver) {
+                dvdScreensaver.classList.add('screen-hidden');
+            }
+            cancelAnimationFrame(dvdAnimation);
+        }
+
         function resetInactivityTimer() {
             clearTimeout(inactivityTimer);
-            if (!dvdScreensaver.classList.contains('screen-hidden')) { hideDvdScreensaver(); }
-            inactivityTimer = setTimeout(showDvdScreensaver, 120000);
+            hideDvdScreensaver();
+            if (!isPlaying) {
+                inactivityTimer = setTimeout(showDvdScreensaver, 120000);
+            }
         }
 
         let dvd = { x: 50, y: 50, vx: 2, vy: 2, logo: dvdLogo };
         let dvdAnimation;
-
         function showDvdScreensaver() {
             dvdScreensaver.classList.remove('screen-hidden');
             dvdAnimation = requestAnimationFrame(animateDvdLogo);
         }
-        
-        function hideDvdScreensaver() {
-            dvdScreensaver.classList.add('screen-hidden');
-            cancelAnimationFrame(dvdAnimation);
-        }
-
         function animateDvdLogo() {
             const screenW = window.innerWidth, screenH = window.innerHeight;
             const logoW = dvd.logo.offsetWidth, logoH = dvd.logo.offsetHeight;
@@ -844,14 +876,11 @@
             dvdAnimation = requestAnimationFrame(animateDvdLogo);
         }
 
-        // Inicialização
         window.onload = () => {
-            // Carregar API do YouTube
             const tag = document.createElement('script');
             tag.src = "https://www.youtube.com/iframe_api";
             document.getElementsByTagName('script')[0].parentNode.insertBefore(tag, document.getElementsByTagName('script')[0]);
             
-            // Inicializar UI
             initializeCDSelection(); 
             createProgressBar(); 
             createVisualizerBars();
@@ -859,16 +888,28 @@
             updateClock(); 
             requestAnimationFrame(animateVisualizer);
             
-            // Configurar Inatividade
             resetInactivityTimer();
             ['mousemove', 'keypress', 'click'].forEach(evt => document.addEventListener(evt, resetInactivityTimer));
 
-            // Event Listeners (Garantir que os elementos existem)
-            if(volumeSlider) {
-                volumeSlider.addEventListener('input', (e) => {
-                    if(player && typeof player.setVolume === 'function') player.setVolume(e.target.value);
-                });
-            }
+            window.addEventListener('keydown', (e) => {
+                if (selectionScreen.classList.contains('screen-hidden')) return;
+                keySequence += e.key.toLowerCase();
+                if (keySequence.length > secretPhrase.length) {
+                    keySequence = keySequence.substring(1);
+                }
+                if (keySequence.includes(secretPhrase) && !secretsUnlocked) {
+                    secretsUnlocked = true;
+                    const container = document.getElementById('secret-cd-container');
+                    secretAlbums.forEach((album, index) => {
+                        container.appendChild(createCdElement(album, index, true));
+                    });
+                    container.classList.remove('hidden');
+                }
+            });
+
+            if(volumeSlider) volumeSlider.addEventListener('input', (e) => {
+                if(player?.setVolume) player.setVolume(e.target.value);
+            });
             if(backBtn) backBtn.addEventListener('click', () => {
                 stopPlayback(); showScreen(selectionScreen);
                 document.documentElement.style.setProperty('--album-theme-color', 'var(--ps2-blue)');
@@ -890,9 +931,8 @@
             if(closeTracklistBtn) closeTracklistBtn.addEventListener('click', hideTracklist);
 
             if(progressBar) progressBar.addEventListener('click', (e) => {
-                // BUG FIX: Usar getBoundingClientRect para um cálculo de clique mais preciso
                 const rect = progressBar.getBoundingClientRect();
-                const clickX = e.clientX - rect.left; // Posição do clique relativa à barra
+                const clickX = e.clientX - rect.left;
                 const barWidth = progressBar.offsetWidth;
                 const progress = clickX / barWidth;
                 const duration = player.getDuration();
@@ -900,9 +940,7 @@
                 if (duration > 0) {
                     const newTime = duration * progress;
                     player.seekTo(newTime, true);
-                    if(videoBgPlayer && typeof videoBgPlayer.seekTo === 'function') {
-                        videoBgPlayer.seekTo(newTime, true);
-                    }
+                    if(videoBgPlayer?.seekTo) videoBgPlayer.seekTo(newTime, true);
                 }
             });
         };
